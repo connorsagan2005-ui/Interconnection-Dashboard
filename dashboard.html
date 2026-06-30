@@ -129,23 +129,23 @@
   <div class="iso-filter-group hidden" data-tab="ercot">
     <div class="filter-section">
       <span class="filter-label">Zone</span>
-      <select id="ercotZoneFilter" class="sidebar-select"><option value="All">All Zones</option></select>
+      <div class="fuel-dropdown" id="ercotZoneFilterDropdown"></div>
     </div>
     <div class="filter-section">
       <span class="filter-label">County</span>
-      <select id="ercotCountyFilter" class="sidebar-select"><option value="All">All Counties</option></select>
+      <div class="fuel-dropdown" id="ercotCountyFilterDropdown"></div>
     </div>
     <div class="filter-section">
       <span class="filter-label">Fuel Type</span>
-      <select id="ercotFuelFilter" class="sidebar-select"><option value="All">All Fuels</option></select>
+      <div class="fuel-dropdown" id="ercotFuelFilterDropdown"></div>
     </div>
     <div class="filter-section">
       <span class="filter-label">Status</span>
-      <select id="ercotStatusFilter" class="sidebar-select"><option value="All">All Statuses</option></select>
+      <div class="fuel-dropdown" id="ercotStatusFilterDropdown"></div>
     </div>
     <div class="filter-section">
       <span class="filter-label">Developer</span>
-      <select id="ercotDeveloperFilter" class="sidebar-select"><option value="All">All Developers</option></select>
+      <div class="fuel-dropdown" id="ercotDeveloperFilterDropdown"></div>
     </div>
     <div class="filter-section">
       <span class="filter-label">Queue Year Range</span>
@@ -170,23 +170,23 @@
   <div class="iso-filter-group hidden" data-tab="isone">
     <div class="filter-section">
       <span class="filter-label">Zone</span>
-      <select id="isoneZoneFilter" class="sidebar-select"><option value="All">All Zones</option></select>
+      <div class="fuel-dropdown" id="isoneZoneFilterDropdown"></div>
     </div>
     <div class="filter-section">
       <span class="filter-label">State</span>
-      <select id="isoneStateFilter" class="sidebar-select"><option value="All">All States</option></select>
+      <div class="fuel-dropdown" id="isoneStateFilterDropdown"></div>
     </div>
     <div class="filter-section">
       <span class="filter-label">County</span>
-      <select id="isoneCountyFilter" class="sidebar-select"><option value="All">All Counties</option></select>
+      <div class="fuel-dropdown" id="isoneCountyFilterDropdown"></div>
     </div>
     <div class="filter-section">
       <span class="filter-label">Fuel Type</span>
-      <select id="isoneFuelFilter" class="sidebar-select"><option value="All">All Fuels</option></select>
+      <div class="fuel-dropdown" id="isoneFuelFilterDropdown"></div>
     </div>
     <div class="filter-section">
       <span class="filter-label">Status</span>
-      <select id="isoneStatusFilter" class="sidebar-select"><option value="All">All Statuses</option></select>
+      <div class="fuel-dropdown" id="isoneStatusFilterDropdown"></div>
     </div>
     <div class="filter-section">
       <span class="filter-label">Queue Year Range</span>
@@ -211,31 +211,35 @@
   <div class="iso-filter-group hidden" data-tab="miso">
     <div class="filter-section">
       <span class="filter-label">State</span>
-      <select id="misoStateFilter" class="sidebar-select"><option value="All">All States</option></select>
+      <div class="fuel-dropdown" id="misoStateFilterDropdown"></div>
     </div>
     <div class="filter-section">
       <span class="filter-label">County</span>
-      <select id="misoCountyFilter" class="sidebar-select"><option value="All">All Counties</option></select>
+      <div class="fuel-dropdown" id="misoCountyFilterDropdown"></div>
     </div>
     <div class="filter-section">
       <span class="filter-label">Fuel Type</span>
-      <select id="misoFuelFilter" class="sidebar-select"><option value="All">All Fuels</option></select>
+      <div class="fuel-dropdown" id="misoFuelFilterDropdown"></div>
     </div>
     <div class="filter-section">
       <span class="filter-label">Status</span>
-      <select id="misoStatusFilter" class="sidebar-select"><option value="All">All Statuses</option></select>
+      <div class="fuel-dropdown" id="misoStatusFilterDropdown"></div>
     </div>
     <div class="filter-section">
       <span class="filter-label">Study Cycle</span>
-      <select id="misoStudyCycleFilter" class="sidebar-select"><option value="All">All Study Cycles</option></select>
+      <div class="fuel-dropdown" id="misoStudyCycleFilterDropdown"></div>
     </div>
     <div class="filter-section">
       <span class="filter-label">Study Group</span>
-      <select id="misoStudyGroupFilter" class="sidebar-select"><option value="All">All Study Groups</option></select>
+      <div class="fuel-dropdown" id="misoStudyGroupFilterDropdown"></div>
     </div>
     <div class="filter-section">
       <span class="filter-label">Service Type</span>
-      <select id="misoServiceTypeFilter" class="sidebar-select"><option value="All">All Service Types</option></select>
+      <div class="fuel-dropdown" id="misoServiceTypeFilterDropdown"></div>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Transmission Owner</span>
+      <div class="fuel-dropdown" id="misoTransmissionOwnerFilterDropdown"></div>
     </div>
     <div class="filter-section">
       <span class="filter-label">Queue Year Range</span>
@@ -259,24 +263,32 @@
   <!-- ── PJM filters ── -->
   <div class="iso-filter-group hidden" data-tab="pjm">
     <div class="filter-section">
+      <span class="filter-label">State</span>
+      <div class="fuel-dropdown" id="pjmStateFilterDropdown"></div>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">County</span>
+      <div class="fuel-dropdown" id="pjmCountyFilterDropdown"></div>
+    </div>
+    <div class="filter-section">
       <span class="filter-label">Study Cycle</span>
-      <select id="pjmStudyCycleFilter" class="sidebar-select"><option value="All">All Study Cycles</option></select>
+      <div class="fuel-dropdown" id="pjmStudyCycleFilterDropdown"></div>
     </div>
     <div class="filter-section">
       <span class="filter-label">Study Phase</span>
-      <select id="pjmStudyPhaseFilter" class="sidebar-select"><option value="All">All Study Phases</option></select>
+      <div class="fuel-dropdown" id="pjmStudyPhaseFilterDropdown"></div>
     </div>
     <div class="filter-section">
       <span class="filter-label">Status</span>
-      <select id="pjmStatusFilter" class="sidebar-select"><option value="All">All Statuses</option></select>
+      <div class="fuel-dropdown" id="pjmStatusFilterDropdown"></div>
     </div>
     <div class="filter-section">
       <span class="filter-label">Fuel Type</span>
-      <select id="pjmFuelFilter" class="sidebar-select"><option value="All">All Fuels</option></select>
+      <div class="fuel-dropdown" id="pjmFuelFilterDropdown"></div>
     </div>
     <div class="filter-section">
       <span class="filter-label">Transmission Owner</span>
-      <select id="pjmTransmissionOwnerFilter" class="sidebar-select"><option value="All">All Transmission Owners</option></select>
+      <div class="fuel-dropdown" id="pjmTransmissionOwnerFilterDropdown"></div>
     </div>
     <div class="filter-section">
       <span class="filter-label">Queue Year Range</span>
@@ -301,35 +313,39 @@
   <div class="iso-filter-group hidden" data-tab="spp">
     <div class="filter-section">
       <span class="filter-label">State</span>
-      <select id="sppStateFilter" class="sidebar-select"><option value="All">All States</option></select>
+      <div class="fuel-dropdown" id="sppStateFilterDropdown"></div>
     </div>
     <div class="filter-section">
       <span class="filter-label">County</span>
-      <select id="sppCountyFilter" class="sidebar-select"><option value="All">All Counties</option></select>
+      <div class="fuel-dropdown" id="sppCountyFilterDropdown"></div>
     </div>
     <div class="filter-section">
       <span class="filter-label">Fuel Type</span>
-      <select id="sppFuelFilter" class="sidebar-select"><option value="All">All Fuels</option></select>
+      <div class="fuel-dropdown" id="sppFuelFilterDropdown"></div>
     </div>
     <div class="filter-section">
       <span class="filter-label">Status</span>
-      <select id="sppStatusFilter" class="sidebar-select"><option value="All">All Statuses</option></select>
+      <div class="fuel-dropdown" id="sppStatusFilterDropdown"></div>
     </div>
     <div class="filter-section">
       <span class="filter-label">Study Cycle</span>
-      <select id="sppStudyCycleFilter" class="sidebar-select"><option value="All">All Study Cycles</option></select>
+      <div class="fuel-dropdown" id="sppStudyCycleFilterDropdown"></div>
     </div>
     <div class="filter-section">
       <span class="filter-label">Study Group</span>
-      <select id="sppStudyGroupFilter" class="sidebar-select"><option value="All">All Study Groups</option></select>
+      <div class="fuel-dropdown" id="sppStudyGroupFilterDropdown"></div>
     </div>
     <div class="filter-section">
       <span class="filter-label">Service Type</span>
-      <select id="sppServiceTypeFilter" class="sidebar-select"><option value="All">All Service Types</option></select>
+      <div class="fuel-dropdown" id="sppServiceTypeFilterDropdown"></div>
     </div>
     <div class="filter-section">
       <span class="filter-label">Transmission Owner</span>
-      <select id="sppTransmissionOwnerFilter" class="sidebar-select"><option value="All">All Transmission Owners</option></select>
+      <div class="fuel-dropdown" id="sppTransmissionOwnerFilterDropdown"></div>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Cause of Delay</span>
+      <div class="fuel-dropdown" id="sppCauseOfDelayFilterDropdown"></div>
     </div>
     <div class="filter-section">
       <span class="filter-label">Queue Year Range</span>
@@ -500,7 +516,7 @@
                 <div class="summary-card"><div class="label">Average Project Size</div><div class="value" id="ercotKpiAverage">0 MW</div><div class="sub">Average project size in the filtered set</div></div>
                 <div class="summary-card"><div class="label">Top Zone</div><div class="value" id="ercotKpiZone">—</div><div class="sub" id="ercotKpiZoneShare">Largest zone by visible capacity</div></div>
                 <div class="summary-card"><div class="label">Average Completion Probability</div><div class="value" id="ercotKpiProbability">0%</div><div class="sub">Average completion probability in the filtered set</div></div>
-                <div class="summary-card"><div class="label">Percent Active</div><div class="value" id="ercotKpiPercentActive">0%</div><div class="sub">Share of visible projects marked Active</div></div>
+                <div class="summary-card"><div class="label">IA Signed</div><div class="value" id="ercotKpiPercentActive">0%</div><div class="sub">Share of visible projects with IA Signed</div></div>
             </div>
 
             <div class="chart-grid">
@@ -565,6 +581,14 @@
             </div>
 
             <div class="chart-grid">
+                <div class="chart-card" style="grid-column:1/-1;">
+                    <h3>Completion Probability Distribution</h3>
+                    <p>How projects are distributed across probability buckets. Only includes projects with a recorded completion probability.</p>
+                    <div id="ercotProbabilityChart" class="chart-box"></div>
+                </div>
+            </div>
+
+            <div class="chart-grid">
                 <div class="chart-card" style="grid-column: 1 / -1;">
                     <h3>Queue Date vs Proposed Date</h3>
                     <p>Scatter of queue timing versus proposed COD timing.</p>
@@ -619,6 +643,11 @@
                 <p id="isoneStatus">ISO-NE deep dive is using ISO-NE rows from the loaded wide master JSON.</p>
             </div>
 
+            <div class="developer-card" style="margin-top:12px;border-left:3px solid var(--warning);padding-left:14px;">
+                <h3 style="color:var(--warning);font-size:.9rem;">Data Availability Notice</h3>
+                <p style="font-size:.82rem;color:var(--text-muted);">ISO-NE publishes limited queue metadata compared to other ISOs. Study Cycle and Study Group data are not available. Project Status is sparsely populated — most projects default to Active unless ISO-NE explicitly marks them otherwise. Use this view for fuel mix and zone-level signals rather than milestone or study-phase tracking.</p>
+            </div>
+
             <div class="summary-grid">
                 <div class="summary-card"><div class="label">Total ISO-NE Projects</div><div class="value" id="isoneKpiProjects">0</div><div class="sub">Projects in the current ISO-NE view</div></div>
                 <div class="summary-card"><div class="label">Total ISO-NE Capacity</div><div class="value" id="isoneKpiCapacity">0 GW</div><div class="sub">Visible queued capacity</div></div>
@@ -638,8 +667,8 @@
 
             <div class="chart-grid">
                 <div class="chart-card">
-                    <h3>Zone Status Concentration</h3>
-                    <p>Capacity by ISO-NE zone, split by project status, to show where active versus withdrawn capacity is concentrated.</p>
+                    <h3>Fuel Mix by Zone</h3>
+                    <p>Queued capacity by ISO-NE zone, broken down by fuel type.</p>
                     <div id="isoneZoneStatusChart" class="chart-box"></div>
                 </div>
                 <div class="chart-card">
@@ -761,7 +790,7 @@
             <div class="chart-grid">
                 <div class="chart-card" style="grid-column:1/-1;">
                     <h3>Queue Date vs Proposed Date</h3>
-                    <p>Each point is a PJM project. Color represents study phase and bubble size represents MW capacity.</p>
+                    <p>Each point is a PJM project. Color represents fuel type and bubble size represents MW capacity.</p>
                     <p id="pjmScatterNote" style="font-size:.78rem;color:var(--text-muted);margin-top:4px;"></p>
                     <div id="pjmQueueVsProposedChart" class="chart-box"></div>
                 </div>
@@ -779,7 +808,7 @@
                         <th><span class="pjm-th-label">Capacity (GW)</span></th>
                         <th><span class="pjm-th-label">% of Capacity</span></th>
                         <th><span class="pjm-th-label">Active</span></th>
-                        <th><span class="pjm-th-label">Done / Complete</span></th>
+                        <th><span class="pjm-th-label">Done</span></th>
                         <th><span class="pjm-th-label">Withdrawn</span></th>
                     </tr></thead>
                     <tbody id="pjmPhaseAdvancementBody"></tbody>
@@ -837,7 +866,29 @@
             </div>
 
             <div class="chart-grid"><div class="chart-card" style="grid-column:1/-1;"><div class="chart-filter-row"><div><h3 style="margin-bottom:6px;">SPP Fuel Mix Over Time</h3></div><div class="inline-filter"><label for="sppFuelDateView">Date View</label><select id="sppFuelDateView" onchange="updateSppDeepDive()"><option value="queue">Fuel Mix by Queue Year</option><option value="proposed">Fuel Mix by Proposed Year</option></select></div></div><p>Switch between queue-entry timing and proposed in-service timing, stacked by fuel type.</p><div id="sppYearFuelChart" class="chart-box"></div></div></div>
-            <div class="chart-grid"><div class="chart-card"><div class="chart-filter-row"><div><h3 style="margin-bottom:6px;">Study Cycle View</h3></div><div class="inline-filter"><label for="sppStudyCycleMetricView">Metric</label><select id="sppStudyCycleMetricView" onchange="updateSppDeepDive()"><option value="capacity">Capacity</option><option value="projects">Project Count</option></select></div></div><p>Study cycle shows which SPP cluster cycles hold the most capacity or projects, split by status.</p><div id="sppStudyCycleChart" class="chart-box"></div></div><div class="chart-card"><div class="chart-filter-row"><div><h3 style="margin-bottom:6px;">Study Group View</h3></div><div class="inline-filter"><label for="sppStudyGroupMetricView">Metric</label><select id="sppStudyGroupMetricView" onchange="updateSppDeepDive()"><option value="capacity">Capacity</option><option value="projects">Project Count</option></select></div></div><p>Study group helps show where the SPP queue is concentrated within the cluster-study structure.</p><div id="sppStudyGroupChart" class="chart-box"></div></div></div>
+            <div class="chart-grid">
+                <div class="chart-card" style="grid-column:1/-1;">
+                    <div class="chart-filter-row">
+                        <div><h3 style="margin-bottom:6px;">Study Cycle / Study Group View</h3></div>
+                        <div class="inline-filter">
+                            <label for="sppCombinedGroupByView">Group By</label>
+                            <select id="sppCombinedGroupByView" onchange="updateSppDeepDive()">
+                                <option value="cycle">Study Cycle</option>
+                                <option value="group">Study Group</option>
+                            </select>
+                        </div>
+                        <div class="inline-filter" style="margin-left:8px;">
+                            <label for="sppCombinedMetricView">Metric</label>
+                            <select id="sppCombinedMetricView" onchange="updateSppDeepDive()">
+                                <option value="capacity">Capacity</option>
+                                <option value="projects">Project Count</option>
+                            </select>
+                        </div>
+                    </div>
+                    <p>Switch between Study Cycle and Study Group to see where SPP queue work is concentrated, split by status.</p>
+                    <div id="sppCombinedCycleGroupChart" class="chart-box"></div>
+                </div>
+            </div>
             <div class="chart-grid"><div class="chart-card" style="grid-column:1/-1;"><h3>Queue Date vs Proposed Date</h3><p>Each point is an SPP project. Bubble size represents MW capacity and color represents fuel type.</p><p id="sppScatterNote" style="font-size:.78rem;color:var(--text-muted);margin-top:4px;"></p><div id="sppQueueVsProposedChart" class="chart-box"></div></div></div>
             <div class="chart-grid"><div class="chart-card" style="grid-column:1/-1;"><h3>Top Counties by Capacity</h3><p>County-level concentration of SPP capacity in the current filtered view.</p><div id="sppCountyChart" class="chart-box"></div></div></div>
 
@@ -859,6 +910,8 @@
                                 <th>State</th>
                                 <th>Study Cycle</th>
                                 <th>Study Group</th>
+                                <th>Cause of Delay</th>
+                                <th>JTIQ Participant</th>
                                 <th>MW Capacity</th>
                                 <th>Fuel Type</th>
                             </tr>

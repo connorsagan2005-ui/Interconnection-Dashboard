@@ -215,11 +215,7 @@ const tabButtons = document.querySelectorAll(".tab-button");
 const tabPanels = document.querySelectorAll(".tab-panel");
 const ercotFileInput = document.getElementById("ercotFileInput"); // legacy; ERCOT now loads from masterData
 const ercotStatus = document.getElementById("ercotStatus");
-const ercotZoneFilter = document.getElementById("ercotZoneFilter");
-const ercotCountyFilter = document.getElementById("ercotCountyFilter");
-const ercotFuelFilter = document.getElementById("ercotFuelFilter");
-const ercotStatusFilter = document.getElementById("ercotStatusFilter");
-const ercotDeveloperFilter = document.getElementById("ercotDeveloperFilter");
+// ERCOT categorical filters are now multi-select dropdowns (no element references needed at top level)
 const ercotQueueYearStart = document.getElementById("ercotQueueYearStart");
 const ercotQueueYearEnd = document.getElementById("ercotQueueYearEnd");
 const ercotProposedYearStart = document.getElementById("ercotProposedYearStart");
@@ -433,8 +429,7 @@ if (ercotFileInput) {
     });
 }
 
-[ercotZoneFilter, ercotCountyFilter, ercotFuelFilter, ercotStatusFilter, ercotDeveloperFilter,
- ercotQueueYearStart, ercotQueueYearEnd, ercotProposedYearStart, ercotProposedYearEnd].forEach(el => {
+[ercotQueueYearStart, ercotQueueYearEnd, ercotProposedYearStart, ercotProposedYearEnd].forEach(el => {
     if (el) {
         el.addEventListener("change", updateErcotDeepDive);
     }
@@ -448,11 +443,11 @@ if (ercotTableSearch) {
 
 if (ercotResetFiltersBtn) {
     ercotResetFiltersBtn.addEventListener("click", () => {
-        if (ercotZoneFilter) ercotZoneFilter.value = "All";
-        if (ercotCountyFilter) ercotCountyFilter.value = "All";
-        if (ercotFuelFilter) ercotFuelFilter.value = "All";
-        if (ercotStatusFilter) ercotStatusFilter.value = "All";
-        if (ercotDeveloperFilter) ercotDeveloperFilter.value = "All";
+        resetMultiSelect("ercotZoneFilterDropdown", "All Zones");
+        resetMultiSelect("ercotCountyFilterDropdown", "All Counties");
+        resetMultiSelect("ercotFuelFilterDropdown", "All Fuels");
+        resetMultiSelect("ercotStatusFilterDropdown", "All Statuses");
+        resetMultiSelect("ercotDeveloperFilterDropdown", "All Developers");
         if (ercotTableSearch) ercotTableSearch.value = "";
         if (ercotQueueYearStart && ercotQueueYearEnd) {
             ercotQueueYearStart.value = ercotQueueYearStart.options[0] ? ercotQueueYearStart.options[0].value : "";
@@ -728,6 +723,82 @@ function updateFuelDropdownLabel(){
         fuelDropdownButton.textContent = `${selected.length} Fuels Selected`;
     }
 }
+
+// ---- Multi-select checkbox dropdown helpers ----
+function buildMultiSelect(containerId, values, allLabel, onChangeFn) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const btnId = containerId + "Btn";
+    const menuId = containerId + "Menu";
+    const allId  = containerId + "All";
+    const listId = containerId + "List";
+    container.innerHTML =
+        `<button type="button" id="${btnId}" class="fuel-dropdown-button">${allLabel}</button>` +
+        `<div id="${menuId}" class="fuel-dropdown-menu hidden">` +
+          `<label class="fuel-option fuel-option-all"><input type="checkbox" id="${allId}" checked><span>${allLabel}</span></label>` +
+          `<div id="${listId}"></div>` +
+        `</div>`;
+    const btn  = document.getElementById(btnId);
+    const menu = document.getElementById(menuId);
+    const allCb = document.getElementById(allId);
+    const list  = document.getElementById(listId);
+    btn.addEventListener("click", e => { e.stopPropagation(); menu.classList.toggle("hidden"); });
+    allCb.addEventListener("change", () => {
+        list.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = allCb.checked);
+        _updateMsLabel(btnId, listId, allLabel);
+        if (onChangeFn) onChangeFn();
+    });
+    const sorted = [...new Set(values.filter(v => v != null && String(v).trim() !== ""))].sort();
+    sorted.forEach(v => {
+        const lbl = document.createElement("label");
+        lbl.className = "fuel-option";
+        const cb = document.createElement("input");
+        cb.type = "checkbox"; cb.value = v; cb.checked = true;
+        cb.addEventListener("change", () => {
+            allCb.checked = [...list.querySelectorAll('input[type="checkbox"]')].every(c => c.checked);
+            _updateMsLabel(btnId, listId, allLabel);
+            if (onChangeFn) onChangeFn();
+        });
+        lbl.addEventListener("dblclick", e => {
+            e.preventDefault();
+            list.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = (c.value === v));
+            allCb.checked = false;
+            _updateMsLabel(btnId, listId, allLabel);
+            if (onChangeFn) onChangeFn();
+        });
+        const span = document.createElement("span"); span.textContent = v;
+        lbl.appendChild(cb); lbl.appendChild(span); list.appendChild(lbl);
+    });
+    _updateMsLabel(btnId, listId, allLabel);
+}
+function _updateMsLabel(btnId, listId, allLabel) {
+    const btn  = document.getElementById(btnId);
+    const list = document.getElementById(listId);
+    if (!btn || !list) return;
+    const total   = list.querySelectorAll('input[type="checkbox"]').length;
+    const checked = list.querySelectorAll('input[type="checkbox"]:checked').length;
+    if (checked === 0)          btn.textContent = "None Selected";
+    else if (checked === total) btn.textContent = allLabel;
+    else if (checked === 1)     btn.textContent = list.querySelector('input[type="checkbox"]:checked').value;
+    else                        btn.textContent = `${checked} Selected`;
+}
+function getMultiSelectValues(containerId) {
+    const list = document.getElementById(containerId + "List");
+    if (!list) return [];
+    const all     = list.querySelectorAll('input[type="checkbox"]').length;
+    const checked = [...list.querySelectorAll('input[type="checkbox"]:checked')].map(cb => cb.value);
+    return checked.length === all ? [] : checked;
+}
+function resetMultiSelect(containerId, allLabel) {
+    const list  = document.getElementById(containerId + "List");
+    const allCb = document.getElementById(containerId + "All");
+    if (list)  list.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = true);
+    if (allCb) allCb.checked = true;
+    _updateMsLabel(containerId + "Btn", containerId + "List", allLabel);
+}
+document.addEventListener("click", () => {
+    document.querySelectorAll(".fuel-dropdown-menu:not(.hidden)").forEach(m => m.classList.add("hidden"));
+});
 
 function populateYearFilters(){
     const years = [...new Set(getChartData().map(d => d.year).filter(Boolean))].sort((a,b)=>a-b);
@@ -1007,88 +1078,52 @@ function normalizeErcotData(data){
 
 function getFilteredErcotData(){
     if (!Array.isArray(ercotData)) return [];
-
-    const zone = ercotZoneFilter ? ercotZoneFilter.value : "All";
-    const county = ercotCountyFilter ? ercotCountyFilter.value : "All";
-    const fuel = ercotFuelFilter ? ercotFuelFilter.value : "All";
-    const status = ercotStatusFilter ? ercotStatusFilter.value : "All";
-    const developer = ercotDeveloperFilter ? ercotDeveloperFilter.value : "All";
-    const queueStart = ercotQueueYearStart ? Number(ercotQueueYearStart.value) : null;
-    const queueEnd = ercotQueueYearEnd ? Number(ercotQueueYearEnd.value) : null;
-    const proposedStart = ercotProposedYearStart ? Number(ercotProposedYearStart.value) : null;
-    const proposedEnd = ercotProposedYearEnd ? Number(ercotProposedYearEnd.value) : null;
-
+    const zones      = getMultiSelectValues("ercotZoneFilterDropdown");
+    const counties   = getMultiSelectValues("ercotCountyFilterDropdown");
+    const fuels      = getMultiSelectValues("ercotFuelFilterDropdown");
+    const statuses   = getMultiSelectValues("ercotStatusFilterDropdown");
+    const developers = getMultiSelectValues("ercotDeveloperFilterDropdown");
+    const qs = Number(ercotQueueYearStart?.value);
+    const qe = Number(ercotQueueYearEnd?.value);
+    const ps = Number(ercotProposedYearStart?.value);
+    const pe = Number(ercotProposedYearEnd?.value);
     return ercotData.filter(d => {
-        if (zone !== "All" && d.Zone !== zone) return false;
-        if (county !== "All" && d.County !== county) return false;
-        if (fuel !== "All" && d.Fuel !== fuel) return false;
-        if (status !== "All" && d.Status !== status) return false;
-        if (developer !== "All" && d.Developer !== developer) return false;
-        if (Number.isFinite(queueStart) && d.year !== null && d.year < queueStart) return false;
-        if (Number.isFinite(queueEnd) && d.year !== null && d.year > queueEnd) return false;
-        if (Number.isFinite(proposedStart) && d.proposedYear !== null && d.proposedYear < proposedStart) return false;
-        if (Number.isFinite(proposedEnd) && d.proposedYear !== null && d.proposedYear > proposedEnd) return false;
+        if (zones.length      && !zones.includes(d.Zone))        return false;
+        if (counties.length   && !counties.includes(d.County))   return false;
+        if (fuels.length      && !fuels.includes(d.Fuel))        return false;
+        if (statuses.length   && !statuses.includes(d.Status))   return false;
+        if (developers.length && !developers.includes(d.Developer)) return false;
+        if (Number.isFinite(qs) && d.year !== null && d.year < qs) return false;
+        if (Number.isFinite(qe) && d.year !== null && d.year > qe) return false;
+        if (Number.isFinite(ps) && d.proposedYear !== null && d.proposedYear < ps) return false;
+        if (Number.isFinite(pe) && d.proposedYear !== null && d.proposedYear > pe) return false;
         return true;
     });
 }
 
 function populateErcotFilters(){
-    if (!ercotZoneFilter || !ercotCountyFilter || !ercotFuelFilter || !ercotStatusFilter || !ercotDeveloperFilter) return;
+    buildMultiSelect("ercotZoneFilterDropdown",      ercotData.map(d => d.Zone),      "All Zones",      updateErcotDeepDive);
+    buildMultiSelect("ercotCountyFilterDropdown",    ercotData.map(d => d.County),    "All Counties",   updateErcotDeepDive);
+    buildMultiSelect("ercotFuelFilterDropdown",      ercotData.map(d => d.Fuel),      "All Fuels",      updateErcotDeepDive);
+    buildMultiSelect("ercotStatusFilterDropdown",    ercotData.map(d => d.Status),    "All Statuses",   updateErcotDeepDive);
+    buildMultiSelect("ercotDeveloperFilterDropdown", ercotData.map(d => d.Developer), "All Developers", updateErcotDeepDive);
 
-    const zones = [...new Set(ercotData.map(d => d.Zone || "").filter(Boolean))].sort();
-    const counties = [...new Set(ercotData.map(d => d.County || "").filter(Boolean))].sort();
-    const fuels = [...new Set(ercotData.map(d => d.Fuel || "").filter(Boolean))].sort();
-    const statuses = [...new Set(ercotData.map(d => d.Status || "").filter(Boolean))].sort();
-    const developers = [...new Set(ercotData.map(d => d.Developer || "").filter(Boolean))].sort();
-
-    const previousZone = ercotZoneFilter.value;
-    const previousCounty = ercotCountyFilter.value;
-    const previousFuel = ercotFuelFilter.value;
-    const previousStatus = ercotStatusFilter.value;
-    const previousDeveloper = ercotDeveloperFilter.value;
-
-    ercotZoneFilter.innerHTML = '<option value="All">All Zones</option>' + zones.map(z => `<option value="${z}">${z}</option>`).join("");
-    ercotCountyFilter.innerHTML = '<option value="All">All Counties</option>' + counties.map(c => `<option value="${c}">${c}</option>`).join("");
-    ercotFuelFilter.innerHTML = '<option value="All">All Fuels</option>' + fuels.map(f => `<option value="${f}">${f}</option>`).join("");
-    ercotStatusFilter.innerHTML = '<option value="All">All Statuses</option>' + statuses.map(s => `<option value="${s}">${s}</option>`).join("");
-    ercotDeveloperFilter.innerHTML = '<option value="All">All Developers</option>' + developers.map(d => `<option value="${d}">${d}</option>`).join("");
-
-    ercotZoneFilter.value = zones.includes(previousZone) ? previousZone : "All";
-    ercotCountyFilter.value = counties.includes(previousCounty) ? previousCounty : "All";
-    ercotFuelFilter.value = fuels.includes(previousFuel) ? previousFuel : "All";
-    ercotStatusFilter.value = statuses.includes(previousStatus) ? previousStatus : "All";
-    ercotDeveloperFilter.value = developers.includes(previousDeveloper) ? previousDeveloper : "All";
-
-    const queueYears = [...new Set(ercotData.map(d => d.year).filter(Boolean))].sort((a,b)=>a-b);
+    const queueYears    = [...new Set(ercotData.map(d => d.year).filter(Boolean))].sort((a,b)=>a-b);
     const proposedYears = [...new Set(ercotData.map(d => d.proposedYear).filter(Boolean))].sort((a,b)=>a-b);
 
-    function fillSelect(select, years){
+    function fillYearSelect(select, years){
         if (!select) return;
-        const previous = select.value;
         select.innerHTML = "";
-        years.forEach(y => {
-            const opt = document.createElement("option");
-            opt.value = y;
-            opt.textContent = y;
-            select.appendChild(opt);
-        });
-        if (years.includes(Number(previous))) {
-            select.value = previous;
-        } else if (years.length) {
-            select.value = years[0];
-        }
+        years.forEach(y => { const opt = document.createElement("option"); opt.value = y; opt.textContent = y; select.appendChild(opt); });
     }
-
-    fillSelect(ercotQueueYearStart, queueYears);
-    fillSelect(ercotQueueYearEnd, queueYears);
-    fillSelect(ercotProposedYearStart, proposedYears);
-    fillSelect(ercotProposedYearEnd, proposedYears);
-
+    fillYearSelect(ercotQueueYearStart, queueYears);
+    fillYearSelect(ercotQueueYearEnd, queueYears);
+    fillYearSelect(ercotProposedYearStart, proposedYears);
+    fillYearSelect(ercotProposedYearEnd, proposedYears);
     if (ercotQueueYearStart && ercotQueueYearEnd && queueYears.length) {
         ercotQueueYearStart.value = queueYears[0];
         ercotQueueYearEnd.value = queueYears[queueYears.length - 1];
     }
-
     if (ercotProposedYearStart && ercotProposedYearEnd && proposedYears.length) {
         ercotProposedYearStart.value = proposedYears[0];
         ercotProposedYearEnd.value = proposedYears[proposedYears.length - 1];
@@ -1957,13 +1992,14 @@ function fillMisoSelect(id, values, label){
 }
 function fillMisoYears(id, years){ const sel=misoEl(id); if(!sel)return; sel.innerHTML=""; years.forEach(y=>{const o=document.createElement("option");o.value=y;o.textContent=y;sel.appendChild(o);}); }
 function populateMisoFilters(){
-    fillMisoSelect("misoStateFilter",misoData.map(d=>d.State),"All States");
-    fillMisoSelect("misoCountyFilter",misoData.map(d=>d.County),"All Counties");
-    fillMisoSelect("misoFuelFilter",misoData.map(d=>d.Fuel),"All Fuels");
-    fillMisoSelect("misoStatusFilter",misoData.map(d=>d.Status),"All Statuses");
-    fillMisoSelect("misoStudyCycleFilter",misoData.map(d=>d.StudyCycle),"All Study Cycles");
-    fillMisoSelect("misoStudyGroupFilter",misoData.map(d=>d.StudyGroup),"All Study Groups");
-    fillMisoSelect("misoServiceTypeFilter",misoData.map(d=>d.ServiceType),"All Service Types");
+    buildMultiSelect("misoStateFilterDropdown",           misoData.map(d=>d.State),        "All States",          updateMisoDeepDive);
+    buildMultiSelect("misoCountyFilterDropdown",          misoData.map(d=>d.County),       "All Counties",        updateMisoDeepDive);
+    buildMultiSelect("misoFuelFilterDropdown",            misoData.map(d=>d.Fuel),         "All Fuels",           updateMisoDeepDive);
+    buildMultiSelect("misoStatusFilterDropdown",          misoData.map(d=>d.Status),       "All Statuses",        updateMisoDeepDive);
+    buildMultiSelect("misoStudyCycleFilterDropdown",      misoData.map(d=>d.StudyCycle),   "All Study Cycles",    updateMisoDeepDive);
+    buildMultiSelect("misoStudyGroupFilterDropdown",      misoData.map(d=>d.StudyGroup),   "All Study Groups",    updateMisoDeepDive);
+    buildMultiSelect("misoServiceTypeFilterDropdown",     misoData.map(d=>d.ServiceType),  "All Service Types",   updateMisoDeepDive);
+    buildMultiSelect("misoTransmissionOwnerFilterDropdown", misoData.map(d=>d.TransmissionOwner), "All Transmission Owners", updateMisoDeepDive);
     const q=[...new Set(misoData.map(d=>d.year).filter(Boolean))].sort((a,b)=>a-b);
     const p=[...new Set(misoData.map(d=>d.proposedYear).filter(Boolean))].sort((a,b)=>a-b);
     fillMisoYears("misoQueueYearStart",q); fillMisoYears("misoQueueYearEnd",q); fillMisoYears("misoProposedYearStart",p); fillMisoYears("misoProposedYearEnd",p);
@@ -1971,8 +2007,30 @@ function populateMisoFilters(){
     if(p.length){misoEl("misoProposedYearStart").value=p[0];misoEl("misoProposedYearEnd").value=p[p.length-1];}
 }
 function getFilteredMisoData(){
-    const f={state:misoEl("misoStateFilter")?.value||"All",county:misoEl("misoCountyFilter")?.value||"All",fuel:misoEl("misoFuelFilter")?.value||"All",status:misoEl("misoStatusFilter")?.value||"All",cycle:misoEl("misoStudyCycleFilter")?.value||"All",group:misoEl("misoStudyGroupFilter")?.value||"All",service:misoEl("misoServiceTypeFilter")?.value||"All",qs:Number(misoEl("misoQueueYearStart")?.value),qe:Number(misoEl("misoQueueYearEnd")?.value),ps:Number(misoEl("misoProposedYearStart")?.value),pe:Number(misoEl("misoProposedYearEnd")?.value)};
-    return misoData.filter(d => (f.state==="All"||d.State===f.state)&&(f.county==="All"||d.County===f.county)&&(f.fuel==="All"||d.Fuel===f.fuel)&&(f.status==="All"||d.Status===f.status)&&(f.cycle==="All"||d.StudyCycle===f.cycle)&&(f.group==="All"||d.StudyGroup===f.group)&&(f.service==="All"||d.ServiceType===f.service)&&(!Number.isFinite(f.qs)||!d.year||d.year>=f.qs)&&(!Number.isFinite(f.qe)||!d.year||d.year<=f.qe)&&(!Number.isFinite(f.ps)||!d.proposedYear||d.proposedYear>=f.ps)&&(!Number.isFinite(f.pe)||!d.proposedYear||d.proposedYear<=f.pe));
+    const states   = getMultiSelectValues("misoStateFilterDropdown");
+    const counties = getMultiSelectValues("misoCountyFilterDropdown");
+    const fuels    = getMultiSelectValues("misoFuelFilterDropdown");
+    const statuses = getMultiSelectValues("misoStatusFilterDropdown");
+    const cycles   = getMultiSelectValues("misoStudyCycleFilterDropdown");
+    const groups   = getMultiSelectValues("misoStudyGroupFilterDropdown");
+    const services = getMultiSelectValues("misoServiceTypeFilterDropdown");
+    const tos      = getMultiSelectValues("misoTransmissionOwnerFilterDropdown");
+    const qs=Number(misoEl("misoQueueYearStart")?.value), qe=Number(misoEl("misoQueueYearEnd")?.value);
+    const ps=Number(misoEl("misoProposedYearStart")?.value), pe=Number(misoEl("misoProposedYearEnd")?.value);
+    return misoData.filter(d =>
+        (!states.length   || states.includes(d.State))   &&
+        (!counties.length || counties.includes(d.County)) &&
+        (!fuels.length    || fuels.includes(d.Fuel))     &&
+        (!statuses.length || statuses.includes(d.Status)) &&
+        (!cycles.length   || cycles.includes(d.StudyCycle)) &&
+        (!groups.length   || groups.includes(d.StudyGroup)) &&
+        (!services.length || services.includes(d.ServiceType)) &&
+        (!tos.length      || tos.includes(d.TransmissionOwner)) &&
+        (!Number.isFinite(qs)||!d.year||d.year>=qs) &&
+        (!Number.isFinite(qe)||!d.year||d.year<=qe) &&
+        (!Number.isFinite(ps)||!d.proposedYear||d.proposedYear>=ps) &&
+        (!Number.isFinite(pe)||!d.proposedYear||d.proposedYear<=pe)
+    );
 }
 function updateMisoDeepDive(){
     const content=misoEl("misoContent"), blank=misoEl("misoBlankState");
@@ -2002,7 +2060,22 @@ function setMisoProjectTableSort(key,type,direction){misoProjectTableSort={key,t
 function misoSortValue(row,key,type){const v=row[key];if(type==="number")return Number.isFinite(Number(v))?Number(v):null;if(type==="date")return v instanceof Date&&!isNaN(v)?v.getTime():null;return v==null?"":String(v).toLowerCase();}
 function renderMisoProjectTable(data){const tbody=misoEl("misoProjectTableBody");if(!tbody)return;const search=(misoEl("misoTableSearch")?.value||"").trim().toLowerCase();let rows=search?data.filter(d=>String(d.ProjectID||"").toLowerCase().includes(search)||String(d.POIName||"").toLowerCase().includes(search)||String(d.TransmissionOwner||"").toLowerCase().includes(search)):data;if(misoProjectTableSort.key&&misoProjectTableSort.direction){const m=misoProjectTableSort.direction==="desc"?-1:1;rows=[...rows].sort((a,b)=>{const av=misoSortValue(a,misoProjectTableSort.key,misoProjectTableSort.type),bv=misoSortValue(b,misoProjectTableSort.key,misoProjectTableSort.type);if(av===null||av==="")return 1;if(bv===null||bv==="")return -1;return (misoProjectTableSort.type==="number"||misoProjectTableSort.type==="date"?(av-bv):String(av).localeCompare(String(bv)))*m;});}
 tbody.innerHTML=(rows.map(d=>`<tr><td>${(d.ProjectID||"Unknown").replace(/</g,"&lt;")}</td><td>${d.QueueDate?d.QueueDate.toISOString().split("T")[0]:""}</td><td>${(d.Status||"").replace(/</g,"&lt;")}</td><td>${(d.County||"").replace(/</g,"&lt;")}</td><td>${(d.State||"").replace(/</g,"&lt;")}</td><td>${(d.POIName||"").replace(/</g,"&lt;")}</td><td>${(d.MW||0).toFixed(0)}</td><td>${(d.Fuel||"Unknown").replace(/</g,"&lt;")}</td><td>${d.ProposedDate?d.ProposedDate.toISOString().split("T")[0]:""}</td><td>${(d.TransmissionOwner||"").replace(/</g,"&lt;")}</td><td>${(d.StudyCycle||"").replace(/</g,"&lt;")}</td><td>${(d.StudyGroup||"").replace(/</g,"&lt;")}</td><td>${(d.ServiceType||"").replace(/</g,"&lt;")}</td></tr>`).join(""))||'<tr><td colspan="13" style="text-align:center;">No matching MISO projects.</td></tr>';}
-function setupMisoDeepDive(){["misoStateFilter","misoCountyFilter","misoFuelFilter","misoStatusFilter","misoStudyCycleFilter","misoStudyGroupFilter","misoServiceTypeFilter","misoQueueYearStart","misoQueueYearEnd","misoProposedYearStart","misoProposedYearEnd"].forEach(id=>{const e=misoEl(id);if(e)e.addEventListener("change",updateMisoDeepDive);});const search=misoEl("misoTableSearch");if(search)search.addEventListener("input",()=>renderMisoProjectTable(getFilteredMisoData()));const reset=misoEl("misoResetFilters");if(reset)reset.addEventListener("click",()=>{["misoStateFilter","misoCountyFilter","misoFuelFilter","misoStatusFilter","misoStudyCycleFilter","misoStudyGroupFilter","misoServiceTypeFilter"].forEach(id=>{const e=misoEl(id);if(e)e.value="All";});if(search)search.value="";misoProjectTableSort={key:null,direction:"",type:"text"};populateMisoFilters();updateMisoDeepDive();});}
+function setupMisoDeepDive(){
+    ["misoQueueYearStart","misoQueueYearEnd","misoProposedYearStart","misoProposedYearEnd"].forEach(id=>{const e=misoEl(id);if(e)e.addEventListener("change",updateMisoDeepDive);});
+    const search=misoEl("misoTableSearch");if(search)search.addEventListener("input",()=>renderMisoProjectTable(getFilteredMisoData()));
+    const reset=misoEl("misoResetFilters");if(reset)reset.addEventListener("click",()=>{
+        resetMultiSelect("misoStateFilterDropdown","All States");
+        resetMultiSelect("misoCountyFilterDropdown","All Counties");
+        resetMultiSelect("misoFuelFilterDropdown","All Fuels");
+        resetMultiSelect("misoStatusFilterDropdown","All Statuses");
+        resetMultiSelect("misoStudyCycleFilterDropdown","All Study Cycles");
+        resetMultiSelect("misoStudyGroupFilterDropdown","All Study Groups");
+        resetMultiSelect("misoServiceTypeFilterDropdown","All Service Types");
+        resetMultiSelect("misoTransmissionOwnerFilterDropdown","All Transmission Owners");
+        if(search)search.value="";misoProjectTableSort={key:null,direction:"",type:"text"};
+        populateMisoFilters();updateMisoDeepDive();
+    });
+}
 const originalShowTabForMiso = showTab;
 showTab = function(tabId){ originalShowTabForMiso(tabId); if(tabId==="miso"){ setTimeout(()=>{ if(Array.isArray(masterData)&&masterData.length>0){ if(!misoData.length) syncMisoDataFromMaster(true); else updateMisoDeepDive(); } else updateMisoDeepDive(); },80); } };
 setupMisoDeepDive();
@@ -2038,11 +2111,11 @@ function fillIsoneYears(id, years){
     years.forEach(y => { const opt = document.createElement("option"); opt.value = y; opt.textContent = y; select.appendChild(opt); });
 }
 function populateIsoneFilters(){
-    fillIsoneSelect("isoneZoneFilter", isoneData.map(d => d.Zone), "All Zones");
-    fillIsoneSelect("isoneStateFilter", isoneData.map(d => d.State), "All States");
-    fillIsoneSelect("isoneCountyFilter", isoneData.map(d => d.County), "All Counties");
-    fillIsoneSelect("isoneFuelFilter", isoneData.map(d => d.Fuel), "All Fuels");
-    fillIsoneSelect("isoneStatusFilter", isoneData.map(d => d.Status), "All Statuses");
+    buildMultiSelect("isoneZoneFilterDropdown",   isoneData.map(d => d.Zone),   "All Zones",    updateIsoneDeepDive);
+    buildMultiSelect("isoneStateFilterDropdown",  isoneData.map(d => d.State),  "All States",   updateIsoneDeepDive);
+    buildMultiSelect("isoneCountyFilterDropdown", isoneData.map(d => d.County), "All Counties", updateIsoneDeepDive);
+    buildMultiSelect("isoneFuelFilterDropdown",   isoneData.map(d => d.Fuel),   "All Fuels",    updateIsoneDeepDive);
+    buildMultiSelect("isoneStatusFilterDropdown", isoneData.map(d => d.Status), "All Statuses", updateIsoneDeepDive);
     const q = [...new Set(isoneData.map(d => d.year).filter(Boolean))].sort((a,b)=>a-b);
     const p = [...new Set(isoneData.map(d => d.proposedYear).filter(Boolean))].sort((a,b)=>a-b);
     fillIsoneYears("isoneQueueYearStart", q); fillIsoneYears("isoneQueueYearEnd", q);
@@ -2051,27 +2124,25 @@ function populateIsoneFilters(){
     if(p.length){ isoneEl("isoneProposedYearStart").value = p[0]; isoneEl("isoneProposedYearEnd").value = p[p.length-1]; }
 }
 function getFilteredIsoneData(){
-    const f = {
-        zone: isoneEl("isoneZoneFilter")?.value || "All",
-        state: isoneEl("isoneStateFilter")?.value || "All",
-        county: isoneEl("isoneCountyFilter")?.value || "All",
-        fuel: isoneEl("isoneFuelFilter")?.value || "All",
-        status: isoneEl("isoneStatusFilter")?.value || "All",
-        qs: Number(isoneEl("isoneQueueYearStart")?.value),
-        qe: Number(isoneEl("isoneQueueYearEnd")?.value),
-        ps: Number(isoneEl("isoneProposedYearStart")?.value),
-        pe: Number(isoneEl("isoneProposedYearEnd")?.value)
-    };
+    const zones    = getMultiSelectValues("isoneZoneFilterDropdown");
+    const states   = getMultiSelectValues("isoneStateFilterDropdown");
+    const counties = getMultiSelectValues("isoneCountyFilterDropdown");
+    const fuels    = getMultiSelectValues("isoneFuelFilterDropdown");
+    const statuses = getMultiSelectValues("isoneStatusFilterDropdown");
+    const qs = Number(isoneEl("isoneQueueYearStart")?.value);
+    const qe = Number(isoneEl("isoneQueueYearEnd")?.value);
+    const ps = Number(isoneEl("isoneProposedYearStart")?.value);
+    const pe = Number(isoneEl("isoneProposedYearEnd")?.value);
     return isoneData.filter(d =>
-        (f.zone === "All" || d.Zone === f.zone) &&
-        (f.state === "All" || d.State === f.state) &&
-        (f.county === "All" || d.County === f.county) &&
-        (f.fuel === "All" || d.Fuel === f.fuel) &&
-        (f.status === "All" || d.Status === f.status) &&
-        (!Number.isFinite(f.qs) || !d.year || d.year >= f.qs) &&
-        (!Number.isFinite(f.qe) || !d.year || d.year <= f.qe) &&
-        (!Number.isFinite(f.ps) || !d.proposedYear || d.proposedYear >= f.ps) &&
-        (!Number.isFinite(f.pe) || !d.proposedYear || d.proposedYear <= f.pe)
+        (!zones.length    || zones.includes(d.Zone))    &&
+        (!states.length   || states.includes(d.State))  &&
+        (!counties.length || counties.includes(d.County)) &&
+        (!fuels.length    || fuels.includes(d.Fuel))    &&
+        (!statuses.length || statuses.includes(d.Status)) &&
+        (!Number.isFinite(qs) || !d.year || d.year >= qs) &&
+        (!Number.isFinite(qe) || !d.year || d.year <= qe) &&
+        (!Number.isFinite(ps) || !d.proposedYear || d.proposedYear >= ps) &&
+        (!Number.isFinite(pe) || !d.proposedYear || d.proposedYear <= pe)
     );
 }
 function updateIsoneDeepDive(){
@@ -2181,9 +2252,18 @@ function renderIsoneProjectTable(data){
     tbody.innerHTML = rows.map(d => `<tr><td>${(d.ProjectID || "Unknown").replace(/</g,"&lt;")}</td><td>${(d.Name || "Unknown").replace(/</g,"&lt;")}</td><td>${(d.Status || "").replace(/</g,"&lt;")}</td><td>${d.QueueDate ? d.QueueDate.toISOString().split("T")[0] : ""}</td><td>${d.WithdrawnDate ? d.WithdrawnDate.toISOString().split("T")[0] : ""}</td><td>${(d.County || "").replace(/</g,"&lt;")}</td><td>${(d.State || "").replace(/</g,"&lt;")}</td><td>${(d.Zone || "").replace(/</g,"&lt;")}</td><td>${(d.MW || 0).toFixed(0)}</td><td>${(d.Fuel || "Unknown").replace(/</g,"&lt;")}</td><td>${d.ProposedDate ? d.ProposedDate.toISOString().split("T")[0] : ""}</td></tr>`).join("") || '<tr><td colspan="11" style="text-align:center;">No matching ISO-NE projects.</td></tr>';
 }
 function setupIsoneDeepDive(){
-    ["isoneZoneFilter","isoneStateFilter","isoneCountyFilter","isoneFuelFilter","isoneStatusFilter","isoneQueueYearStart","isoneQueueYearEnd","isoneProposedYearStart","isoneProposedYearEnd"].forEach(id => { const e = isoneEl(id); if(e) e.addEventListener("change", updateIsoneDeepDive); });
+    ["isoneQueueYearStart","isoneQueueYearEnd","isoneProposedYearStart","isoneProposedYearEnd"].forEach(id => { const e = isoneEl(id); if(e) e.addEventListener("change", updateIsoneDeepDive); });
     const search = isoneEl("isoneTableSearch"); if(search) search.addEventListener("input", () => renderIsoneProjectTable(getFilteredIsoneData()));
-    const reset = isoneEl("isoneResetFilters"); if(reset) reset.addEventListener("click", () => { ["isoneZoneFilter","isoneStateFilter","isoneCountyFilter","isoneFuelFilter","isoneStatusFilter"].forEach(id => { const e = isoneEl(id); if(e) e.value = "All"; }); if(search) search.value = ""; isoneProjectTableSort = { key:null, direction:"", type:"text" }; populateIsoneFilters(); updateIsoneDeepDive(); });
+    const reset = isoneEl("isoneResetFilters"); if(reset) reset.addEventListener("click", () => {
+        resetMultiSelect("isoneZoneFilterDropdown",   "All Zones");
+        resetMultiSelect("isoneStateFilterDropdown",  "All States");
+        resetMultiSelect("isoneCountyFilterDropdown", "All Counties");
+        resetMultiSelect("isoneFuelFilterDropdown",   "All Fuels");
+        resetMultiSelect("isoneStatusFilterDropdown", "All Statuses");
+        if(search) search.value = "";
+        isoneProjectTableSort = { key:null, direction:"", type:"text" };
+        populateIsoneFilters(); updateIsoneDeepDive();
+    });
 }
 const originalShowTabForIsone = showTab;
 showTab = function(tabId){ originalShowTabForIsone(tabId); if(tabId === "isone"){ setTimeout(() => { if(Array.isArray(masterData) && masterData.length > 0){ if(!isoneData.length) syncIsoneDataFromMaster(true); else updateIsoneDeepDive(); } else updateIsoneDeepDive(); }, 80); } };
@@ -2245,14 +2325,14 @@ function fillSppYears(id, years){
     years.forEach(y => { const opt = document.createElement("option"); opt.value = y; opt.textContent = y; sel.appendChild(opt); });
 }
 function populateSppFilters(){
-    fillSppSelect("sppStateFilter", sppData.map(d=>d.State), "All States");
-    fillSppSelect("sppCountyFilter", sppData.map(d=>d.County), "All Counties");
-    fillSppSelect("sppFuelFilter", sppData.map(d=>d.Fuel), "All Fuels");
-    fillSppSelect("sppStatusFilter", sppData.map(d=>d.Status), "All Statuses");
-    fillSppSelect("sppStudyCycleFilter", sppData.map(d=>d.StudyCycle), "All Study Cycles");
-    fillSppSelect("sppStudyGroupFilter", sppData.map(d=>d.StudyGroup), "All Study Groups");
-    fillSppSelect("sppServiceTypeFilter", sppData.map(d=>d.ServiceType), "All Service Types");
-    fillSppSelect("sppTransmissionOwnerFilter", sppData.map(d=>d.TransmissionOwner), "All Transmission Owners");
+    buildMultiSelect("sppStateFilterDropdown",             sppData.map(d=>d.State),             "All States",             updateSppDeepDive);
+    buildMultiSelect("sppCountyFilterDropdown",            sppData.map(d=>d.County),            "All Counties",           updateSppDeepDive);
+    buildMultiSelect("sppFuelFilterDropdown",              sppData.map(d=>d.Fuel),              "All Fuels",              updateSppDeepDive);
+    buildMultiSelect("sppStatusFilterDropdown",            sppData.map(d=>d.Status),            "All Statuses",           updateSppDeepDive);
+    buildMultiSelect("sppStudyCycleFilterDropdown",        sppData.map(d=>d.StudyCycle),        "All Study Cycles",       updateSppDeepDive);
+    buildMultiSelect("sppStudyGroupFilterDropdown",        sppData.map(d=>d.StudyGroup),        "All Study Groups",       updateSppDeepDive);
+    buildMultiSelect("sppServiceTypeFilterDropdown",       sppData.map(d=>d.ServiceType),       "All Service Types",      updateSppDeepDive);
+    buildMultiSelect("sppTransmissionOwnerFilterDropdown", sppData.map(d=>d.TransmissionOwner), "All Transmission Owners", updateSppDeepDive);
     const q = [...new Set(sppData.map(d=>d.year).filter(Boolean))].sort((a,b)=>a-b);
     const p = [...new Set(sppData.map(d=>d.proposedYear).filter(Boolean))].sort((a,b)=>a-b);
     fillSppYears("sppQueueYearStart", q); fillSppYears("sppQueueYearEnd", q);
@@ -2261,33 +2341,29 @@ function populateSppFilters(){
     if(p.length){ sppEl("sppProposedYearStart").value = p[0]; sppEl("sppProposedYearEnd").value = p[p.length-1]; }
 }
 function getFilteredSppData(){
-    const f = {
-        state: sppEl("sppStateFilter")?.value || "All",
-        county: sppEl("sppCountyFilter")?.value || "All",
-        fuel: sppEl("sppFuelFilter")?.value || "All",
-        status: sppEl("sppStatusFilter")?.value || "All",
-        cycle: sppEl("sppStudyCycleFilter")?.value || "All",
-        group: sppEl("sppStudyGroupFilter")?.value || "All",
-        service: sppEl("sppServiceTypeFilter")?.value || "All",
-        owner: sppEl("sppTransmissionOwnerFilter")?.value || "All",
-        qs: Number(sppEl("sppQueueYearStart")?.value),
-        qe: Number(sppEl("sppQueueYearEnd")?.value),
-        ps: Number(sppEl("sppProposedYearStart")?.value),
-        pe: Number(sppEl("sppProposedYearEnd")?.value)
-    };
+    const states   = getMultiSelectValues("sppStateFilterDropdown");
+    const counties = getMultiSelectValues("sppCountyFilterDropdown");
+    const fuels    = getMultiSelectValues("sppFuelFilterDropdown");
+    const statuses = getMultiSelectValues("sppStatusFilterDropdown");
+    const cycles   = getMultiSelectValues("sppStudyCycleFilterDropdown");
+    const groups   = getMultiSelectValues("sppStudyGroupFilterDropdown");
+    const services = getMultiSelectValues("sppServiceTypeFilterDropdown");
+    const tos      = getMultiSelectValues("sppTransmissionOwnerFilterDropdown");
+    const qs=Number(sppEl("sppQueueYearStart")?.value), qe=Number(sppEl("sppQueueYearEnd")?.value);
+    const ps=Number(sppEl("sppProposedYearStart")?.value), pe=Number(sppEl("sppProposedYearEnd")?.value);
     return sppData.filter(d =>
-        (f.state === "All" || d.State === f.state) &&
-        (f.county === "All" || d.County === f.county) &&
-        (f.fuel === "All" || d.Fuel === f.fuel) &&
-        (f.status === "All" || d.Status === f.status) &&
-        (f.cycle === "All" || d.StudyCycle === f.cycle) &&
-        (f.group === "All" || d.StudyGroup === f.group) &&
-        (f.service === "All" || d.ServiceType === f.service) &&
-        (f.owner === "All" || d.TransmissionOwner === f.owner) &&
-        (!Number.isFinite(f.qs) || !d.year || d.year >= f.qs) &&
-        (!Number.isFinite(f.qe) || !d.year || d.year <= f.qe) &&
-        (!Number.isFinite(f.ps) || !d.proposedYear || d.proposedYear >= f.ps) &&
-        (!Number.isFinite(f.pe) || !d.proposedYear || d.proposedYear <= f.pe)
+        (!states.length   || states.includes(d.State))   &&
+        (!counties.length || counties.includes(d.County)) &&
+        (!fuels.length    || fuels.includes(d.Fuel))     &&
+        (!statuses.length || statuses.includes(d.Status)) &&
+        (!cycles.length   || cycles.includes(d.StudyCycle)) &&
+        (!groups.length   || groups.includes(d.StudyGroup)) &&
+        (!services.length || services.includes(d.ServiceType)) &&
+        (!tos.length      || tos.includes(d.TransmissionOwner)) &&
+        (!Number.isFinite(qs) || !d.year || d.year >= qs) &&
+        (!Number.isFinite(qe) || !d.year || d.year <= qe) &&
+        (!Number.isFinite(ps) || !d.proposedYear || d.proposedYear >= ps) &&
+        (!Number.isFinite(pe) || !d.proposedYear || d.proposedYear <= pe)
     );
 }
 function sppTopByMW(data, key){
@@ -2357,9 +2433,20 @@ function renderSppProjectTable(data){
     tbody.innerHTML=rows.map(d=>`<tr><td>${sppSafe(d.ProjectID)}</td><td>SPP</td><td>${sppSafe(d.Status)}</td><td>${d.QueueDate?d.QueueDate.toISOString().split("T")[0]:""}</td><td>${d.ProposedDate?d.ProposedDate.toISOString().split("T")[0]:""}</td><td>${sppSafe(d.TransmissionOwner)}</td><td>${sppSafe(d.ServiceType)}</td><td>${sppSafe(d.County)}</td><td>${sppSafe(d.State)}</td><td>${sppSafe(d.StudyCycle)}</td><td>${sppSafe(d.StudyGroup)}</td><td>${(d.MW||0).toFixed(0)}</td><td>${sppSafe(d.Fuel)}</td></tr>`).join("") || '<tr><td colspan="13" style="text-align:center;">No matching SPP projects.</td></tr>';
 }
 function setupSppDeepDive(){
-    ["sppStateFilter","sppCountyFilter","sppFuelFilter","sppStatusFilter","sppStudyCycleFilter","sppStudyGroupFilter","sppServiceTypeFilter","sppTransmissionOwnerFilter","sppQueueYearStart","sppQueueYearEnd","sppProposedYearStart","sppProposedYearEnd"].forEach(id=>{ const el=sppEl(id); if(el) el.addEventListener("change", updateSppDeepDive); });
+    ["sppQueueYearStart","sppQueueYearEnd","sppProposedYearStart","sppProposedYearEnd"].forEach(id=>{ const el=sppEl(id); if(el) el.addEventListener("change", updateSppDeepDive); });
     const search=sppEl("sppTableSearch"); if(search) search.addEventListener("input", ()=>renderSppProjectTable(getFilteredSppData()));
-    const reset=sppEl("sppResetFilters"); if(reset) reset.addEventListener("click", ()=>{ ["sppStateFilter","sppCountyFilter","sppFuelFilter","sppStatusFilter","sppStudyCycleFilter","sppStudyGroupFilter","sppServiceTypeFilter","sppTransmissionOwnerFilter"].forEach(id=>{ const el=sppEl(id); if(el) el.value="All"; }); if(search) search.value=""; sppProjectTableSort={key:null,direction:"",type:"text"}; populateSppFilters(); updateSppDeepDive(); });
+    const reset=sppEl("sppResetFilters"); if(reset) reset.addEventListener("click", ()=>{
+        resetMultiSelect("sppStateFilterDropdown",             "All States");
+        resetMultiSelect("sppCountyFilterDropdown",            "All Counties");
+        resetMultiSelect("sppFuelFilterDropdown",              "All Fuels");
+        resetMultiSelect("sppStatusFilterDropdown",            "All Statuses");
+        resetMultiSelect("sppStudyCycleFilterDropdown",        "All Study Cycles");
+        resetMultiSelect("sppStudyGroupFilterDropdown",        "All Study Groups");
+        resetMultiSelect("sppServiceTypeFilterDropdown",       "All Service Types");
+        resetMultiSelect("sppTransmissionOwnerFilterDropdown", "All Transmission Owners");
+        if(search) search.value=""; sppProjectTableSort={key:null,direction:"",type:"text"};
+        populateSppFilters(); updateSppDeepDive();
+    });
 }
 const originalShowTabForSpp = showTab;
 showTab = function(tabId){
@@ -2448,6 +2535,8 @@ function pjmHydrate(row){
         StudyPhase: phase,
         POIName: pjmFirst(row, ["POI Name", "POIName", "Name"]) || "Unknown",
         TransmissionOwner: pjmFirst(row, ["Transmission Owner", "TransmissionOwner"]) || "Unknown",
+        State: pjmFirst(row, ["State"]) || "Unknown",
+        County: pjmFirst(row, ["County"]) || "",
         MW: mw,
         Fuel: pjmFirst(row, ["Fuel Type", "Fuel", "FuelType"]) || "Unknown"
     });
@@ -2479,11 +2568,13 @@ function fillPjmYears(id, years){
     years.forEach(y => { const opt = document.createElement("option"); opt.value = y; opt.textContent = y; select.appendChild(opt); });
 }
 function populatePjmFilters(){
-    fillPjmSelect("pjmStudyCycleFilter", pjmData.map(d => d.StudyCycle), "All Study Cycles", pjmSortedCycles);
-    fillPjmSelect("pjmStudyPhaseFilter", pjmData.map(d => d.StudyPhase), "All Study Phases", pjmSortedPhases);
-    fillPjmSelect("pjmStatusFilter", pjmData.map(d => d.Status), "All Statuses");
-    fillPjmSelect("pjmFuelFilter", pjmData.map(d => d.Fuel), "All Fuels");
-    fillPjmSelect("pjmTransmissionOwnerFilter", pjmData.map(d => d.TransmissionOwner), "All Transmission Owners");
+    buildMultiSelect("pjmStateFilterDropdown",             pjmData.map(d => d.State),             "All States",             updatePjmDeepDive);
+    buildMultiSelect("pjmCountyFilterDropdown",            pjmData.map(d => d.County),            "All Counties",           updatePjmDeepDive);
+    buildMultiSelect("pjmStudyCycleFilterDropdown",        pjmData.map(d => d.StudyCycle),        "All Study Cycles",       updatePjmDeepDive);
+    buildMultiSelect("pjmStudyPhaseFilterDropdown",        pjmData.map(d => d.StudyPhase),        "All Study Phases",       updatePjmDeepDive);
+    buildMultiSelect("pjmStatusFilterDropdown",            pjmData.map(d => d.Status),            "All Statuses",           updatePjmDeepDive);
+    buildMultiSelect("pjmFuelFilterDropdown",              pjmData.map(d => d.Fuel),              "All Fuels",              updatePjmDeepDive);
+    buildMultiSelect("pjmTransmissionOwnerFilterDropdown", pjmData.map(d => d.TransmissionOwner), "All Transmission Owners", updatePjmDeepDive);
     const q = [...new Set(pjmData.map(d => d.year).filter(Boolean))].sort((a,b)=>a-b);
     const p = [...new Set(pjmData.map(d => d.proposedYear).filter(Boolean))].sort((a,b)=>a-b);
     fillPjmYears("pjmQueueYearStart", q); fillPjmYears("pjmQueueYearEnd", q);
@@ -2492,27 +2583,29 @@ function populatePjmFilters(){
     if(p.length){ pjmEl("pjmProposedYearStart").value = p[0]; pjmEl("pjmProposedYearEnd").value = p[p.length-1]; }
 }
 function getFilteredPjmData(){
-    const f = {
-        cycle: pjmEl("pjmStudyCycleFilter")?.value || "All",
-        phase: pjmEl("pjmStudyPhaseFilter")?.value || "All",
-        status: pjmEl("pjmStatusFilter")?.value || "All",
-        fuel: pjmEl("pjmFuelFilter")?.value || "All",
-        to: pjmEl("pjmTransmissionOwnerFilter")?.value || "All",
-        qs: Number(pjmEl("pjmQueueYearStart")?.value),
-        qe: Number(pjmEl("pjmQueueYearEnd")?.value),
-        ps: Number(pjmEl("pjmProposedYearStart")?.value),
-        pe: Number(pjmEl("pjmProposedYearEnd")?.value)
-    };
+    const states   = getMultiSelectValues("pjmStateFilterDropdown");
+    const counties = getMultiSelectValues("pjmCountyFilterDropdown");
+    const cycles   = getMultiSelectValues("pjmStudyCycleFilterDropdown");
+    const phases   = getMultiSelectValues("pjmStudyPhaseFilterDropdown");
+    const statuses = getMultiSelectValues("pjmStatusFilterDropdown");
+    const fuels    = getMultiSelectValues("pjmFuelFilterDropdown");
+    const tos      = getMultiSelectValues("pjmTransmissionOwnerFilterDropdown");
+    const qs = Number(pjmEl("pjmQueueYearStart")?.value);
+    const qe = Number(pjmEl("pjmQueueYearEnd")?.value);
+    const ps = Number(pjmEl("pjmProposedYearStart")?.value);
+    const pe = Number(pjmEl("pjmProposedYearEnd")?.value);
     return pjmData.filter(d =>
-        (f.cycle === "All" || d.StudyCycle === f.cycle) &&
-        (f.phase === "All" || d.StudyPhase === f.phase) &&
-        (f.status === "All" || d.Status === f.status) &&
-        (f.fuel === "All" || d.Fuel === f.fuel) &&
-        (f.to === "All" || d.TransmissionOwner === f.to) &&
-        (!Number.isFinite(f.qs) || !d.year || d.year >= f.qs) &&
-        (!Number.isFinite(f.qe) || !d.year || d.year <= f.qe) &&
-        (!Number.isFinite(f.ps) || !d.proposedYear || d.proposedYear >= f.ps) &&
-        (!Number.isFinite(f.pe) || !d.proposedYear || d.proposedYear <= f.pe)
+        (!states.length   || states.includes(d.State))   &&
+        (!counties.length || counties.includes(d.County)) &&
+        (!cycles.length   || cycles.includes(d.StudyCycle)) &&
+        (!phases.length   || phases.includes(d.StudyPhase)) &&
+        (!statuses.length || statuses.includes(d.Status)) &&
+        (!fuels.length    || fuels.includes(d.Fuel))     &&
+        (!tos.length      || tos.includes(d.TransmissionOwner)) &&
+        (!Number.isFinite(qs) || !d.year || d.year >= qs) &&
+        (!Number.isFinite(qe) || !d.year || d.year <= qe) &&
+        (!Number.isFinite(ps) || !d.proposedYear || d.proposedYear >= ps) &&
+        (!Number.isFinite(pe) || !d.proposedYear || d.proposedYear <= pe)
     );
 }
 function pjmMedian(values){
@@ -2667,10 +2760,16 @@ function renderPjmProjectTable(data){
     tbody.innerHTML = rows.map(d => `<tr><td>${pjmSafe(d.ProjectID || "Unknown")}</td><td>PJM</td><td>${d.QueueDate ? d.QueueDate.toISOString().split("T")[0] : ""}</td><td>${pjmSafe(d.Status || "")}</td><td>${d.WithdrawnDate ? d.WithdrawnDate.toISOString().split("T")[0] : ""}</td><td>${d.ProposedDate ? d.ProposedDate.toISOString().split("T")[0] : ""}</td><td>${pjmSafe(d.StudyCycle || "")}</td><td>${pjmSafe(d.StudyPhase || "")}</td><td>${pjmSafe(d.POIName || "")}</td><td>${pjmSafe(d.TransmissionOwner || "")}</td><td>${(d.MW || 0).toFixed(0)}</td><td>${pjmSafe(d.Fuel || "Unknown")}</td></tr>`).join("") || '<tr><td colspan="12" style="text-align:center;">No matching PJM projects.</td></tr>';
 }
 function setupPjmDeepDive(){
-    ["pjmStudyCycleFilter","pjmStudyPhaseFilter","pjmStatusFilter","pjmFuelFilter","pjmTransmissionOwnerFilter","pjmQueueYearStart","pjmQueueYearEnd","pjmProposedYearStart","pjmProposedYearEnd"].forEach(id => { const e = pjmEl(id); if(e) e.addEventListener("change", updatePjmDeepDive); });
+    ["pjmQueueYearStart","pjmQueueYearEnd","pjmProposedYearStart","pjmProposedYearEnd"].forEach(id => { const e = pjmEl(id); if(e) e.addEventListener("change", updatePjmDeepDive); });
     const search = pjmEl("pjmTableSearch"); if(search) search.addEventListener("input", () => renderPjmProjectTable(getFilteredPjmData()));
     const reset = pjmEl("pjmResetFilters"); if(reset) reset.addEventListener("click", () => {
-        ["pjmStudyCycleFilter","pjmStudyPhaseFilter","pjmStatusFilter","pjmFuelFilter","pjmTransmissionOwnerFilter"].forEach(id => { const e = pjmEl(id); if(e) e.value = "All"; });
+        resetMultiSelect("pjmStateFilterDropdown",             "All States");
+        resetMultiSelect("pjmCountyFilterDropdown",            "All Counties");
+        resetMultiSelect("pjmStudyCycleFilterDropdown",        "All Study Cycles");
+        resetMultiSelect("pjmStudyPhaseFilterDropdown",        "All Study Phases");
+        resetMultiSelect("pjmStatusFilterDropdown",            "All Statuses");
+        resetMultiSelect("pjmFuelFilterDropdown",              "All Fuels");
+        resetMultiSelect("pjmTransmissionOwnerFilterDropdown", "All Transmission Owners");
         if(search) search.value = "";
         pjmProjectTableSort = { key:null, direction:"", type:"text" };
         populatePjmFilters();

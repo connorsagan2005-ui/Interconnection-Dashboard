@@ -5,3 +5,6 @@ venv/
 raw_outputs/
 clean_outputs/
 *.log
+
+# Cost estimator data — kept local only
+cost-data/
