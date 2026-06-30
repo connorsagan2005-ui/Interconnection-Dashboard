@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cost Estimator — Longroad Energy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="/static/css/cost-styles.css">
+</head>
+<body>
+
+<div id="loading" class="loading-overlay">
+  <div class="loading-box">
+    <div class="spinner"></div>
+    <div class="loading-text">Loading Cost Estimator…</div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<nav id="navbar">
+  <a class="nav-brand" href="#">
+    <img src="/static/Longroad_Energy_Logo.jpg" alt="Longroad Energy" class="nav-logo">
+    <div>
+      <div>Interconnection Cost Analytics</div>
+      <span class="sub">Transmission Planning Intelligence Platform</span>
+    </div>
+  </a>
+  <div class="nav-right">
+    <span id="data-status" class="data-status">Loading…</span>
+    <a class="nav-btn" href="/index.html" style="text-decoration:none;">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      Home
+    </a>
+    <button class="nav-btn" onclick="toggleSidebar()">
+      <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M0 3a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3zm5 0v10h9a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H5z"/>
+      </svg>
+      Filters
+    </button>
+    <button class="nav-btn" id="theme-btn" onclick="toggleTheme()">
+      <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16" id="theme-icon">
+        <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
+      </svg>
+      Dark Mode
+    </button>
+  </div>
+</nav>
+
+<div id="layout">
+
+  <aside id="sidebar">
+    <div class="sidebar-title">
+      <svg width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
+      </svg>
+      Filter Panel
+    </div>
+
+    <div class="filter-section">
+      <span class="filter-label">State</span>
+      <div class="check-group" id="filter-states"></div>
+    </div>
+
+    <div class="filter-section">
+      <span class="filter-label">Fuel Type</span>
+      <div class="check-group" id="filter-fuels"></div>
+    </div>
+
+    <div class="filter-section">
+      <span class="filter-label">Study Group</span>
+      <div class="check-group" id="filter-groups"></div>
+    </div>
+
+    <div class="filter-section">
+      <span class="filter-label">Summer MW Range</span>
+      <div class="range-wrap">
+        <input type="range" id="mw-slider-lo" min="0" max="2000" value="0" oninput="updateRangeDisplay('mw')">
+        <input type="range" id="mw-slider-hi" min="0" max="2000" value="2000" oninput="updateRangeDisplay('mw')">
+        <div class="range-vals">
+          <span id="mw-lo-val">0</span>
+          <span id="mw-hi-val">2000</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <span class="filter-label">Total Cost Range ($MM)</span>
+      <div class="range-wrap">
+        <input type="range" id="cost-slider-lo" min="0" max="1000" value="0" oninput="updateRangeDisplay('cost')">
+        <input type="range" id="cost-slider-hi" min="0" max="1000" value="1000" oninput="updateRangeDisplay('cost')">
+        <div class="range-vals">
+          <span id="cost-lo-val">$0</span>
+          <span id="cost-hi-val">$1000MM</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-section">
+      <span class="filter-label">Total $/kW Range</span>
+      <div class="range-wrap">
+        <input type="range" id="cpkw-slider-lo" min="0" max="5000" value="0" oninput="updateRangeDisplay('cpkw')">
+        <input type="range" id="cpkw-slider-hi" min="0" max="5000" value="5000" oninput="updateRangeDisplay('cpkw')">
+        <div class="range-vals">
+          <span id="cpkw-lo-val">$0</span>
+          <span id="cpkw-hi-val">$5000</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-actions">
+      <button class="btn-filter btn-apply" onclick="applyFilters()">Apply Filters</button>
+      <button class="btn-filter btn-reset" onclick="resetFilters()">Reset All</button>
+    </div>
+  </aside>
+
+  <main id="main">
+
+    <section id="sec-summary">
+      <div class="section-header">
+        <span class="section-num">01</span>
+        <h2>Executive Summary</h2>
+        <span class="section-badge" id="summary-badge"></span>
+      </div>
+      <div class="kpi-grid" id="kpi-grid">
+        <div class="kpi-card"><div class="kpi-label">Total Projects</div><div class="kpi-value" id="kpi-total-projects">—</div></div>
+        <div class="kpi-card kpi-info"><div class="kpi-label">Total Summer MW</div><div class="kpi-value" id="kpi-total-mw">—</div></div>
+        <div class="kpi-card kpi-warning"><div class="kpi-label">Total Upgrade Cost</div><div class="kpi-value" id="kpi-total-cost">—</div></div>
+        <div class="kpi-card"><div class="kpi-label">Avg Total $/kW</div><div class="kpi-value" id="kpi-avg-kw">—</div></div>
+        <div class="kpi-card kpi-danger"><div class="kpi-label">Highest Cost Project</div><div class="kpi-value" id="kpi-high-proj">—</div><div class="kpi-sub" id="kpi-high-proj-sub"></div></div>
+        <div class="kpi-card kpi-success"><div class="kpi-label">Lowest Cost Project</div><div class="kpi-value" id="kpi-low-proj">—</div><div class="kpi-sub" id="kpi-low-proj-sub"></div></div>
+        <div class="kpi-card"><div class="kpi-label">ERIS Projects</div><div class="kpi-value" id="kpi-eris">—</div></div>
+        <div class="kpi-card"><div class="kpi-label">NRIS Projects</div><div class="kpi-value" id="kpi-nris">—</div></div>
+      </div>
+    </section>
+
+    <hr class="section-sep">
+
+    <section id="sec-main-chart">
+      <div class="section-header">
+        <span class="section-num">02</span>
+        <h2>Project Cost Composition</h2>
+        <span class="section-badge">Stacked Bar · Click bar to drill down</span>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <span class="chart-title">Cost by Project ($MM)</span>
+          <div class="chart-controls">
+            <input type="text" class="chart-search" id="bar-search" placeholder="Search project…" oninput="filterBarChart(this.value)">
+            <button class="ctrl-btn" onclick="sortBar('id')">Sort by ID</button>
+            <button class="ctrl-btn" onclick="sortBar('asc')">↑ Cost</button>
+            <button class="ctrl-btn" onclick="sortBar('desc')">↓ Cost</button>
+            <button class="ctrl-btn" onclick="downloadChart('bar-chart','cost_composition')">⬇ PNG</button>
+          </div>
+        </div>
+        <div class="chart-body">
+          <div id="bar-chart" class="plotly-chart" style="min-height:420px;"></div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-sep">
+
+    <section id="sec-state">
+      <div class="section-header">
+        <span class="section-num">03</span>
+        <h2>State Analysis</h2>
+      </div>
+      <div class="col-2">
+        <div class="chart-card">
+          <div class="chart-header">
+            <span class="chart-title">Avg Cost Metrics by State</span>
+            <button class="ctrl-btn" style="margin-left:auto" onclick="downloadChart('state-bar','state_analysis')">⬇ PNG</button>
+          </div>
+          <div class="chart-body"><div id="state-bar" class="plotly-chart-sm"></div></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header"><span class="chart-title">State Rankings</span></div>
+          <div class="chart-body"><div id="state-rankings" style="padding:10px;"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-sep">
+
+    <section id="sec-composition">
+      <div class="section-header">
+        <span class="section-num">04</span>
+        <h2>Cost Composition by State</h2>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <span class="chart-title">100% Stacked — ERIS / NRIS / Interconnection</span>
+          <button class="ctrl-btn" style="margin-left:auto" onclick="downloadChart('composition-chart','cost_composition_state')">⬇ PNG</button>
+        </div>
+        <div class="chart-body"><div id="composition-chart" class="plotly-chart-sm"></div></div>
+      </div>
+    </section>
+
+    <hr class="section-sep">
+
+    <section id="sec-scatter">
+      <div class="section-header">
+        <span class="section-num">05</span>
+        <h2>MW vs Cost per kW — Scatter Analysis</h2>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <span class="chart-title">MW capacity vs $/kW · Bubble = Total Cost · Color = Fuel</span>
+          <button class="ctrl-btn" style="margin-left:auto" onclick="downloadChart('scatter-chart','scatter_mw_cpkw')">⬇ PNG</button>
+        </div>
+        <div class="chart-body"><div id="scatter-chart" class="plotly-chart"></div></div>
+      </div>
+    </section>
+
+    <hr class="section-sep">
+
+    <section id="sec-top">
+      <div class="section-header">
+        <span class="section-num">06</span>
+        <h2>Top Projects</h2>
+      </div>
+      <div class="chart-card">
+        <div class="top-tabs">
+          <button class="tab-btn active" onclick="switchTab('top-total')">Total Cost</button>
+          <button class="tab-btn" onclick="switchTab('top-kw')">$/kW</button>
+          <button class="tab-btn" onclick="switchTab('top-eris')">ERIS Cost</button>
+          <button class="tab-btn" onclick="switchTab('top-nris')">NRIS Cost</button>
+        </div>
+        <div id="top-total" class="tab-content active"><ul class="top-list" id="list-total"></ul></div>
+        <div id="top-kw" class="tab-content"><ul class="top-list" id="list-kw"></ul></div>
+        <div id="top-eris" class="tab-content"><ul class="top-list" id="list-eris"></ul></div>
+        <div id="top-nris" class="tab-content"><ul class="top-list" id="list-nris"></ul></div>
+      </div>
+    </section>
+
+    <hr class="section-sep">
+
+    <section id="sec-heatmap">
+      <div class="section-header">
+        <span class="section-num">07</span>
+        <h2>Cost Heatmap — State × Fuel Type</h2>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <span class="chart-title">Average Total $/kW by State and Fuel</span>
+          <button class="ctrl-btn" style="margin-left:auto" onclick="downloadChart('heatmap-chart','heatmap')">⬇ PNG</button>
+        </div>
+        <div class="chart-body"><div id="heatmap-chart" class="plotly-chart-sm"></div></div>
+      </div>
+    </section>
+
+    <hr class="section-sep">
+
+    <section id="sec-dist">
+      <div class="section-header">
+        <span class="section-num">08</span>
+        <h2>Distribution Analysis</h2>
+      </div>
+      <div class="col-2">
+        <div class="chart-card">
+          <div class="chart-header">
+            <span class="chart-title">Distribution of Total $/kW</span>
+            <button class="ctrl-btn" style="margin-left:auto" onclick="downloadChart('hist-chart','distribution')">⬇ PNG</button>
+          </div>
+          <div class="chart-body"><div id="hist-chart" class="plotly-chart-sm"></div></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header">
+            <span class="chart-title">MW Distribution by Fuel</span>
+            <button class="ctrl-btn" style="margin-left:auto" onclick="downloadChart('box-chart','mw_distribution')">⬇ PNG</button>
+          </div>
+          <div class="chart-body"><div id="box-chart" class="plotly-chart-sm"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-sep">
+
+    <section id="sec-pareto">
+      <div class="section-header">
+        <span class="section-num">09</span>
+        <h2>Pareto Analysis — Cost Concentration</h2>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header">
+          <span class="chart-title">Projects by Total Cost · Cumulative % Line</span>
+          <button class="ctrl-btn" style="margin-left:auto" onclick="downloadChart('pareto-chart','pareto')">⬇ PNG</button>
+        </div>
+        <div class="chart-body"><div id="pareto-chart" class="plotly-chart"></div></div>
+      </div>
+    </section>
+
+    <hr class="section-sep">
+
+    <section id="sec-table">
+      <div class="section-header">
+        <span class="section-num">10</span>
+        <h2>Project Data Table</h2>
+      </div>
+      <div class="chart-card">
+        <div class="export-btns">
+          <button class="btn-export" onclick="exportCSV()">
+            <svg width="13" height="13" fill="currentColor" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/></svg>
+            Export CSV
+          </button>
+          <button class="btn-export" onclick="downloadDashboard()">
+            <svg width="13" height="13" fill="currentColor" viewBox="0 0 16 16"><path d="M1.5 0A1.5 1.5 0 0 0 0 1.5v13A1.5 1.5 0 0 0 1.5 16h13a1.5 1.5 0 0 0 1.5-1.5V4.207L11.793 0H1.5zM11 .5l3.5 3.5H11V.5zM8 7.5a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 11.793V8a.5.5 0 0 1 .5-.5z"/></svg>
+            Dashboard Snapshot
+          </button>
+        </div>
+        <div class="dt-wrap">
+          <table id="projects-table" class="display" style="width:100%">
+            <thead>
+              <tr>
+                <th>Project ID</th>
+                <th>Name</th>
+                <th>State</th>
+                <th>Fuel</th>
+                <th>Study Group</th>
+                <th>Summer MW</th>
+                <th>Winter MW</th>
+                <th>ERIS ($MM)</th>
+                <th>NRIS ($MM)</th>
+                <th>Interconn ($MM)</th>
+                <th>Total ($MM)</th>
+                <th>Total $/kW</th>
+                <th>Rank</th>
+              </tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-sep">
+
+    <section id="sec-insights">
+      <div class="section-header">
+        <span class="section-num">11</span>
+        <h2>Auto-Generated Insights</h2>
+      </div>
+      <div class="insights-grid" id="insights-grid"></div>
+    </section>
+
+  </main>
+</div>
+
+<div id="detail-panel">
+  <div class="detail-header">
+    <h3 id="detail-title">Project Detail</h3>
+    <button class="detail-close" onclick="closeDetail()">✕</button>
+  </div>
+  <div class="detail-body" id="detail-body">
+    <div class="no-data">Select a project to view details</div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
+<script src="/static/js/cost-app.js"></script>
+</body>
+</html>
