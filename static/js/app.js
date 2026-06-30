@@ -2274,7 +2274,6 @@ setupIsoneDeepDive();
 
 // ---------------- SPP DEEP DIVE ----------------
 var sppData = [];
-var sppProjectTableSort = { key: null, direction: "", type: "text" };
 function sppEl(id){ return document.getElementById(id); }
 function sppSafe(value){ return String(value == null ? "" : value).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 function sppFirst(row, keys){
@@ -2431,7 +2430,6 @@ function renderSppLocationCharts(data){
 }
 function setupSppDeepDive(){
     ["sppQueueYearStart","sppQueueYearEnd","sppProposedYearStart","sppProposedYearEnd","sppCombinedGroupByView","sppCombinedMetricView","sppFuelDateView"].forEach(id=>{ const el=sppEl(id); if(el) el.addEventListener("change", updateSppDeepDive); });
-    const search=sppEl("sppTableSearch"); if(search) search.addEventListener("input", ()=>renderSppProjectTable(getFilteredSppData()));
     const reset=sppEl("sppResetFilters"); if(reset) reset.addEventListener("click", ()=>{
         resetMultiSelect("sppStateFilterDropdown",             "All States");
         resetMultiSelect("sppCountyFilterDropdown",            "All Counties");
@@ -2441,7 +2439,6 @@ function setupSppDeepDive(){
         resetMultiSelect("sppStudyGroupFilterDropdown",        "All Study Groups");
         resetMultiSelect("sppServiceTypeFilterDropdown",       "All Service Types");
         resetMultiSelect("sppTransmissionOwnerFilterDropdown", "All Transmission Owners");
-        if(search) search.value=""; sppProjectTableSort={key:null,direction:"",type:"text"};
         populateSppFilters(); updateSppDeepDive();
     });
 }
@@ -2836,9 +2833,13 @@ var _dtPjm    = null;
 var _dtSpp    = null;
 
 function _dtDestroy(instance, tableId){
-    if(instance){
-        try { instance.destroy(); } catch(e){}
-    }
+    try {
+        if(typeof $ !== "undefined" && $.fn && $.fn.DataTable && $.fn.DataTable.isDataTable(tableId)){
+            $(tableId).DataTable().destroy();
+        } else if(instance){
+            instance.destroy();
+        }
+    } catch(e){}
     return null;
 }
 
