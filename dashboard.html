@@ -910,8 +910,6 @@
                                 <th>State</th>
                                 <th>Study Cycle</th>
                                 <th>Study Group</th>
-                                <th>Cause of Delay</th>
-                                <th>JTIQ Participant</th>
                                 <th>MW Capacity</th>
                                 <th>Fuel Type</th>
                             </tr>
@@ -934,5 +932,16 @@
 <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
 <script src="/static/js/app.js"></script>
+
+<!-- ── Project / Bar Info Modal ── -->
+<div id="iqModalOverlay" class="iq-modal-overlay" role="dialog" aria-modal="true">
+  <div class="iq-modal">
+    <div class="iq-modal-header">
+      <h2 id="iqModalTitle">Project Detail</h2>
+      <button class="iq-modal-close" onclick="closeIqModal()" aria-label="Close">&times;</button>
+    </div>
+    <div class="iq-modal-body" id="iqModalBody"></div>
+  </div>
+</div>
 </body>
 </html>

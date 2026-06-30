@@ -3039,3 +3039,312 @@ function renderSppProjectTable(data){
         }
     };
 }());
+
+
+// ============================================================
+// IQ MODAL — project detail & bar-segment info cards
+// ============================================================
+
+function openIqModal(title, bodyHtml) {
+    document.getElementById("iqModalTitle").textContent = title;
+    document.getElementById("iqModalBody").innerHTML = bodyHtml;
+    document.getElementById("iqModalOverlay").classList.add("open");
+}
+function closeIqModal() {
+    document.getElementById("iqModalOverlay").classList.remove("open");
+}
+document.getElementById("iqModalOverlay").addEventListener("click", function(e) {
+    if (e.target === this) closeIqModal();
+});
+document.addEventListener("keydown", function(e) {
+    if (e.key === "Escape") closeIqModal();
+});
+
+// Bind a plotly_click handler to a chart div (safe to call after every newPlot)
+function _iqBind(divId, handler) {
+    var el = document.getElementById(divId);
+    if (!el) return;
+    el.removeAllListeners && el.removeAllListeners("plotly_click");
+    el.on("plotly_click", handler);
+}
+
+function _iqField(label, value, accent) {
+    var cls = accent ? "accent" : (value === "—" || !value ? "muted" : "");
+    return '<div class="iq-field"><div class="iq-label">' + label + '</div><div class="iq-value ' + cls + '">' + (value || "—") + '</div></div>';
+}
+function _iqWideField(label, value) {
+    return '<div class="iq-field" style="grid-column:1/-1"><div class="iq-label">' + label + '</div><div class="iq-value">' + (value || "—") + '</div></div>';
+}
+function _iqStat(label, value) {
+    return '<div class="iq-stat"><div class="iq-label">' + label + '</div><div class="iq-value">' + value + '</div></div>';
+}
+function _iqFmt(v) { return v == null || v === "" ? "—" : String(v); }
+function _iqMW(mw) { var n = Number(mw); return isNaN(n) ? "—" : n.toLocaleString() + " MW"; }
+function _iqDate(d) {
+    if (!d) return "—";
+    if (d instanceof Date) return isNaN(d) ? "—" : d.toISOString().split("T")[0];
+    return String(d).split("T")[0] || "—";
+}
+
+// ── Project modal builders per ISO ──────────────────────────
+
+function _iqShowErcotProject(cd) {
+    // cd: [ProjectID, Name, Developer, Zone, County, MW, Status, CompletionProbability]
+    var body = '<div class="iq-field-grid">' +
+        _iqField("Project ID", _iqFmt(cd[0])) +
+        _iqField("Status", _iqFmt(cd[6])) +
+        _iqField("Zone", _iqFmt(cd[3])) +
+        _iqField("County", _iqFmt(cd[4])) +
+        _iqField("MW Capacity", _iqMW(cd[5])) +
+        _iqField("Completion Prob.", cd[7] != null && cd[7] !== "—" ? cd[7] + "%" : "—") +
+        _iqField("Developer", _iqFmt(cd[2])) +
+        _iqField("Fuel", _iqFmt(window._iqLastFuel || "")) +
+        '</div>';
+    openIqModal("Project " + _iqFmt(cd[0]), body);
+}
+
+function _iqShowIsoneProjct(cd) {
+    // cd: [ProjectID, Name, Zone, County, State, MW, Status]
+    var body = '<div class="iq-field-grid">' +
+        _iqField("Project ID", _iqFmt(cd[0])) +
+        _iqField("Status", _iqFmt(cd[6])) +
+        _iqField("Zone", _iqFmt(cd[2])) +
+        _iqField("State", _iqFmt(cd[4])) +
+        _iqField("County", _iqFmt(cd[3])) +
+        _iqField("MW Capacity", _iqMW(cd[5])) +
+        _iqWideField("Name", _iqFmt(cd[1])) +
+        '</div>';
+    openIqModal("Project " + _iqFmt(cd[0]), body);
+}
+
+function _iqShowMisoProject(cd) {
+    // cd: [ProjectID, State, County, POIName, MW, Fuel, Status, StudyCycle, StudyGroup, ServiceType]
+    var body = '<div class="iq-field-grid">' +
+        _iqField("Project ID", _iqFmt(cd[0])) +
+        _iqField("Status", _iqFmt(cd[6])) +
+        _iqField("State", _iqFmt(cd[1])) +
+        _iqField("County", _iqFmt(cd[2])) +
+        _iqField("MW Capacity", _iqMW(cd[4])) +
+        _iqField("Fuel", _iqFmt(cd[5])) +
+        _iqField("Study Cycle", _iqFmt(cd[7])) +
+        _iqField("Study Group", _iqFmt(cd[8])) +
+        _iqField("Service Type", _iqFmt(cd[9])) +
+        _iqWideField("POI Name", _iqFmt(cd[3])) +
+        '</div>';
+    openIqModal("Project " + _iqFmt(cd[0]), body);
+}
+
+function _iqShowPjmProject(cd) {
+    // cd: [ProjectID, StudyCycle, StudyPhase, POIName, TransmissionOwner, MW, Fuel, Status]
+    var body = '<div class="iq-field-grid">' +
+        _iqField("Project ID", _iqFmt(cd[0])) +
+        _iqField("Status", _iqFmt(cd[7])) +
+        _iqField("Study Cycle", _iqFmt(cd[1])) +
+        _iqField("Study Phase", _iqFmt(cd[2])) +
+        _iqField("MW Capacity", _iqMW(cd[5])) +
+        _iqField("Fuel", _iqFmt(cd[6])) +
+        _iqField("Trans. Owner", _iqFmt(cd[4])) +
+        _iqField("State", _iqFmt(window._iqLastState || "")) +
+        _iqWideField("POI Name", _iqFmt(cd[3])) +
+        '</div>';
+    openIqModal("Project " + _iqFmt(cd[0]), body);
+}
+
+function _iqShowSppProject(cd) {
+    // cd: [ProjectID, Status, TransmissionOwner, ServiceType, County, State, StudyCycle, StudyGroup, MW, Fuel]
+    var body = '<div class="iq-field-grid">' +
+        _iqField("Project ID", _iqFmt(cd[0])) +
+        _iqField("Status", _iqFmt(cd[1])) +
+        _iqField("State", _iqFmt(cd[5])) +
+        _iqField("County", _iqFmt(cd[4])) +
+        _iqField("MW Capacity", _iqMW(cd[8])) +
+        _iqField("Fuel", _iqFmt(cd[9])) +
+        _iqField("Study Cycle", _iqFmt(cd[6])) +
+        _iqField("Study Group", _iqFmt(cd[7])) +
+        _iqField("Service Type", _iqFmt(cd[3])) +
+        _iqField("Trans. Owner", _iqFmt(cd[2])) +
+        '</div>';
+    openIqModal("Project " + _iqFmt(cd[0]), body);
+}
+
+// ── Bar-segment modal ────────────────────────────────────────
+// Called with the filtered data slice matching the clicked bar segment.
+function _iqShowBarSegment(xLabel, statusLabel, segData) {
+    var n    = segData.length;
+    var mwArr = segData.map(function(d){ return d.MW || 0; });
+    var totalMW = mwArr.reduce(function(s,v){ return s+v; }, 0);
+    var avgMW   = n ? totalMW / n : 0;
+
+    // Fuel breakdown
+    var fuelMap = {};
+    segData.forEach(function(d){ var f = d.Fuel || "Other"; fuelMap[f] = (fuelMap[f]||0) + (d.MW||0); });
+    var fuelRows = Object.entries(fuelMap).sort(function(a,b){ return b[1]-a[1]; }).slice(0, 5);
+
+    var statsHtml = '<div class="iq-stat-row">' +
+        _iqStat("Projects", n.toLocaleString()) +
+        _iqStat("Total Capacity", (totalMW/1000).toFixed(2) + " GW") +
+        _iqStat("Avg Size", Math.round(avgMW).toLocaleString() + " MW") +
+        '</div>';
+
+    var fuelHtml = '<div class="iq-modal-section-title">Fuel Mix (top 5 by MW)</div>';
+    fuelHtml += fuelRows.map(function(r){
+        var pct = totalMW ? (r[1]/totalMW*100).toFixed(1) : "0.0";
+        return '<div class="iq-field-grid" style="grid-template-columns:2fr 1fr 1fr;gap:6px;margin-bottom:6px;">' +
+            '<div class="iq-field"><div class="iq-label">Fuel</div><div class="iq-value">' + r[0] + '</div></div>' +
+            '<div class="iq-field"><div class="iq-label">GW</div><div class="iq-value">' + (r[1]/1000).toFixed(2) + '</div></div>' +
+            '<div class="iq-field"><div class="iq-label">Share</div><div class="iq-value">' + pct + '%</div></div>' +
+            '</div>';
+    }).join("");
+
+    openIqModal(xLabel + " — " + statusLabel, statsHtml + fuelHtml);
+}
+
+// ── Wire click handlers after each render ────────────────────
+
+function _bindErcotScatterClick() {
+    _iqBind("ercotQueueVsProposedChart", function(evt) {
+        var pt = evt.points[0];
+        if (!pt) return;
+        window._iqLastFuel = pt.data.name || "";
+        _iqShowErcotProject(pt.customdata);
+    });
+}
+
+function _bindIsoneScatterClick() {
+    _iqBind("isoneQueueVsProposedChart", function(evt) {
+        var pt = evt.points[0];
+        if (!pt) return;
+        _iqShowIsoneProjct(pt.customdata);
+    });
+}
+
+function _bindMisoScatterClick() {
+    _iqBind("misoQueueVsProposedChart", function(evt) {
+        var pt = evt.points[0];
+        if (!pt) return;
+        _iqShowMisoProject(pt.customdata);
+    });
+}
+
+function _bindPjmScatterClick() {
+    _iqBind("pjmQueueVsProposedChart", function(evt) {
+        var pt = evt.points[0];
+        if (!pt) return;
+        _iqShowPjmProject(pt.customdata);
+    });
+}
+
+function _bindSppScatterClick() {
+    _iqBind("sppQueueVsProposedChart", function(evt) {
+        var pt = evt.points[0];
+        if (!pt) return;
+        _iqShowSppProject(pt.customdata);
+    });
+}
+
+// Bar click: generic — xKey may be a string field name or a function()=>fieldName
+function _bindBarClick(divId, getDataFn, xKeyOrFn, statusKey) {
+    _iqBind(divId, function(evt) {
+        var pt = evt.points[0];
+        if (!pt) return;
+        var xVal  = String(pt.x);
+        var stVal = pt.data.name || "";
+        var all   = getDataFn();
+        var xKey  = typeof xKeyOrFn === "function" ? xKeyOrFn() : xKeyOrFn;
+        var seg   = all.filter(function(d) {
+            var matchX  = xKey  ? String(d[xKey]  || "Unknown") === xVal  : true;
+            var matchSt = statusKey ? String(d[statusKey] || "Unknown") === stVal : true;
+            return matchX && matchSt;
+        });
+        _iqShowBarSegment(xVal, stVal, seg);
+    });
+}
+
+// Attach after renders — appended to existing render functions via post-load patching
+(function _patchRenderFunctions() {
+    // ERCOT
+    var _origErcotScatter = window.renderErcotQueueVsProposedChart;
+    if (typeof _origErcotScatter === "function") {
+        window.renderErcotQueueVsProposedChart = function() {
+            _origErcotScatter.apply(this, arguments);
+            _bindErcotScatterClick();
+        };
+    }
+    var _origErcotFuelChart = window.renderErcotFuelCharts;
+    if (typeof _origErcotFuelChart === "function") {
+        window.renderErcotFuelCharts = function() {
+            _origErcotFuelChart.apply(this, arguments);
+            _bindBarClick("ercotYearFuelChart", getFilteredErcotData,
+                function(){ return document.getElementById("ercotFuelDateView")?.value === "proposed" ? "proposedYear" : "year"; },
+                "Status");
+        };
+    }
+    // ISO-NE
+    var _origIsoneScatter = window.renderIsoneQueueVsProposedChart;
+    if (typeof _origIsoneScatter === "function") {
+        window.renderIsoneQueueVsProposedChart = function() {
+            _origIsoneScatter.apply(this, arguments);
+            _bindIsoneScatterClick();
+        };
+    }
+    // MISO — patch scatter and the two bar charts separately
+    var _origMisoScatter = window.renderMisoQueueVsProposedChart;
+    if (typeof _origMisoScatter === "function") {
+        window.renderMisoQueueVsProposedChart = function() {
+            _origMisoScatter.apply(this, arguments);
+            _bindMisoScatterClick();
+        };
+    }
+    var _origMisoFuelChart = window.renderMisoYearFuelChart;
+    if (typeof _origMisoFuelChart === "function") {
+        window.renderMisoYearFuelChart = function() {
+            _origMisoFuelChart.apply(this, arguments);
+            _bindBarClick("misoYearFuelChart", getFilteredMisoData,
+                function(){ return document.getElementById("misoFuelDateView")?.value === "proposed" ? "proposedYear" : "year"; },
+                "Status");
+        };
+    }
+    var _origMisoCombinedChart = window.renderMisoCombinedCycleGroupChart;
+    if (typeof _origMisoCombinedChart === "function") {
+        window.renderMisoCombinedCycleGroupChart = function() {
+            _origMisoCombinedChart.apply(this, arguments);
+            _bindBarClick("misoCombinedCycleGroupChart", getFilteredMisoData,
+                function(){ return document.getElementById("misoCombinedGroupByView")?.value === "group" ? "StudyGroup" : "StudyCycle"; },
+                "Status");
+        };
+    }
+    // PJM
+    var _origPjmScatter = window.renderPjmQueueVsProposedChart;
+    if (typeof _origPjmScatter === "function") {
+        window.renderPjmQueueVsProposedChart = function() {
+            _origPjmScatter.apply(this, arguments);
+            _bindPjmScatterClick();
+        };
+    }
+    // SPP — patch scatter and bar charts separately
+    var _origSppScatter = window.renderSppQueueVsProposedChart;
+    if (typeof _origSppScatter === "function") {
+        window.renderSppQueueVsProposedChart = function() {
+            _origSppScatter.apply(this, arguments);
+            _bindSppScatterClick();
+        };
+    }
+    var _origSppFuelChart = window.renderSppFuelCharts;
+    if (typeof _origSppFuelChart === "function") {
+        window.renderSppFuelCharts = function() {
+            _origSppFuelChart.apply(this, arguments);
+            _bindBarClick("sppYearFuelChart", getFilteredSppData,
+                function(){ return document.getElementById("sppFuelDateView")?.value === "proposed" ? "proposedYear" : "year"; },
+                "Status");
+        };
+    }
+    var _origSppCombinedChart = window.renderSppCombinedCycleGroupChart;
+    if (typeof _origSppCombinedChart === "function") {
+        window.renderSppCombinedCycleGroupChart = function() {
+            _origSppCombinedChart.apply(this, arguments);
+            _bindBarClick("sppCombinedCycleGroupChart", getFilteredSppData,
+                function(){ return document.getElementById("sppCombinedGroupByView")?.value === "group" ? "StudyGroup" : "StudyCycle"; },
+                "Status");
+        };
+    }
+}());
