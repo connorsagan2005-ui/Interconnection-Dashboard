@@ -2383,8 +2383,8 @@ function updateSppDeepDive(){
     if(blank) blank.classList.add("hidden"); if(content) content.classList.remove("hidden");
     if(sppEl("sppStatus")) sppEl("sppStatus").innerText = `Loaded ${sppData.length.toLocaleString()} SPP records from the wide master JSON.`;
     const data = getFilteredSppData();
-    renderSppKpis(data); renderSppFuelCharts(data); renderSppStudyCycleChart(data); renderSppStudyGroupChart(data); renderSppQueueVsProposedChart(data); renderSppLocationCharts(data); renderSppProjectTable(data);
-    setTimeout(()=>["sppYearFuelChart","sppStudyCycleChart","sppStudyGroupChart","sppQueueVsProposedChart","sppCountyChart"].forEach(id=>{ const e=sppEl(id); if(e && typeof Plotly !== "undefined") Plotly.Plots.resize(e); }),80);
+    renderSppKpis(data); renderSppFuelCharts(data); renderSppCombinedCycleGroupChart(data); renderSppQueueVsProposedChart(data); renderSppLocationCharts(data); renderSppProjectTable(data);
+    setTimeout(()=>["sppYearFuelChart","sppCombinedCycleGroupChart","sppQueueVsProposedChart","sppCountyChart"].forEach(id=>{ const e=sppEl(id); if(e && typeof Plotly !== "undefined") Plotly.Plots.resize(e); }),80);
 }
 function renderSppKpis(data){
     const n=data.length, mw=data.reduce((s,d)=>s+(d.MW||0),0), avg=n?mw/n:0;
@@ -2408,8 +2408,14 @@ function renderSppStackedCategoryChart(divId, data, categoryKey, metricView, tit
     data.forEach(d=>{ const c=d[categoryKey]||"Unknown", st=d.Status||"Unknown"; totals[c][st]=(totals[c][st]||0)+(metricView==="projects"?1:(d.MW||0)/1000); });
     Plotly.newPlot(divId, statuses.map(st=>({x:cats,y:cats.map(c=>(totals[c]&&totals[c][st])||0),name:st,type:"bar",hovertemplate:xTitle+": %{x}<br>Status: "+st+"<br>"+(metricView==="projects"?"Projects: %{y}":"Capacity: %{y:.2f} GW")+"<extra></extra>"})), {title:title,barmode:"stack",xaxis:{title:xTitle},yaxis:{title:metricView==="projects"?"Project Count":"Capacity (GW)"},margin:{t:30,r:20,b:85,l:60}}, {displayModeBar:false,responsive:true});
 }
-function renderSppStudyCycleChart(data){ renderSppStackedCategoryChart("sppStudyCycleChart", data, "StudyCycle", sppEl("sppStudyCycleMetricView")?.value||"capacity", "SPP Study Cycle by Status", "Study Cycle"); }
-function renderSppStudyGroupChart(data){ renderSppStackedCategoryChart("sppStudyGroupChart", data, "StudyGroup", sppEl("sppStudyGroupMetricView")?.value||"capacity", "SPP Study Group by Status", "Study Group"); }
+function renderSppCombinedCycleGroupChart(data){
+    const groupBy = sppEl("sppCombinedGroupByView")?.value || "cycle";
+    const metric  = sppEl("sppCombinedMetricView")?.value  || "capacity";
+    const key     = groupBy === "group" ? "StudyGroup" : "StudyCycle";
+    const title   = groupBy === "group" ? "SPP Study Group by Status" : "SPP Study Cycle by Status";
+    const xTitle  = groupBy === "group" ? "Study Group" : "Study Cycle";
+    renderSppStackedCategoryChart("sppCombinedCycleGroupChart", data, key, metric, title, xTitle);
+}
 function renderSppQueueVsProposedChart(data){
     const rows=data.filter(d=>d.QueueDate&&d.ProposedDate);
     const hidden=data.length-rows.length;
@@ -2423,17 +2429,8 @@ function renderSppLocationCharts(data){
     const counties=Object.entries(countyTotals).sort((a,b)=>b[1]-a[1]).slice(0,15);
     Plotly.newPlot("sppCountyChart", [{x:counties.map(r=>r[1]/1000),y:counties.map(r=>r[0]),type:"bar",orientation:"h",marker:{color:"#fbbf24"},hovertemplate:"County: %{y}<br>Capacity: %{x:.2f} GW<extra></extra>"}], {title:"Top Counties by SPP Capacity",xaxis:{title:"Capacity (GW)"},yaxis:{title:"County",autorange:"reversed",automargin:true},margin:{t:30,r:20,b:45,l:120}}, {displayModeBar:false,responsive:true});
 }
-function setSppProjectTableSort(key,type,direction){ sppProjectTableSort={key,type,direction}; document.querySelectorAll(".spp-header-sort").forEach(sel=>{ if(sel.dataset.key!==key) sel.value=""; }); renderSppProjectTable(getFilteredSppData()); }
-function getSppSortValue(row,key,type){ const v=row[key]; if(type==="number") return Number.isFinite(Number(v))?Number(v):null; if(type==="date") return v instanceof Date&&!isNaN(v)?v.getTime():null; return v==null?"":String(v).toLowerCase(); }
-function renderSppProjectTable(data){
-    const tbody=sppEl("sppProjectTableBody"); if(!tbody) return;
-    const search=(sppEl("sppTableSearch")?.value||"").trim().toLowerCase();
-    let rows=search?data.filter(d=>[d.ProjectID,d.Status,d.TransmissionOwner,d.ServiceType,d.County,d.State,d.StudyCycle,d.StudyGroup,d.Fuel].some(v=>String(v||"").toLowerCase().includes(search))):data;
-    if(sppProjectTableSort.key && sppProjectTableSort.direction){ const m=sppProjectTableSort.direction==="desc"?-1:1; rows=[...rows].sort((a,b)=>{ const av=getSppSortValue(a,sppProjectTableSort.key,sppProjectTableSort.type), bv=getSppSortValue(b,sppProjectTableSort.key,sppProjectTableSort.type); if(av===null||av==="") return 1; if(bv===null||bv==="") return -1; return (sppProjectTableSort.type==="number"||sppProjectTableSort.type==="date" ? av-bv : String(av).localeCompare(String(bv))) * m; }); }
-    tbody.innerHTML=rows.map(d=>`<tr><td>${sppSafe(d.ProjectID)}</td><td>SPP</td><td>${sppSafe(d.Status)}</td><td>${d.QueueDate?d.QueueDate.toISOString().split("T")[0]:""}</td><td>${d.ProposedDate?d.ProposedDate.toISOString().split("T")[0]:""}</td><td>${sppSafe(d.TransmissionOwner)}</td><td>${sppSafe(d.ServiceType)}</td><td>${sppSafe(d.County)}</td><td>${sppSafe(d.State)}</td><td>${sppSafe(d.StudyCycle)}</td><td>${sppSafe(d.StudyGroup)}</td><td>${(d.MW||0).toFixed(0)}</td><td>${sppSafe(d.Fuel)}</td></tr>`).join("") || '<tr><td colspan="13" style="text-align:center;">No matching SPP projects.</td></tr>';
-}
 function setupSppDeepDive(){
-    ["sppQueueYearStart","sppQueueYearEnd","sppProposedYearStart","sppProposedYearEnd"].forEach(id=>{ const el=sppEl(id); if(el) el.addEventListener("change", updateSppDeepDive); });
+    ["sppQueueYearStart","sppQueueYearEnd","sppProposedYearStart","sppProposedYearEnd","sppCombinedGroupByView","sppCombinedMetricView","sppFuelDateView"].forEach(id=>{ const el=sppEl(id); if(el) el.addEventListener("change", updateSppDeepDive); });
     const search=sppEl("sppTableSearch"); if(search) search.addEventListener("input", ()=>renderSppProjectTable(getFilteredSppData()));
     const reset=sppEl("sppResetFilters"); if(reset) reset.addEventListener("click", ()=>{
         resetMultiSelect("sppStateFilterDropdown",             "All States");
