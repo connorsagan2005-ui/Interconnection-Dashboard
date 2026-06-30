@@ -27,17 +27,8 @@ def _isone_status(row):
     if official in _PROJECT_STATUS_MAP:
         return _PROJECT_STATUS_MAP[official]
 
-    withdrawn_date = row.get("Withdrawn Date")
-    proposed_date = row.get("Proposed Date")
-
-    if pd.notna(withdrawn_date):
+    if pd.notna(row.get("Withdrawn Date")):
         return "Withdrawn"
-
-    if pd.notna(proposed_date):
-        today = pd.Timestamp.today().normalize()
-        proposed = pd.to_datetime(proposed_date, errors="coerce")
-        if pd.notna(proposed):
-            return "Active" if today < proposed else "Done"
 
     return "Active"
 
