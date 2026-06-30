@@ -1,0 +1,12 @@
+[build]
+  publish = "."
+
+[[headers]]
+  for = "/snapshots/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/snapshot_index.json"
+  [headers.values]
+    Cache-Control = "public, max-age=300"

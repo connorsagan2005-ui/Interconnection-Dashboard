@@ -1,0 +1,22 @@
+{
+  "generated_at": "2026-06-30T13:16:44.950125+00:00",
+  "archive_root": "snapshots",
+  "snapshots": [
+    {
+      "date": "2026-06-30",
+      "label": "June 30, 2026",
+      "path": "snapshots/2026-06-30/clean_latest/master_cross_iso.json",
+      "manifest": "snapshots/2026-06-30/manifest.json",
+      "clean_schema_version": "schema-v1",
+      "pipeline_version": "archive-enabled-v1"
+    },
+    {
+      "date": "2026-06-29",
+      "label": "June 29, 2026",
+      "path": "snapshots/2026-06-29/clean_latest/master_cross_iso.json",
+      "manifest": "snapshots/2026-06-29/manifest.json",
+      "clean_schema_version": "schema-v1",
+      "pipeline_version": "archive-enabled-v1"
+    }
+  ]
+}

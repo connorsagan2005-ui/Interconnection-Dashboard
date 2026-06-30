@@ -1,0 +1,887 @@
+Project ID,Name,ISO,Status,Queue Date,Withdrawn Date,County,State,Zone,MW Capacity,Fuel Type,Proposed Date
+1090,Park City Offshore Wind CNR,ISONE,Active,2021-01-13,,,MA,SEMA,838.20,Wind,2029-12-31
+1116,SouthCoast Wind 1,ISONE,Active,2021-04-13,,,MA,RI,1200.00,Wind,2031-12-31
+1123,Naugatuck Avenue Battery Storage CNR Only (see QP1089),ISONE,Active,2021-04-21,,New Haven,CT,SWCT,205.32,Storage,2028-10-31
+1148,Lite Brite Battery Storage,ISONE,Active,2021-07-13,,Suffolk,MA,BOST,305.62,Storage,2028-05-26
+1171,Twin Energy Wind,ISONE,Active,2021-10-25,,Oxford,ME,ME,20.00,Wind,2026-11-06
+1238,Battery Storage,ISONE,Active,2022-03-22,,Norfolk,MA,SEMA,301.26,Storage,2028-04-28
+1252,Battery Storage,ISONE,Withdrawn,2022-04-21,2025-12-22,Essex,MA,BOST,314.70,Storage,2032-08-01
+1365,Battery Storage,ISONE,Active,2023-03-09,,Hampden,MA,WMA,254.20,Storage,2029-06-30
+1412,Battery Storage,ISONE,Active,2023-06-20,,Bristol,MA,SEMA,169.84,Storage,2027-09-30
+1427,Solar,ISONE,Active,2023-07-21,,York,ME,ME,183.32,Solar,2029-12-30
+1428,Solar,ISONE,Active,2023-07-25,,Rockingham,NH,NH,101.55,Solar,2028-12-30
+1460,Battery Storage,ISONE,Withdrawn,2023-10-12,2026-02-27,Bristol,MA,RI,353.54,Storage,2027-09-30
+1495,Battery Storage,ISONE,Active,2024-02-22,,Windsor,VT,VT,19.30,Storage,2029-07-01
+1502,Battery Storage,ISONE,Active,2024-03-28,,Franklin,VT,VT,19.30,Storage,2029-07-01
+1513,Battery Storage,ISONE,Active,2024-04-08,,Worcester,MA,CMA,318.27,Storage,2028-08-30
+1515,Battery Storage,ISONE,Active,2024-04-09,,Berkshire,MA,WMA,295.80,Storage,2028-08-30
+1518,Battery Storage,ISONE,Active,2024-04-09,,Berkshire,MA,WMA,139.50,Storage,2028-08-30
+1542,Battery Storage,ISONE,Active,2024-05-28,,Hampden,MA,WMA,170.00,Storage,2029-12-31
+1543,Battery Storage,ISONE,Active,2024-05-28,,Barnstable,MA,SEMA,585.30,Storage,2028-12-01
+1546,Battery Storage,ISONE,Withdrawn,2024-05-30,2026-06-25,Berkshire,MA,WMA,170.00,Storage,2029-12-31
+1551,Battery Storage,ISONE,Active,2024-05-31,,Worcester,MA,CMA,181.78,Storage,2028-04-27
+1553,Battery Storage,ISONE,Active,2024-06-04,,Middlesex,MA,CMA,126.40,Storage,2028-05-01
+1555,Battery Storage,ISONE,Active,2024-06-06,,Essex,MA,BOST,207.44,Storage,2028-01-01
+1557,Battery Storage,ISONE,Active,2024-06-06,,Essex,MA,BOST,240.16,Storage,2028-01-01
+1567,Battery Storage,ISONE,Active,2024-06-11,,Middlesex,MA,SEMA,509.18,Storage,2028-04-27
+489,Clear River,ISONE,Withdrawn,2015-01-08,2019-11-26,Providence,RI,RI,1030.00,Thermal,2022-05-31
+490,Kendall Reconfiguration Project,ISONE,Done,2015-01-15,,Middlesex,MA,BOST,75.00,Thermal,2016-05-31
+491,Fore River CNR Increase,ISONE,Done,2015-01-16,,Norfolk,MA,SEMA,800.00,Thermal,2016-01-20
+492,Combustion Turbine Generator,ISONE,Withdrawn,2015-02-05,2017-10-03,Providence,RI,RI,238.00,Thermal,2020-05-31
+496,Millinocket Frequency Conversion,ISONE,Done,2015-02-13,,Penobscot,ME,BHE,126.00,Hydro,2019-06-15
+497,Beacon Falls Energy Park,ISONE,Withdrawn,2015-02-13,2020-01-30,New Haven,CT,SWCT,62.90,Thermal,2022-04-01
+498,150 kV HVDC Tie - Import Only,ISONE,Withdrawn,2015-02-16,2018-02-02,Colchester,VT,VT,400.00,Other,2020-12-31
+499,Northern Pass Transmission Project (300 kV HVDC/AC Tie) - Import Only,ISONE,Withdrawn,2015-02-16,2019-08-14,Rockingham,NH,NH,1090.00,Other,2022-12-29
+501,NE Clean Power Link - controllable HVDC Tie - Import only,ISONE,Withdrawn,2015-02-16,2026-06-23,Windsor,VT,VT,1000.00,Other,2027-12-31
+502,345 kV Tie - Phase 1,ISONE,Withdrawn,2015-02-16,2015-04-17,Aroostook,ME,BHE,200.00,Other,2016-12-01
+503,HVDC Tie - Import only,ISONE,Withdrawn,2015-02-16,2015-04-15,Rutland,VT,VT,1000.00,Other,2018-12-31
+504,HVDC Tie - Import only,ISONE,Withdrawn,2015-02-16,2015-04-15,Addison,VT,VT,1000.00,Other,2018-12-31
+505,HVDC Tie - Import only,ISONE,Withdrawn,2015-02-16,2015-04-17,Windsor,VT,VT,1000.00,Other,2017-12-31
+506,Internal HVDC - North to South flow,ISONE,Withdrawn,2015-02-16,2020-02-10,Suffolk,MA,BOST,1000.00,Other,2027-10-01
+507,AC Tie - bidirectional flows,ISONE,Withdrawn,2015-02-16,2018-01-30,Aroostook,ME,BHE,75.00,Other,2017-07-31
+508,HVDC from NY to WMA - bidirectional,ISONE,Withdrawn,2015-02-16,2018-10-31,Berkshire,MA,WMA,600.00,Other,2019-08-30
+509,HVDC Line,ISONE,Withdrawn,2015-02-16,2015-04-17,Middlesex,MA,BOST,1100.00,Other,2017-06-30
+510,HVDC Line,ISONE,Withdrawn,2015-02-16,2015-04-15,Plymouth,MA,SEMA,1000.00,Other,2020-06-01
+511,HVDC Line,ISONE,Withdrawn,2015-02-16,2015-04-15,Barnstable,MA,SEMA,1000.00,Other,2020-06-01
+512,AC to HVDC Tie,ISONE,Withdrawn,2015-02-16,2015-04-17,Middlesex,MA,BOST,1200.00,Other,2019-03-31
+514,Expand NB/NE Interface,ISONE,Withdrawn,2015-02-16,2015-04-17,Aroostook,ME,BHE,350.00,Other,2017-11-01
+515,HVDC Tie - Import only,ISONE,Withdrawn,2015-02-16,2015-04-15,Franklin,VT,VT,425.00,Other,2018-06-30
+516,HVDC Tie - Import only,ISONE,Withdrawn,2015-02-16,2015-04-15,Addison,VT,VT,425.00,Other,2018-06-30
+517,HVDC from S. Maine to Mystic - bidirectional flow,ISONE,Withdrawn,2015-02-16,2015-07-09,Middlesex,MA,BOST,1000.00,Other,2018-12-31
+518,HVDC from S.  Maine to K Street - bidirectional fl,ISONE,Withdrawn,2015-02-16,2015-07-09,Suffolk,MA,BOST,1000.00,Other,2018-12-01
+519,HVDC/AC Tie - Import only,ISONE,Withdrawn,2015-02-16,2015-08-18,Rockingham,NH,NH,1200.00,Other,2019-04-30
+520,Simple Cycle gas turbine,ISONE,Withdrawn,2015-02-17,2016-03-10,Fairfield,CT,SWCT,109.80,Thermal,2018-05-02
+521,Combustion Turbine,ISONE,Withdrawn,2015-02-17,2016-03-10,Fairfield,CT,SWCT,109.80,Thermal,2018-05-02
+522,Plainfield 2.3 MW Capacity Restoration (CNR Only),ISONE,Done,2015-02-20,,Windham,CT,CT,38.50,Thermal,2015-07-01
+523,Combustion Turbine,ISONE,Withdrawn,2015-02-23,2015-09-11,Providence,RI,RI,226.50,Thermal,2019-05-01
+524,Combustion Turbine (Alt to Q523),ISONE,Withdrawn,2015-02-23,2015-03-31,Providence,RI,RI,226.50,Thermal,2019-05-01
+525,Tiverton Power LLC Upgrade,ISONE,Done,2015-02-25,,Newport,RI,RI,287.50,Thermal,2016-11-04
+526,Combined Cycle Upgrade #1,ISONE,Withdrawn,2015-02-26,2016-09-28,Worcester,MA,CMA,189.58,Thermal,2018-10-08
+527,Combined Cycle Uprate #2,ISONE,Done,2015-02-26,,Worcester,MA,CMA,219.58,Thermal,2018-12-14
+528,Combined Cycle Upgrate #3,ISONE,Withdrawn,2015-02-26,2016-09-28,Worcester,MA,CMA,249.58,Thermal,2018-10-08
+529,Combined Cycle CNR Only,ISONE,Withdrawn,2015-02-26,2017-06-26,Worcester,MA,CMA,585.65,Thermal,2017-11-03
+530,Bridgeport Energy Wet Compression Upgrade,ISONE,Withdrawn,2015-02-26,2017-09-14,Fairfield,CT,SWCT,578.00,Thermal,2018-06-01
+531,Combined Cycle Uprate,ISONE,Withdrawn,2015-02-27,2018-04-05,Penobscot,ME,BHE,546.85,Thermal,2018-08-01
+532,wind,ISONE,Withdrawn,2015-02-27,2016-06-01,Franklin,VT,VT,17.40,Wind,2016-09-15
+533,Milford Upgrades - Phase I,ISONE,Done,2015-02-27,,New Haven,CT,SWCT,293.00,Thermal,2017-06-05
+533,Milford Upgrades - Phase II,ISONE,Done,2015-02-27,,New Haven,CT,SWCT,293.00,Thermal,2017-05-22
+534,Lake Road Upgrades,ISONE,Done,2015-02-27,,Windham,CT,CT,882.00,Thermal,2018-05-20
+537,Combustion Turbine,ISONE,Withdrawn,2015-02-28,2015-05-21,Middlesex,MA,BOST,11.97,Thermal,2016-11-30
+538,Internal Combustion,ISONE,Withdrawn,2015-03-02,2016-04-27,Newport,RI,RI,119.40,Thermal,2019-05-31
+539,Hoosac Wind Project CNR Only,ISONE,Done,2015-03-02,,Franklin,MA,WMA,28.50,Wind,2016-01-19
+540,CPV Towantic Increase,ISONE,Done,2015-03-02,,New Haven,CT,SWCT,800.50,Thermal,2018-05-21
+541,Combined cycle (alt to Q442/472),ISONE,Withdrawn,2015-03-02,2016-02-16,Hampden,MA,WMA,431.00,Thermal,2019-03-01
+542,combustion turbine,ISONE,Withdrawn,2015-03-02,2016-04-18,Norfolk,MA,SEMA,97.00,Thermal,2018-02-01
+543,Antrim Wind,ISONE,Done,2015-03-02,,Hillsborough,NH,NH,28.40,Wind,2019-12-24
+544,Increase RISEC Winter CNR,ISONE,Done,2015-03-03,,Providence,RI,RI,613.00,Thermal,2015-08-17
+546,"NEA Bell. Uprate (Northeast Energy Associates, LP)",ISONE,Done,2015-03-04,,Norfolk,MA,SEMA,314.70,Thermal,2018-07-31
+547,Wind uprate,ISONE,Withdrawn,2015-04-28,2018-05-31,Penobscot,ME,BHE,42.90,Wind,2018-12-31
+548,Combined Cycle,ISONE,Withdrawn,2015-05-28,2016-05-19,Plymouth,MA,SEMA,870.00,Thermal,2020-05-01
+549,Combined Cycle,ISONE,Withdrawn,2015-05-28,2015-07-09,Newport,RI,RI,870.00,Thermal,2020-05-01
+550,Solar,ISONE,Withdrawn,2015-06-12,2015-08-04,Franklin,VT,VT,19.90,Solar,2016-12-01
+551,Solar,ISONE,Withdrawn,2015-06-12,2015-08-04,Windsor,VT,VT,19.90,Solar,2016-12-01
+552,"Nutmeg Solar, LLC",ISONE,Done,2015-06-12,,Hartford,CT,CT,19.90,Solar,2020-12-07
+553,Solar,ISONE,Withdrawn,2015-06-12,2015-08-28,Franklin,ME,ME,19.90,Solar,2016-12-01
+555,Wind farm,ISONE,Withdrawn,2015-08-07,2019-01-18,Oxford,ME,ME,39.60,Wind,2019-12-01
+556,Wind Farm,ISONE,Withdrawn,2015-08-07,2017-04-27,Somerset,ME,ME,79.20,Wind,2019-12-01
+557,Farminton Solar,ISONE,Done,2015-08-10,,Franklin,ME,ME,78.40,Solar,2021-10-27
+558,solar,ISONE,Withdrawn,2015-08-12,2015-09-03,Franklin,VT,VT,20.00,Solar,2016-12-01
+559,solar,ISONE,Withdrawn,2015-08-12,2015-09-03,Windsor,VT,VT,20.00,Solar,2016-12-01
+560,Solar,ISONE,Withdrawn,2015-08-27,2015-10-29,Orange,VT,VT,20.00,Solar,2016-12-01
+561,Solar,ISONE,Withdrawn,2015-08-27,2017-01-25,Franklin,VT,VT,20.00,Solar,2017-08-31
+562,Solar,ISONE,Withdrawn,2015-08-27,2017-05-24,Orleans,VT,VT,20.00,Solar,2017-08-31
+563,Solar,ISONE,Withdrawn,2015-09-01,2015-09-03,Rutland,VT,VT,20.00,Solar,2016-11-01
+564,Solar,ISONE,Withdrawn,2015-09-04,2016-02-24,Franklin,VT,VT,19.90,Solar,2016-12-01
+565,Coolidge Solar,ISONE,Done,2015-09-08,,Windsor,VT,VT,19.90,Solar,2018-12-20
+566,Solar,ISONE,Withdrawn,2015-09-09,2016-04-15,Rutland,VT,VT,19.90,Solar,2016-12-01
+567,Solar,ISONE,Withdrawn,2015-09-11,2015-09-21,Franklin,VT,VT,196.00,Solar,2017-07-01
+568,Solar,ISONE,Withdrawn,2015-09-25,2021-03-11,Rockingham,NH,NH,10.00,Solar,2021-11-01
+569,HVDC from ME to MA (MA import only),ISONE,Withdrawn,2015-10-16,2018-06-25,Plymouth,MA,SEMA,1200.00,Other,2021-12-31
+570,Kendall Revised Reconfiguration Project,ISONE,Done,2015-10-21,,Middlesex,MA,BOST,250.00,Thermal,2016-05-31
+571,Wyman Area to Larabee Rd Line,ISONE,Withdrawn,2015-11-02,2019-08-08,Somerset/Androscoggin,ME,ME,850.00,Other,2019-11-30
+572,Wind,ISONE,Withdrawn,2015-11-03,2018-04-09,Franklin,ME,ME,113.00,Wind,2019-10-31
+573,Wind,ISONE,Withdrawn,2015-11-03,2019-08-08,Franklin,ME,ME,245.38,Wind,2019-10-31
+574,Wind,ISONE,Withdrawn,2015-11-03,2019-08-08,Franklin,ME,ME,216.41,Wind,2019-10-31
+575,Casco Bay Energy Storage,ISONE,Done,2015-11-03,,Cumberland,ME,ME,16.20,Storage,2016-12-31
+576,Battery Storage,ISONE,Withdrawn,2015-11-12,2019-08-08,Franklin,ME,ME,241.49,Wind,2019-10-31
+577,Battery Storage,ISONE,Withdrawn,2015-11-12,2019-08-08,Frqanklin,ME,ME,270.46,Wind,2019-11-09
+578,Solar,ISONE,Withdrawn,2015-11-20,2019-08-08,Somerset,ME,ME,152.00,Solar,2019-10-31
+579,Energy Center,ISONE,Withdrawn,2015-11-25,2016-04-21,Cheshire,NH,VT,570.10,Thermal,2020-06-01
+580,Combined Cycle,ISONE,Withdrawn,2015-11-30,2016-05-17,Worcester,MA,CMA,1020.00,Thermal,2020-05-31
+583,Sanford Airport Solar,ISONE,Done,2015-12-04,,York,ME,ME,50.00,Solar,2020-11-07
+585,HVDC Tie NB to Mystic,ISONE,Withdrawn,2015-12-14,2018-03-05,Middlesex,MA,BOST,900.00,Other,2020-12-30
+586,Hemphill Increase,ISONE,Done,2016-01-04,,Sullivan,NH,NH,17.50,Thermal,2016-10-28
+587,Solar,ISONE,Withdrawn,2016-01-07,2016-09-28,Cheshire,NH,VT,98.00,Solar,2018-07-01
+588,Quinebaug Solar,ISONE,Done,2016-01-07,,Windham,CT,CT,49.00,Solar,2021-12-18
+589,"AC Line to Pittsfield, ME",ISONE,Withdrawn,2016-01-11,2018-04-12,Somerset,ME,ME,550.00,Other,2019-12-31
+590,"AC Line from NMISA to Chester and Pittsfield, ME",ISONE,Withdrawn,2016-01-11,2018-04-12,Somerset and Penobscot,ME,ME,1200.00,Other,2019-12-31
+591,AC Line,ISONE,Withdrawn,2016-01-20,2018-04-12,Cumberland,ME,ME,400.00,Other,2019-11-30
+592,Bear Swamp Unit 1 and 2 Upgrade,ISONE,Done,2016-01-21,,Berkshire,MA,WMA,663.00,Hydro,2023-01-06
+593,Wind,ISONE,Withdrawn,2016-01-27,2018-04-09,Franklin,ME,ME,216.41,Wind,2019-10-31
+594,Wind,ISONE,Withdrawn,2016-01-27,2018-04-09,Franklin,ME,ME,245.48,Wind,2019-10-31
+595,Bridgeport Energy PSS Tuning,ISONE,Done,2016-02-08,,Fairfield,CT,SWCT,578.00,Thermal,2016-10-28
+596,Combined Cycle,ISONE,Withdrawn,2016-02-08,2017-05-19,Windham,CT,CT,1120.00,Thermal,2020-06-01
+597,Hydro,ISONE,Withdrawn,2016-02-24,2018-04-20,Oxford/Franklin/Androscoggin,ME,ME,28.33,Hydro,2019-06-01
+598,Combined Cycle,ISONE,Withdrawn,2016-03-07,2018-03-28,Windham,CT,CT,563.00,Thermal,2022-03-01
+599,Solar,ISONE,Withdrawn,2016-04-05,2018-01-23,Cheshire,NH,VT,65.00,Solar,2018-04-18
+600,Combined Cycle Uprate,ISONE,Withdrawn,2016-04-14,2017-08-28,Providence,RI,RI,615.87,Thermal,2016-07-31
+601,Combined Cycle Upgrade,ISONE,Withdrawn,2016-04-14,2017-08-28,Providence,RI,RI,655.87,Thermal,2020-05-31
+602,Moore Station Uprate,ISONE,Done,2016-04-14,,Grafton,NH,NH,195.90,Hydro,2023-10-18
+603,Essential Power Newington - CNRC Increase,ISONE,Done,2016-04-15,,Rockingham,NH,NH,596.10,Thermal,2016-10-28
+604,Lake Road CNR Only (see Q534),ISONE,Done,2016-04-20,,Windham,CT,RI,882.00,Thermal,2018-05-20
+605,Sanford Airport Solar CNR only,ISONE,Done,2016-04-21,,York,ME,ME,50.00,Solar,2020-11-07
+607,Canton Mountain Wind CNR Only,ISONE,Done,2016-04-21,,Oxford,ME,ME,22.80,Wind,2017-12-01
+608,Combined Cycle GT,ISONE,Withdrawn,2016-04-22,2016-05-24,Bristol,MA,SEMA,68.01,Thermal,2020-05-01
+609,Gas Turbine Upgrade,ISONE,Withdrawn,2016-04-22,2016-06-03,New Haven,CT,CT,162.00,Thermal,2020-05-31
+610,Steam Turbines,ISONE,Withdrawn,2016-04-22,2017-03-24,Franklin,ME,ME,75.00,Thermal,2018-05-31
+611,Combustion Turbine,ISONE,Withdrawn,2016-04-25,2018-01-04,Fairfield,CT,SWCT,102.00,Thermal,2019-06-01
+613,Solar,ISONE,Withdrawn,2016-06-28,2016-07-13,Windham,CT,CT,63.00,Solar,2018-07-01
+614,Solar,ISONE,Withdrawn,2016-06-28,2016-07-13,Franklin,ME,ME,78.40,Solar,2018-07-01
+615,Solar,ISONE,Withdrawn,2016-06-28,2016-07-13,Cheshire,NH,VT,78.40,Solar,2018-07-01
+617,Simple Cycle Gas Turbine,ISONE,Done,2016-07-22,,Essex,MA,BOST,61.85,Thermal,2024-06-29
+618,Bay State Offshore Wind 1,ISONE,Withdrawn,2016-08-01,2022-08-10,,MA,RI,800.00,Wind,2026-05-31
+620,Solar,ISONE,Withdrawn,2016-10-07,2020-08-12,Washington,ME,BHE,75.00,Solar,2022-05-31
+621,Wind,ISONE,Withdrawn,2016-10-17,2018-04-12,Somerset,ME,ME,93.60,Wind,2020-01-15
+622,Cogen DG,ISONE,Done,2016-10-17,,Middlesex,MA,CMA,43.00,Thermal,2021-09-30
+623,Solar,ISONE,Withdrawn,2016-10-31,2021-08-12,York,ME,ME,150.00,Solar,2022-12-31
+624,Vineyard Offshore Wind,ISONE,Done,2016-11-09,,,MA,SEMA,800.00,Wind,2026-04-24
+625,345 kV AC line,ISONE,Withdrawn,2016-11-10,2019-04-11,Bristol,MA,RI,1600.00,Other,2023-12-31
+626,Wind,ISONE,Withdrawn,2016-12-14,2018-04-02,Aroostook,ME,BHE,376.20,Wind,2019-12-01
+627,400 kV HVDC Tie - Import Only,ISONE,Withdrawn,2016-12-27,2019-07-16,Grafton,NH,NH,1200.00,Other,2022-12-31
+628,Solar,ISONE,Withdrawn,2017-03-07,2017-08-09,Cheshire,NH,NH,30.00,Solar,2018-12-31
+629,Solar,ISONE,Withdrawn,2017-03-07,2017-05-23,New Haven,CT,CT,20.00,Solar,2018-12-31
+630,Project Increase,ISONE,Withdrawn,2017-04-05,2017-11-21,Hartford,CT,CT,15.67,Thermal,2017-09-01
+631,CHP,ISONE,Withdrawn,2017-04-05,2017-07-26,Coos,NH,NH,8.64,Thermal,2018-07-15
+632,Offshore Wind w/ battery storage,ISONE,Withdrawn,2017-04-05,2020-01-23,,MA,SEMA,880.00,Wind,2024-12-06
+633,Passadumkeag Wind CNR only,ISONE,Done,2017-04-06,,Penobscot,ME,BHE,39.97,Wind,2019-06-28
+634,Wind CNR (see Q573),ISONE,Withdrawn,2017-04-11,2019-08-08,Franklin,ME,ME,245.38,Wind,2019-10-31
+635,Wind CNR (see Q574),ISONE,Withdrawn,2017-04-13,2019-08-08,Franklin,ME,ME,216.41,Wind,2019-10-31
+636,BSS CNR only (see Q576),ISONE,Withdrawn,2017-04-13,2019-08-08,Franklin,ME,ME,241.49,Wind,2019-10-31
+637,BSS CNR only (see Q577),ISONE,Withdrawn,2017-04-13,2019-08-08,Franklin,ME,ME,270.46,Wind,2019-10-31
+638,Solar CNR only (see Q578),ISONE,Withdrawn,2017-04-13,2019-08-08,Franklin,ME,ME,152.00,Solar,2019-10-31
+641,Wind,ISONE,Withdrawn,2017-04-24,2018-08-13,Oxford,ME,ME,54.60,Wind,2020-12-31
+642,Repowering Increase,ISONE,Withdrawn,2017-04-26,2017-05-31,Norfolk,MA,SEMA,98.12,Thermal,2021-05-22
+643,Solar CNR only,ISONE,Withdrawn,2017-04-27,2017-05-23,New Haven,CT,CT,20.00,Solar,2018-12-31
+644,Solar,ISONE,Withdrawn,2017-04-28,2017-07-24,Franklin,VT,VT,20.10,Solar,2018-10-31
+645,Solar,ISONE,Withdrawn,2017-04-28,2017-07-24,Orange,VT,VT,20.10,Solar,2019-12-15
+646,Solar,ISONE,Withdrawn,2017-04-28,2017-07-24,Franklin,VT,VT,20.10,Solar,2019-09-01
+647,Gas turbine repowering,ISONE,Withdrawn,2017-04-28,2020-06-11,Middlesex,CT,CT,376.00,Thermal,2022-05-31
+648,Gas Turbine Repowering,ISONE,Withdrawn,2017-04-28,2017-06-01,Middlesex,CT,CT,376.00,Thermal,2021-05-31
+649,Silver Maple Wind,ISONE,Done,2017-05-04,,Penobscot,ME,BHE,20.00,Wind,2022-12-14
+653,Number Nine Wind CNR only (Q417),ISONE,Withdrawn,2017-06-09,2019-05-13,Aroostook,ME,BHE,250.00,Wind,2021-10-31
+654,"Wind CNR only (see Q460, 461, 462)",ISONE,Withdrawn,2017-06-09,2018-04-12,Aroostook,ME,BHE,312.00,Wind,2020-12-30
+655,RoxWind,ISONE,Done,2017-06-15,,Oxford,ME,ME,15.30,Wind,2021-11-30
+656,Weaver Wind CNR (see Q420),ISONE,Withdrawn,2017-06-28,2021-02-09,Hancock,ME,BHE,72.60,Wind,2020-12-12
+660,Solar,ISONE,Withdrawn,2017-07-20,2020-09-10,Windham,VT,NH,20.00,Solar,2022-07-01
+662,Wind,ISONE,Withdrawn,2017-07-20,2018-04-12,Franklin,ME,ME,150.00,Wind,2022-12-01
+663,Wind,ISONE,Withdrawn,2017-07-21,2018-04-12,Franklin,ME,ME,241.20,Wind,2020-10-31
+664,Wind,ISONE,Withdrawn,2017-07-21,2018-04-12,Franklin,ME,ME,214.30,Wind,2020-10-31
+665,Battery storage addition (see Q663),ISONE,Withdrawn,2017-07-21,2018-04-12,Franklin,ME,ME,265.60,Wind,2020-10-31
+666,battery storage additional (see Q664),ISONE,Withdrawn,2017-07-21,2018-04-12,Franklin,ME,ME,238.60,Wind,2020-10-31
+667,Solar,ISONE,Withdrawn,2017-07-21,2018-04-12,Somerset,ME,ME,150.00,Solar,2020-10-31
+669,Offshore Wind,ISONE,Withdrawn,2017-07-25,2019-02-14,,MA,RI,288.00,Wind,2023-12-01
+670,Three Corners Solar,ISONE,Done,2017-07-25,,Somerset,ME,ME,113.40,Solar,2024-07-27
+671,Solar,ISONE,Withdrawn,2017-07-26,2017-10-25,Hartford,CT,CT,26.00,Solar,2019-12-01
+672,Wind,ISONE,Withdrawn,2017-07-26,2019-10-22,Aroostook,ME,BHE,630.00,Wind,2022-12-31
+673,wind,ISONE,Withdrawn,2017-07-26,2017-11-27,Franklin,VT,VT,20.00,Wind,2020-12-31
+674,Shaftsbury Solar,ISONE,Active,2017-07-28,,Bennington,VT,VT,20.00,Solar,2028-01-01
+675,Solar,ISONE,Withdrawn,2017-07-28,2017-09-27,New London,CT,CT,22.00,Solar,2019-12-31
+676,Claremont Solar,ISONE,Withdrawn,2017-08-03,2021-10-05,Sullivan,NH,NH,20.00,Solar,2023-07-01
+677,Solar,ISONE,Withdrawn,2017-08-03,2017-10-24,Grafton,NH,NH,20.00,Solar,2019-07-01
+678,Solar,ISONE,Withdrawn,2017-08-03,2017-10-24,Grafton,NH,NH,20.00,Solar,2019-07-01
+679,Solar,ISONE,Withdrawn,2017-08-03,2021-01-26,Hillsborough,NH,VT,20.00,Solar,2022-07-01
+680,Fair Haven Solar,ISONE,Active,2017-08-03,,Rutland,VT,VT,20.00,Solar,2027-07-01
+681,Solar,ISONE,Withdrawn,2017-08-03,2021-01-26,Grafton,NH,NH,20.00,Solar,2022-07-01
+682,solar with battery,ISONE,Withdrawn,2017-09-18,2018-07-24,Worcester,MA,CMA,20.00,Hybrid,2020-12-01
+683,Solar,ISONE,Withdrawn,2017-10-20,2019-05-21,Grafton,NH,NH,20.00,Solar,2020-07-01
+684,Solar,ISONE,Withdrawn,2017-10-20,2019-05-10,Grafton,NH,NH,20.00,Solar,2020-07-01
+685,Solar,ISONE,Withdrawn,2017-10-20,2019-11-26,Coos,NH,NH,20.00,Solar,2022-07-01
+686,Solar,ISONE,Withdrawn,2017-10-24,2020-03-12,Berkshire,MA,WMA,19.98,Solar,2021-12-15
+687,Energy Storage,ISONE,Withdrawn,2017-11-21,2019-02-06,Barnstable,MA,SEMA,150.00,Storage,2021-12-31
+688,Energy Storage,ISONE,Withdrawn,2017-11-21,2018-02-09,Worcester,MA,CMA,50.00,Storage,2021-12-31
+689,Energy Storage,ISONE,Withdrawn,2017-11-21,2020-02-14,Middlesex,MA,BOST,100.00,Storage,2023-05-31
+690,Energy Storage,ISONE,Withdrawn,2017-11-21,2018-02-09,Bristol,MA,SEMA,100.00,Storage,2021-12-31
+691,University Solar,ISONE,Done,2017-11-20,,Kent,RI,RI,31.34,Solar,2020-09-15
+692,Solar,ISONE,Done,2017-11-20,,Providence,RI,RI,16.25,Solar,2019-05-24
+693,Alton Solar,ISONE,Done,2017-11-20,,Washington,RI,RI,13.88,Solar,2020-04-30
+694,Solar,ISONE,Withdrawn,2017-11-20,2020-08-14,Washington,RI,RI,7.00,Solar,2020-09-01
+695,Solar,ISONE,Withdrawn,2017-11-20,2020-08-14,Washington,RI,RI,6.12,Solar,2020-09-01
+696,Johnston Landfill Wind,ISONE,Done,2017-11-27,,Providence,RI,RI,21.00,Wind,2018-12-20
+697,Solar,ISONE,Done,2017-12-07,,Worcester,MA,CMA,5.97,Solar,2020-02-05
+698,Solar,ISONE,Done,2017-12-07,,Worcester,MA,CMA,8.04,Solar,2020-02-05
+699,Offshore Wind with battery addition,ISONE,Withdrawn,2017-12-13,2019-02-14,,MA,RI,875.00,Wind,2023-05-31
+700,Park City Offshore Wind,ISONE,Active,2017-12-15,,,MA,SEMA,791.00,Wind,2029-12-31
+701,Offshore Wind,ISONE,Withdrawn,2017-12-15,2019-02-14,,MA,RI,400.00,Wind,2023-12-01
+702,Solar,ISONE,Done,2018-01-24,,Plymouth,MA,SEMA,9.50,Solar,2019-07-10
+703,Solar,ISONE,Done,2018-01-24,,Plymouth,MA,SEMA,6.75,Solar,2019-04-23
+705,Combined Cycle CNR,ISONE,Withdrawn,2018-01-26,2019-11-26,Providence ,RI,RI,1030.00,Thermal,2023-05-31
+706,Beacon Falls Energy Park CNR only,ISONE,Withdrawn,2018-02-21,2020-01-30,New Haven,CT,CT,62.90,Other,2022-04-01
+707,Solar,ISONE,Withdrawn,2018-02-21,2019-04-03,Windham,CT,CT,7.50,Solar,2019-04-01
+708,Solar,ISONE,Withdrawn,2018-02-21,2024-05-10,Litchfield,CT,CT,20.00,Solar,2024-02-01
+709,Fuel Cell,ISONE,Withdrawn,2018-02-21,2020-10-01,Hartford,CT,CT,14.80,Other,2021-01-01
+710,Solar,ISONE,Done,2018-02-21,,Litchfield,CT,CT,19.80,Solar,2025-02-24
+711,Solar,ISONE,Done,2018-02-21,,New London,CT,CT,9.99,Solar,2024-03-30
+712,Solar,ISONE,Withdrawn,2018-02-21,2023-02-15,Windham,CT,CT,20.00,Solar,2025-06-30
+713,Solar,ISONE,Done,2018-02-21,,Hartford,CT,CT,26.40,Solar,2019-12-10
+714,Solar,ISONE,Withdrawn,2018-02-21,2023-03-09,Windham,CT,CT,20.00,Solar,2023-06-01
+715,Fusion Solar Center,ISONE,Done,2018-02-21,,New London,CT,CT,20.00,Solar,2018-04-18
+716,Solar,ISONE,Done,2018-02-21,,New London,CT,CT,17.73,Solar,2023-08-18
+717,Battery Storage,ISONE,Withdrawn,2018-02-21,2022-05-26,Hartford,CT,CT,20.00,Storage,2022-02-01
+718,Solar,ISONE,Withdrawn,2018-02-21,2018-03-02,New London,CT,CT,6.00,Solar,2019-04-02
+719,Solar,ISONE,Withdrawn,2018-02-21,2018-04-25,Hartford,CT,CT,19.92,Solar,2021-01-01
+720,Solar,ISONE,Done,2018-02-21,,New London,CT,CT,15.00,Solar,2022-10-01
+721,Solar,ISONE,Withdrawn,2018-02-21,2018-04-25,Hartford,CT,CT,26.40,Solar,2020-01-01
+722,Solar,ISONE,Withdrawn,2018-02-21,2018-04-25,Hartford,CT,CT,24.60,Solar,2020-01-01
+723,Battery Storage,ISONE,Withdrawn,2018-03-01,2019-03-27,Barnstable,MA,SEMA,142.80,Storage,2021-05-31
+724,NTE Connecticut,ISONE,Withdrawn,2018-03-07,2023-07-12,Windham,CT,CT,671.00,Thermal,2025-02-28
+725,Wallingford Solar,ISONE,Done,2018-03-20,,New Haven,CT,SWCT,14.97,Solar,2020-12-18
+726,Cranberry Point Energy Storage,ISONE,Done,2018-03-21,,Plymouth,MA,SEMA,150.00,Storage,2025-05-16
+727,Chariot Solar,ISONE,Withdrawn,2018-04-10,2025-01-13,Cheshire,NH,VT,49.50,Solar,2024-12-15
+728,Vernon Station Incremental Capacity Increase,ISONE,Done,2018-04-02,,Windham,VT,VT,34.90,Hydro,2019-03-31
+729,Wind,ISONE,Withdrawn,2018-04-12,2020-12-01,Aroostook,ME,BHE,103.50,Wind,2022-11-20
+730,Wind,ISONE,Withdrawn,2018-04-12,2020-12-01,Aroostook,ME,BHE,103.50,Wind,2022-11-20
+731,Wind,ISONE,Withdrawn,2018-04-12,2020-12-01,Aroostook,ME,BHE,103.50,Wind,2022-11-20
+732,Wind,ISONE,Withdrawn,2018-04-12,2020-12-01,Aroostook,ME,BHE,103.50,Wind,2022-11-20
+733,Wind,ISONE,Withdrawn,2018-04-12,2020-12-01,Aroostook,ME,BHE,103.50,Wind,2022-11-20
+734,Wind,ISONE,Withdrawn,2018-04-12,2019-02-07,Aroostook,ME,BHE,600.60,Wind,2021-12-01
+735,Wind,ISONE,Withdrawn,2018-04-12,2019-02-07,Aroostook,ME,BHE,600.60,Wind,2021-12-01
+739,Wind,ISONE,Withdrawn,2018-04-12,2019-01-16,Somerset,ME,ME,89.70,Wind,2020-01-30
+744,Wind,ISONE,Withdrawn,2018-04-12,2019-02-07,Franklin,ME,ME,150.00,Wind,2022-12-01
+745,Wind,ISONE,Withdrawn,2018-04-12,2019-08-27,Franklin,ME,ME,241.20,Wind,2021-10-29
+746,Wind,ISONE,Withdrawn,2018-04-12,2019-08-27,Franklin,ME,ME,214.30,Wind,2021-12-15
+747,Battery storage addition (see Q745),ISONE,Withdrawn,2018-04-12,2019-08-27,Franklin,ME,ME,265.60,Wind,2021-10-31
+748,Battery storage addition (see Q746),ISONE,Withdrawn,2018-04-12,2019-08-27,Franklin,ME,ME,238.60,Wind,2021-10-31
+749,Solar,ISONE,Withdrawn,2018-04-12,2019-08-27,Franklin,ME,ME,150.00,Solar,2021-10-31
+750,Solar,ISONE,Withdrawn,2018-04-12,2019-08-06,Franklin,VT,VT,20.00,Solar,2021-11-01
+751,Solar,ISONE,Withdrawn,2018-04-12,2020-08-12,Orange,VT,VT,20.00,Solar,2021-11-01
+752,Energy Storage,ISONE,Withdrawn,2018-04-19,2019-05-13,Bristol,MA,SEMA,102.85,Storage,2022-05-02
+753,Solar,ISONE,Withdrawn,2018-04-20,2019-08-06,Franklin,VT,VT,20.00,Solar,2021-11-01
+754,Solar,ISONE,Withdrawn,2018-04-25,2021-10-31,Cheshire,NH,NH,30.00,Solar,2024-07-30
+755,Bingham Wind CNR Only,ISONE,Done,2018-04-25,,Somerset,ME,ME,184.80,Wind,2016-12-13
+756,Solar,ISONE,Withdrawn,2018-04-26,2020-08-12,Kennebec,ME,ME,20.00,Solar,2021-11-01
+757,Solar,ISONE,Withdrawn,2018-04-26,2020-08-12,Somerset,ME,ME,20.00,Solar,2021-11-01
+758,Ocean State Power uprate,ISONE,Done,2018-04-26,,Providence,RI,RI,631.20,Thermal,2026-05-27
+759,Wallingford GT Uprate,ISONE,Done,2018-04-26,,New Haven,CT,SWCT,350.00,Thermal,2022-05-31
+760,Downeast Wind,ISONE,Done,2018-04-26,,Washington,ME,BHE,126.00,Wind,2025-05-29
+761,Storage,ISONE,Withdrawn,2018-04-27,2020-03-26,Middlesex,MA,BOST,150.00,Storage,2021-05-31
+762,Solar,ISONE,Withdrawn,2018-04-27,2018-05-18,Rutland,VT,VT,22.50,Solar,2020-08-01
+763,Davenport Solar,ISONE,Withdrawn,2018-04-27,2022-06-14,Rutland,VT,VT,15.00,Solar,2021-12-01
+764,Solar,ISONE,Done,2018-05-09,,Providence,RI,RI,10.00,Solar,2019-09-30
+765,Solar,ISONE,Withdrawn,2018-05-09,2021-01-25,Providence,RI,RI,10.00,Solar,2021-07-15
+766,Solar,ISONE,Withdrawn,2018-05-22,2025-06-13,Washington,RI,RI,5.20,Solar,2025-03-28
+767,Solar,ISONE,Withdrawn,2018-06-13,2019-06-03,Fairfield,ME,ME,20.00,Solar,2020-11-30
+768,Solar with battery addition,ISONE,Done,2018-06-13,,Hampshire,MA,WMA,6.14,Hybrid,2019-09-03
+769,Wind,ISONE,Withdrawn,2018-06-13,2018-08-21,Berkshire,MA,WMA,7.50,Wind,2020-03-01
+770,Solar,ISONE,Withdrawn,2018-06-20,2018-07-27,Rockingham,NH,NH,10.00,Solar,2019-06-01
+771,Battery Storage,ISONE,Withdrawn,2018-07-26,2018-08-28,Penobscot,ME,BHE,19.01,Storage,2019-06-01
+772,"Combined Reciprocating, Solar and Battery",ISONE,Done,2018-08-07,,Middlesex,MA,BOST,7.81,Hybrid,2019-06-03
+774,Solar,ISONE,Withdrawn,2018-08-13,2025-06-13,Washington,RI,SEMA,8.00,Solar,2021-07-15
+775,Solar,ISONE,Withdrawn,2018-08-20,2020-08-21,Kennebec,ME,ME,20.00,Solar,2021-11-01
+776,Solar,ISONE,Withdrawn,2018-08-29,2018-10-17,North Kingstown,RI,SEMA,10.00,Solar,2019-10-01
+777,Solar,ISONE,Withdrawn,2018-08-29,2019-10-17,North Kingstown,RI,SEMA,40.00,Solar,2020-08-01
+778,Kearsarge Solar with battery ,ISONE,Done,2018-08-31,,Norfolk,MA,SEMA,5.40,Hybrid,2021-12-21
+779,Solar with Battery,ISONE,Done,2018-09-04,,Worcester,MA,WMA,9.98,Hybrid,2021-08-03
+780,"Combined Reciprocating, Solar and Battery modification",ISONE,Withdrawn,2018-09-11,2025-06-13,Middlesex,MA,BOST,7.81,Hybrid,2022-05-31
+781,Revoultion Offshore wind,ISONE,Active,2018-09-13,,,RI,RI,704.00,Wind,2026-11-05
+782,Offshore Wind,ISONE,Withdrawn,2018-09-13,2019-09-27,,RI,RI,352.00,Wind,2024-12-01
+784,CPV Towantic incremental,ISONE,Done,2018-09-18,,New Haven,CT,SWCT,845.50,Thermal,2020-03-01
+785,Tilton Heights Energy Center,ISONE,Withdrawn,2018-09-26,2024-11-27,Belknap,NH,NH,19.90,Solar,2025-09-25
+786,Keay Brook Energy Solar,ISONE,Withdrawn,2018-09-26,2024-11-27,York,ME,ME,19.90,Solar,2025-09-25
+787,Black Hill Point Energy Center,ISONE,Withdrawn,2018-09-26,2024-11-27,Windham,CT,CT,19.90,Solar,2025-09-25
+788,Solar,ISONE,Withdrawn,2018-09-28,2022-09-09,New London,CT,CT,19.90,Solar,2023-12-31
+789,CHP,ISONE,Withdrawn,2018-09-28,2025-06-13,Newport,RI,RI,6.27,Thermal,2021-06-30
+790,Solar,ISONE,Withdrawn,2018-10-11,2019-02-13,Coos,NH,NH,15.00,Solar,2020-07-01
+791,Offshore Wind,ISONE,Withdrawn,2018-10-19,2020-03-05,,CT,CT,805.00,Wind,2023-05-31
+792,Offshore Wind,ISONE,Withdrawn,2018-10-19,2022-01-13,,CT,CT,805.00,Wind,2023-05-31
+793,Solar (QF),ISONE,Withdrawn,2018-10-26,2025-06-13,North Kingstown,RI,RI,40.00,Solar,2025-04-01
+794,Solar (QF),ISONE,Withdrawn,2018-10-26,2025-06-13,North Kingstown,RI,RI,10.00,Solar,2025-04-01
+795,Solar (QF),ISONE,Withdrawn,2018-10-26,2022-04-04,North Kingstown,RI,RI,56.50,Solar,2021-06-01
+796,Solar  ,ISONE,Withdrawn,2018-10-26,2018-12-06,Hartford,CT,CT,50.00,Solar,2022-11-01
+797,Solar,ISONE,Withdrawn,2018-11-05,2025-06-13,Worcester,MA,WMA,8.12,Solar,2020-12-30
+798,Solar,ISONE,Withdrawn,2018-11-08,2019-08-02,Androscoggin,ME,ME,15.00,Solar,2021-11-01
+799,Solar,ISONE,Withdrawn,2018-11-16,2021-03-05,Sullivan,NH,NH,10.00,Solar,2021-11-01
+800,Solar,ISONE,Withdrawn,2018-11-30,2019-02-13,Somerset,ME,ME,19.80,Solar,2022-04-01
+801,Solar,ISONE,Withdrawn,2018-11-30,2019-02-15,Cheshire,NH,NH,14.00,Solar,2022-04-01
+802,Generator Increase,ISONE,Withdrawn,2018-12-04,2019-08-06,Hartford,CT,CT,15.60,Thermal,2019-09-03
+803,Solar,ISONE,Withdrawn,2018-12-06,2021-08-04,York,ME,ME,50.00,Solar,2021-07-01
+804,Solar,ISONE,Withdrawn,2018-12-10,2019-02-04,Windham,CT,CT,5.00,Solar,2020-07-01
+805,Solar,ISONE,Withdrawn,2018-12-10,2025-06-13,Middletown,RI,RI,10.99,Solar,2025-02-26
+806,Offshore Wind,ISONE,Withdrawn,2018-12-12,2026-01-23,,MA,SEMA,827.00,Wind,2032-12-31
+807,FPS Panton Solar,ISONE,Active,2018-12-13,,Addison,VT,VT,50.00,Solar,2027-12-01
+808,Barre substation - NG Western MA Area Cluster Study,ISONE,Withdrawn,2018-12-14,2025-06-13,Worcester,MA,WMA,12.40,Solar,2022-12-30
+809,Belchertown Substation - NG Western MA Area Cluster Study,ISONE,Done,2018-12-14,,Hampden,MA,WMA,8.00,Solar,2021-08-08
+811,Crystal Lake Substation - NG Western MA Area Cluster Study,ISONE,Done,2018-12-14,,Worcester,MA,WMA,24.73,Solar,2020-12-31
+812,E. Westminster Substation - NG Western MA Area Cluster Study,ISONE,Withdrawn,2018-12-14,2025-06-13,Worcester,MA,WMA,7.98,Solar,2022-08-01
+815,Lashaway Substation - NG Western MA Area Cluster Study,ISONE,Withdrawn,2018-12-14,2025-06-13,Worcester,MA,WMA,13.68,Solar,2022-04-15
+817,Little Rest Rd Substation - NG Western MA Area Cluster Study,ISONE,Withdrawn,2018-12-14,2025-06-13,Worcester,MA,WMA,6.00,Solar,2022-08-20
+818,Meadow Street 552 Substation - NG Western MA Area Cluster Study,ISONE,Withdrawn,2018-12-14,2025-06-13,Worcester,MA,WMA,13.38,Solar,2022-11-08
+819,N. Oxford Substation - NG Western MA Area Cluster Study,ISONE,Done,2018-12-14,,Worcester,MA,WMA,8.70,Solar,2020-12-30
+820,Palmer Substation - NG Western MA Area Cluster Study,ISONE,Withdrawn,2018-12-14,2025-06-13,Hampden,MA,WMA,18.09,Solar,2022-01-20
+823,Thorndike Substation - NG Western MA Area Cluster Study,ISONE,Withdrawn,2018-12-14,2025-06-13,Hampden,MA,WMA,12.45,Solar,2023-12-31
+824,Ware Substation - NG Western MA Area Cluster Study,ISONE,Withdrawn,2018-12-14,2025-06-13,Hampshire,MA,WMA,13.27,Solar,2023-12-31
+825,Webster St - NG Western MA Area Cluster Study,ISONE,Withdrawn,2018-12-14,2019-03-15,Worcester,MA,WMA,9.00,Solar,2020-08-01
+826,Wendell Depot Substation - NG Western MA Area Cluster Study,ISONE,Done,2018-12-14,,Franklin,MA,WMA,14.97,Solar,2021-10-16
+829,Offshore Wind,ISONE,Withdrawn,2018-12-19,2022-05-24,,MA,SEMA,400.00,Wind,2025-07-02
+830,Offshore Wind,ISONE,Withdrawn,2018-12-19,2022-05-24,,MA,SEMA,860.00,Wind,2025-07-01
+831,Battery Storage,ISONE,Withdrawn,2018-12-21,2021-03-16,Windham,CT,CT,200.00,Storage,2024-05-01
+832,Battery Storage,ISONE,Withdrawn,2019-01-04,2019-09-05,Plymouth,MA,SEMA,150.00,Storage,2021-12-01
+833,Three Rivers Solar,ISONE,Active,2019-01-09,,Hancock,ME,BHE,100.00,Solar,2026-12-31
+834,GD 1-9 Iron Mine Solar,ISONE,Done,2019-01-17,,N. Smithfield,RI,RI,38.40,Solar,2022-05-13
+835,Solar,ISONE,Withdrawn,2019-01-22,2025-06-13,Norfolk,MA,SEMA,5.00,Solar,2021-09-03
+836,Solar,ISONE,Withdrawn,2019-01-31,2025-06-13,Cranston,RI,RI,6.25,Solar,2023-03-01
+838,Solar,ISONE,Withdrawn,2019-02-25,2025-06-13,Kent,RI,RI,9.80,Solar,2021-09-30
+839,Solar,ISONE,Done,2019-02-25,,Kent,RI,RI,20.00,Solar,2023-03-17
+840,Sanford Airport Solar CNR only,ISONE,Done,2019-03-01,,York,ME,ME,50.00,Solar,2020-11-07
+841,Quinebaug Solar CNR only,ISONE,Done,2019-03-05,,Windham,CT,CT,49.90,Solar,2021-12-18
+842,Milo Solar,ISONE,Done,2019-03-05,,Pisataquis,ME,BHE,20.00,Solar,2021-09-25
+843,Solar,ISONE,Withdrawn,2019-03-07,2019-04-18,Essex,VT,VT,12.00,Solar,2020-07-01
+844,Medway Grid Battery Storage,ISONE,Done,2019-03-13,,Norfolk,MA,SEMA,250.00,Storage,2026-02-25
+845,Solar,ISONE,Withdrawn,2019-03-18,2019-11-08,Windham,CT,CT,20.00,Solar,2020-07-01
+846,Offshore Wind Increase,ISONE,Withdrawn,2019-03-19,2022-08-10,,MA,RI,840.00,Wind,2026-05-31
+847,Battery Storage,ISONE,Withdrawn,2019-03-19,2020-03-06,Essex,MA,BOST,150.00,Storage,2023-05-31
+848,Adams substation - NG Western MA Area Cluster Study,ISONE,Withdrawn,2019-03-21,2025-06-13,Berkshire,MA,WMA,10.98,Solar,2021-12-31
+851,Brookfield substation - NG Western MA Area Cluster Study,ISONE,Withdrawn,2019-03-21,2020-02-18,Worcester,MA,WMA,24.00,Solar,2020-08-01
+853,East Longmeadow substation - NG Western MA Area Cluster Study,ISONE,Withdrawn,2019-03-21,2025-06-13,Hampden,MA,WMA,8.99,Solar,2022-08-07
+854,Litchfield substation - NG Western MA Area Cluster Study,ISONE,Done,2019-03-21,,Worcester,MA,WMA,9.49,Solar,2021-04-30
+855,Millbury substation - NG Western MA Area Cluster Study,ISONE,Withdrawn,2019-03-21,2025-06-13,Worcester,MA,WMA,14.44,Solar,2023-11-01
+856,New Salem substation - NG Western MA Area Cluster Study,ISONE,Done,2019-03-21,,Worcester,MA,WMA,21.27,Solar,2020-08-01
+857,Powder Mill substation - NG Western MA Area Cluster Study,ISONE,Done,2019-03-21,,Worcester,MA,WMA,70.66,Solar,2020-08-01
+860,Shutesbury substation - NG Western MA Area Cluster Study,ISONE,Withdrawn,2019-03-21,2025-06-13,Hampshire,MA,WMA,19.99,Solar,2023-12-31
+861,Snow Street substation - NG Western MA Area Cluster Study,ISONE,Withdrawn,2019-03-21,2025-06-13,Worcester,MA,WMA,24.65,Solar,2023-04-05
+862,Stafford Street substation - NG Western MA Area Cluster Study,ISONE,Withdrawn,2019-03-21,2021-10-20,Worcester,MA,WMA,20.38,Solar,2022-10-01
+864,W. Charlton substation - NG Western MA Area Cluster Study,ISONE,Withdrawn,2019-03-21,2025-06-13,Worcester,MA,WMA,17.03,Solar,2022-10-10
+865,West Hampden 139 substation - NG Western MA Area Cluster Study,ISONE,Withdrawn,2019-03-21,2025-06-13,Hampden,MA,WMA,13.17,Solar,2023-03-10
+866,Whitmanville substation - NG Western MA Area Cluster Study,ISONE,Done,2019-03-21,,Worcester,MA,WMA,26.61,Solar,2020-08-01
+868,Nellie Solar,ISONE,Withdrawn,2019-04-10,2024-10-18,Sullivan,NH,NH,15.00,Solar,2024-10-01
+869,Solar,ISONE,Withdrawn,2019-03-26,2025-06-13,Providence,RI,RI,6.22,Solar,2025-03-10
+870,Solar,ISONE,Withdrawn,2019-03-26,2025-06-13,Providence,RI,RI,6.22,Solar,2025-03-10
+871,Energy Storage,ISONE,Withdrawn,2019-03-28,2020-01-17,Grafton,NH,NH,100.00,Storage,2023-05-31
+872,Battery Storage,ISONE,Withdrawn,2019-04-01,2020-02-08,Washington,RI,RI,180.00,Storage,2023-03-01
+874,Cross Town Battery Storage,ISONE,Done,2019-04-08,,Cumberland,ME,ME,182.00,Storage,2025-11-29
+875,Farmington Solar CNR only,ISONE,Done,2019-04-08,,Franklin,ME,ME,78.40,Solar,2021-10-27
+876,Energy Storage,ISONE,Withdrawn,2019-04-11,2021-12-20,Bristol,MA,SEMA,246.00,Storage,2024-12-31
+877,Energy Storage,ISONE,Active,2019-04-11,,Norfolk,MA,SEMA,170.00,Storage,2027-07-26
+878,Solar,ISONE,Withdrawn,2019-04-15,2019-05-01,Sullivan,NH,NH,19.80,Solar,2020-11-05
+879,Simple Cycle Combustion Turbine Repowering (alternative to Q647),ISONE,Withdrawn,2019-04-15,2019-05-28,Middlesex,CT,CT,376.00,Thermal,2023-05-31
+880,Generator reactivation,ISONE,Withdrawn,2019-04-17,2019-05-15,Penobscot,ME,BHE,24.00,Thermal,2020-10-30
+881,Fore River CNR Uprate,ISONE,Done,2019-04-18,,Norfolk,MA,SEMA,800.00,Thermal,2020-06-01
+882,Kendall CNR Restoration,ISONE,Done,2019-04-24,,Middlesex,MA,BOST,248.50,Thermal,2021-11-04
+883,Kendall Combined Cycle increase,ISONE,Withdrawn,2019-04-24,2025-03-04,Middlesex,MA,BOST,264.95,Thermal,2025-06-01
+884,Nutmeg Solar CNR only,ISONE,Done,2019-04-24,,Hartford,CT,CT,19.90,Solar,2020-12-07
+885,Fuel Cell,ISONE,Withdrawn,2019-04-25,2019-09-03,Hartford,CT,CT,20.24,Thermal,2020-06-30
+886,Battery Storage,ISONE,Withdrawn,2019-04-26,2020-03-06,Norfolk,MA,SEMA,200.00,Storage,2023-05-31
+887,Battery Storage,ISONE,Withdrawn,2019-04-26,2023-11-14,Plymouth,MA,SEMA,150.00,Storage,2026-05-31
+888,Millinocket Battery additon,ISONE,Done,2019-04-26,,Penobscot,ME,BHE,126.00,Hydro,2020-12-30
+892,Gravel Pit Solar,ISONE,Done,2019-06-12,,Hartford,CT,CT,50.00,Solar,2025-08-13
+893,Offshore Wind,ISONE,Withdrawn,2019-06-07,2021-10-20,,CT,CT,1200.00,Wind,2025-05-31
+894,Gas turbine repowering (Alt. to Q647),ISONE,Withdrawn,2019-06-10,2021-12-02,Middlesex,CT,CT,376.00,Thermal,2025-05-31
+895,CT additional,ISONE,Withdrawn,2019-06-27,2019-08-09,Tolland,CT,CT,37.05,Thermal,2021-02-01
+896,Saco Solar,ISONE,Withdrawn,2019-07-17,2025-12-08,York,ME,ME,19.60,Solar,2026-07-01
+897,Solar,ISONE,Withdrawn,2019-07-26,2019-08-28,Grafton,NH,NH,60.00,Solar,2022-06-01
+898,Solar,ISONE,Withdrawn,2019-07-26,2019-08-28,Grafton,NH,NH,33.10,Solar,2022-06-01
+902,Solar,ISONE,Done,2019-08-01,,Kennebec,ME,ME,7.20,Solar,2021-07-02
+903,Solar,ISONE,Done,2019-08-01,,Kennebec,ME,ME,7.00,Solar,2022-07-13
+904,Battery Storage,ISONE,Withdrawn,2019-08-01,2025-01-08,Kennebec,ME,ME,14.00,Storage,2024-01-25
+905,Battery Storage,ISONE,Withdrawn,2019-08-01,2025-01-08,Cumberland,ME,ME,10.00,Storage,2024-08-01
+907,Solar,ISONE,Withdrawn,2019-08-01,2019-10-17,Androscoggin ,ME,ME,5.00,Solar,2020-08-31
+908,Solar,ISONE,Withdrawn,2019-08-01,2019-10-17,Somerset,ME,ME,9.00,Solar,2020-12-31
+909,Offshore Wind,ISONE,Withdrawn,2019-08-01,2024-02-13,,MA,SEMA,814.00,Wind,2026-05-31
+910,Mousam River Solar,ISONE,Done,2019-08-27,,York,ME,ME,20.00,Solar,2025-10-24
+911,Solar,ISONE,Withdrawn,2019-08-22,2022-07-05,Oxford,ME,ME,35.00,Solar,2024-12-30
+912,Bloom Energy Fuel Cell,ISONE,Done,2019-08-23,,New London,CT,CT,10.20,Other,2021-10-20
+913,Solar,ISONE,Withdrawn,2019-08-29,2019-10-17,Androscoggin,ME,ME,9.98,Solar,2020-12-31
+914,Solar,ISONE,Withdrawn,2019-08-29,2019-10-17,Androscoggin,ME,ME,5.00,Solar,2020-12-31
+915,Solar and Battery,ISONE,Withdrawn,2019-08-29,2019-10-17,Oxford,ME,ME,5.00,Hybrid,2020-12-31
+916,Solar and Battery,ISONE,Withdrawn,2019-08-29,2019-10-17,Cumberland,ME,ME,5.00,Hybrid,2020-12-31
+917,Solar and Battery,ISONE,Withdrawn,2019-08-29,2019-10-17,Androscoggin,ME,ME,7.50,Hybrid,2020-12-31
+918,Solar and Battery,ISONE,Withdrawn,2019-08-29,2019-10-17,Howard,ME,ME,5.00,Hybrid,2020-12-31
+919,Solar and Battery,ISONE,Withdrawn,2019-08-29,2019-10-17,Knox,ME,ME,5.00,Hybrid,2020-12-31
+920,Solar and Battery,ISONE,Withdrawn,2019-08-29,2019-10-17,York,ME,ME,11.68,Hybrid,2020-12-31
+921,Solar and Battery,ISONE,Withdrawn,2019-08-29,2019-10-17,York,ME,ME,9.35,Hybrid,2020-12-31
+922,Offshore wind Increase (Q829),ISONE,Withdrawn,2019-09-03,2022-05-24,,MA,SEMA,600.00,Wind,2025-07-01
+923,Solar,ISONE,Done,2019-09-03,,Androscoggin,ME,ME,20.00,Solar,2025-02-25
+926,Offshore Wind Increase (Q781),ISONE,Withdrawn,2019-09-11,2020-11-06,,RI,RI,871.00,Wind,2023-12-01
+927,Offshore Wind,ISONE,Withdrawn,2019-09-16,2024-08-07,,CT,CT,1200.00,Wind,2031-05-31
+928,Solar,ISONE,Withdrawn,2019-10-09,2023-11-27,Somerset,ME,ME,20.00,Solar,2027-04-01
+929,GDC Saco Solar ,ISONE,Active,2019-10-15,,York,ME,ME,20.00,Solar,2027-11-15
+930,Millstone Increase,ISONE,Done,2019-10-17,,New London,CT,CT,1262.00,Nuclear,2022-05-26
+931,Roxbury Solar,ISONE,Withdrawn,2019-10-22,2024-10-18,Oxford,ME,ME,55.00,Solar,2024-10-24
+932,Solar,ISONE,Withdrawn,2019-10-22,2022-11-23,Carroll,NH,ME,110.00,Solar,2025-10-03
+933,Coolidge Solar CNR Only,ISONE,Done,2019-10-22,,Windsor,VT,VT,19.90,Solar,2020-11-13
+934,Pembroke Solar,ISONE,Withdrawn,2019-10-25,2025-01-06,Merrimack,NH,NH,17.50,Solar,2024-09-01
+935,West Baldwin Solar,ISONE,Active,2019-10-30,,Cumberland,ME,ME,17.10,Solar,2029-09-30
+936,Solar,ISONE,Withdrawn,2019-10-30,2023-12-06,Coos,NH,NH,45.00,Solar,2024-10-01
+937,Solar CNR only,ISONE,Withdrawn,2019-11-14,2021-08-12,York,ME,ME,150.00,Solar,2022-12-31
+938,Solar,ISONE,Withdrawn,2019-11-21,2020-09-21,Merrimack,NH,NH,35.00,Solar,2022-10-03
+939,NB Fuel Cell,ISONE,Done,2019-11-25,,Hartford,CT,CT,20.24,Thermal,2024-12-12
+940,Gravel Pit Solar increase,ISONE,Done,2019-12-04,,Hartford,CT,CT,75.00,Solar,2025-08-13
+942,Brayton Road Solar,ISONE,Done,2019-12-10,,Newport,RI,SEMA,8.42,Solar,2024-02-15
+943,Solar,ISONE,Withdrawn,2019-12-12,2021-11-12,Androscoggin,ME,ME,15.00,Solar,2021-11-01
+944,Bay State Wind 4 Offshore Wind,ISONE,Active,2019-12-18,,,MA,RI,1200.00,Wind,2033-11-04
+945,ND OTM LLC Generator Reactivation,ISONE,Done,2019-12-18,,Penobscot,ME,BHE,8.00,Thermal,2021-06-05
+946,Solar,ISONE,Withdrawn,2019-12-27,2020-04-01,York,ME,ME,18.40,Solar,2021-08-31
+947,Battery Storage,ISONE,Withdrawn,2020-01-07,2020-03-12,Androscoggin,ME,ME,200.00,Storage,2022-12-07
+948,Solar,ISONE,Withdrawn,2020-01-10,2020-11-03,Grafton,NH,NH,51.02,Solar,2022-06-01
+949,Fuel Cell,ISONE,Withdrawn,2020-01-23,2025-06-13,Fairfield,CT,SWCT,9.66,Thermal,2024-12-01
+950,Solar,ISONE,Withdrawn,2020-01-20,2022-08-23,Oxford,ME,ME,17.00,Solar,2024-06-20
+951,Riley-Jay-Otis-Livermore,ISONE,Done,2020-02-03,,Androscoggin/Franklin,ME,ME,28.33,Hydro,2024-11-01
+953,BD Solar Church Hill ,ISONE,Active,2020-02-19,,Androscoggin,ME,ME,20.00,Solar,2028-06-30
+954,Tiverton Uprate,ISONE,Done,2020-03-05,,Newport,RI,SEMA,287.50,Thermal,2021-05-31
+955,Vineyard Offshore Wind CNR Only,ISONE,Done,2020-03-12,,,MA,SEMA,800.00,Wind,2026-04-24
+956,Solar,ISONE,Withdrawn,2020-03-16,2024-05-01,Rockingham,NH,NH,10.00,Solar,2024-10-28
+957,Tower Hill - NG Western RI DG Area Study,ISONE,Withdrawn,2020-03-18,2025-06-13,Washington,RI,RI,6.75,Solar,2023-01-15
+958,Wood River - NG Western RI DG Area Study,ISONE,Withdrawn,2020-03-18,2025-06-13,Washington,RI,RI,6.47,Solar,2022-01-24
+959,Chase Hill Substation - NG Western RI DG Area Study,ISONE,Done,2020-03-18,,Washington,RI,RI,6.75,Solar,2021-08-15
+960,Chase Hill Substation - NG Western RI DG Area Study,ISONE,Withdrawn,2020-03-18,2025-06-13,Washington,RI,RI,6.34,Solar,2021-08-15
+965,Kent County Substation - NG Western RI DG Area Study,ISONE,Withdrawn,2020-03-18,2025-06-13,Kent,RI,RI,10.37,Solar,2021-08-15
+968,Putnam Pike Substation - NG Western RI DG Area Study,ISONE,Withdrawn,2020-03-18,2025-06-13,Providence,RI,RI,5.62,Solar,2021-08-15
+970,Wood River Substation - NG Western RI DG Area Study,ISONE,Withdrawn,2020-03-18,2025-06-13,Washington,RI,RI,7.84,Solar,2021-08-15
+971,Combined Cycle Upgrade,ISONE,Done,2020-03-26,,Fairfield,CT,SWCT,564.00,Thermal,2021-07-12
+972,Rumford Power Repair for Performance Upgrade,ISONE,Done,2020-03-25,,Oxford,ME,ME,271.00,Thermal,2021-11-15
+973,Eversource Group Study @ Brook St,ISONE,Withdrawn,2020-03-25,2025-06-13,Plymouth,MA,SEMA,9.78,Hybrid,2023-11-30
+974,Solar plus Battery,ISONE,Withdrawn,2020-03-25,2025-06-13,Bristol,MA,SEMA,5.00,Hybrid,2023-11-30
+975,Eversource Group Study @ Crystal Spring,ISONE,Withdrawn,2020-03-25,2025-06-13,Plymouth,MA,SEMA,20.46,Hybrid,2023-11-30
+976,Eversource Group Study @ Industrial Park,ISONE,Withdrawn,2020-03-25,2025-06-13,Bristol,MA,SEMA,11.34,Hybrid,2023-11-30
+977,Eversource Group Study @ Wareham,ISONE,Withdrawn,2020-03-25,2025-06-13,Plymouth,MA,SEMA,55.14,Hybrid,2023-11-30
+978,Eversource Group Study @ Wing Lane,ISONE,Withdrawn,2020-03-25,2025-06-13,Bristol,MA,SEMA,5.08,Solar,2023-11-30
+980,Solar addition,ISONE,Withdrawn,2020-03-26,2021-03-05,Sullivan,NH,NH,20.00,Solar,2022-11-15
+981,Bridgeport Harbor Unit #5 Uprate,ISONE,Done,2020-03-27,,Fairfield,CT,SWCT,509.60,Thermal,2021-12-22
+983,Solar,ISONE,Withdrawn,2020-03-31,2020-06-18,Androscoggin,ME,ME,40.00,Solar,2022-11-15
+984,Storage,ISONE,Withdrawn,2020-04-01,2023-05-31,Middlesex,MA,BOST,150.00,Storage,2023-09-20
+986,Solar,ISONE,Withdrawn,2020-04-07,2025-11-12,Penobscot,ME,BHE,19.99,Solar,2028-12-31
+987,Chariot Solar CNR only,ISONE,Withdrawn,2020-04-10,2025-01-13,Cheshire,NH,NH,49.50,Solar,2024-12-15
+988,Solar CNR only,ISONE,Withdrawn,2020-04-07,2021-10-31,Cheshire,NH,NH,30.00,Solar,2024-07-30
+989,Eversource Group Study @ Blandford,ISONE,Withdrawn,2020-04-09,2025-06-13,Hampden,MA,WMA,12.48,Solar,2023-11-30
+992,Eversource Group  @ Arsene St 654,ISONE,Withdrawn,2020-04-09,2025-06-13,Bristol,MA,SEMA,7.00,Hybrid,2023-11-30
+994,Solar + battery,ISONE,Withdrawn,2020-04-09,2025-06-13,Middlesex,MA,SEMA,5.50,Hybrid,2025-05-21
+995,Solar + Battery,ISONE,Withdrawn,2020-04-09,2025-06-13,Norfolk,MA,SEMA,5.00,Hybrid,2023-11-30
+996,Eversource Group  @ Cross Rd 651,ISONE,Withdrawn,2020-04-09,2025-06-13,Bristol,MA,SEMA,9.50,Hybrid,2023-11-30
+997,Eversource Group  @ Crystal Spring 646,ISONE,Withdrawn,2020-04-09,2025-06-13,Middlesex,MA,SEMA,7.50,Hybrid,2023-11-30
+998,Eversource Group  @ Falmouth 993,ISONE,Withdrawn,2020-04-09,2025-06-13,Barnstable,MA,SEMA,7.99,Hybrid,2023-11-30
+999,Eversource Group  @ Fisher Rd Substation 657,ISONE,Withdrawn,2020-04-09,2025-06-13,Bristol,MA,SEMA,27.95,Hybrid,2023-11-30
+1001,Eversource Group  @ Industrial Park 636,ISONE,Withdrawn,2020-04-09,2025-06-13,Bristol,MA,SEMA,29.11,Hybrid,2023-11-30
+1003,Eversource Group  @ Rochester #745,ISONE,Withdrawn,2020-04-09,2025-06-13,Plymouth,MA,SEMA,24.62,Hybrid,2023-11-30
+1004,Eversource Group  @ Sandwich 916,ISONE,Withdrawn,2020-04-09,2025-06-13,Barnstable,MA,SEMA,11.75,Hybrid,2023-11-30
+1005,Eversource Group  @ Tremont Substation 713,ISONE,Withdrawn,2020-04-09,2025-06-13,Plymouth,MA,SEMA,33.74,Hybrid,2023-11-30
+1006,Eversource Group  @ Valley 715,ISONE,Withdrawn,2020-04-09,2025-06-13,Barnstable,MA,SEMA,9.98,Hybrid,2023-11-30
+1007,Eversource Group  @ Wareham 714,ISONE,Withdrawn,2020-04-09,2025-06-13,Plymouth,MA,SEMA,48.02,Hybrid,2023-11-30
+1008,Eversource Group  @ West Pond 737,ISONE,Withdrawn,2020-04-09,2025-06-13,Plymouth,MA,SEMA,44.12,Hybrid,2023-11-30
+1009,Eversource Group  @ Wing Lane 624,ISONE,Withdrawn,2020-04-09,2025-06-13,Bristol,MA,SEMA,18.99,Hybrid,2023-11-30
+1010,Berkshire Wind CNR,ISONE,Done,2020-04-10,,Berkshire,MA,WMA,19.60,Wind,2021-09-13
+1011,Combined Cycle,ISONE,Withdrawn,2020-04-20,2020-08-28,Suffolk,MA,BOST,800.00,Thermal,2024-06-01
+1012,Combined Cycle,ISONE,Withdrawn,2020-04-20,2020-08-28,Suffolk,MA,BOST,800.00,Thermal,2024-06-01
+1013,Solar,ISONE,Withdrawn,2020-04-22,2025-09-26,Sagadahoc,ME,ME,17.07,Solar,2030-10-31
+1014,Battery Storage,ISONE,Withdrawn,2020-04-22,2023-08-22,Penobscot,ME,BHE,112.20,Storage,2024-06-01
+1015,Battery Storage,ISONE,Withdrawn,2020-04-22,2023-08-22,Penobscot,ME,BHE,112.20,Storage,2024-12-01
+1016,Solar,ISONE,Withdrawn,2020-04-24,2024-05-01,Hillsborough,NH,NH,16.00,Solar,2024-11-25
+1017,Battery Storage,ISONE,Withdrawn,2020-04-24,2025-02-19,New Haven,CT,SWCT,200.00,Storage,2026-10-01
+1018,Passadumkeag Wind CNR ,ISONE,Done,2020-04-24,,Peneobscot,ME,BHE,39.97,Wind,2021-11-15
+1019,Battery Storage,ISONE,Withdrawn,2020-04-24,2023-09-19,Penobscot,ME,BHE,20.00,Storage,2024-04-01
+1020,Silver Maple Wind CNR,ISONE,Done,2020-04-24,,Penobscot,ME,BHE,20.00,Wind,2022-12-14
+1021,Emery Meadow Solar,ISONE,Active,2020-04-27,,York,ME,ME,16.42,Solar,2027-09-30
+1025,Solar Increase,ISONE,Withdrawn,2020-04-27,2020-08-25,Androscoggin,ME,ME,20.00,Solar,2021-11-01
+1026,Solar,ISONE,Withdrawn,2020-05-08,2020-06-23,Oxford,ME,ME,90.00,Solar,2021-11-22
+1028,Western Maine Wind Project,ISONE,Done,2020-05-28,,Somerset,ME,ME,58.80,Wind,2026-01-13
+1029,Solar,ISONE,Withdrawn,2020-05-29,2024-02-06,Penobscot,ME,BHE,120.00,Solar,2023-12-01
+1030,Gravel Pit Solar Increase,ISONE,Done,2020-06-02,,Hartford,CT,CT,120.00,Solar,2025-08-13
+1031,Solar,ISONE,Withdrawn,2020-06-18,2022-10-19,Hampshire,MA,WMA,40.00,Solar,2023-10-01
+1032,Eversource Group @ Bell Rock #661,ISONE,Withdrawn,2020-06-23,2025-06-13,Bristol,MA,SEMA,11.99,Hybrid,2023-11-30
+1033,Solar,ISONE,Withdrawn,2020-06-24,2025-06-13,Ellington,CT,CT,6.00,Solar,2024-09-01
+1034,Solar,ISONE,Withdrawn,2020-06-29,2021-04-30,Coos,NH,NH,60.00,Solar,2023-12-30
+1035,Solar,ISONE,Withdrawn,2020-06-29,2020-09-22,Coos,NH,NH,60.00,Solar,2023-12-30
+1036,Solar plus battery storage,ISONE,Withdrawn,2020-07-20,2020-08-27,Carroll,NH,NH,85.00,Hybrid,2023-10-31
+1037,Battery Storage,ISONE,Withdrawn,2020-08-04,2021-04-22,Suffolk,MA,BOST,700.00,Storage,2024-06-01
+1038,Solar,ISONE,Withdrawn,2020-08-07,2025-06-17,Merrimack,NH,NH,76.25,Solar,2025-10-31
+1039,Warren Substation – NG RI-Warren-20-Comp-1 Study,ISONE,Withdrawn,2020-08-19,2025-06-13,Kent,RI,RI,6.93,Solar,2024-08-02
+1040,Farnum Pike - NG WRI DG Area Study #2 >5 MW,ISONE,Withdrawn,2020-08-19,2025-06-13,Providence,RI,RI,8.00,Solar,2022-12-29
+1041,Kent County - NG WRI DG Area Study #2 >5 MW,ISONE,Withdrawn,2020-08-19,2025-06-13,Kent,RI,RI,49.75,Solar,2025-07-07
+1042,Wood River - NG WRI DG Area Study #2 >5 MW,ISONE,Withdrawn,2020-08-19,2024-10-08,Washington,RI,RI,34.38,Solar,2025-06-30
+1043,Chase Hill - NG WRI DG Area Study #2 <5 MW,ISONE,Withdrawn,2020-08-19,2024-10-08,Washington,RI,RI,7.32,Solar,2025-06-30
+1047,Kent County - NG WRI DG Area Study #2 <5 MW,ISONE,Withdrawn,2020-08-19,2025-06-13,Kent,RI,RI,13.52,Solar,2022-04-01
+1054,Wood River - NG WRI DG Area Study #2 <5 MW,ISONE,Withdrawn,2020-08-19,2024-10-08,Washington,RI,RI,9.75,Solar,2025-06-30
+1055,Fuel Cell,ISONE,Done,2020-08-26,,New Haven,CT,SWCT,14.40,Thermal,2024-03-21
+1056,Battery Storage,ISONE,Withdrawn,2020-08-28,2021-03-03,New Haven,CT,SWCT,50.00,Storage,2022-06-01
+1057,Battery Storage,ISONE,Withdrawn,2020-08-28,2021-04-22,Middlesex,MA,BOST,500.00,Storage,2025-06-01
+1058,Offshore Wind,ISONE,Withdrawn,2020-09-09,2025-10-08,,CT,CT,1266.72,Wind,2027-11-30
+1059,Offshore Wind,ISONE,Withdrawn,2020-09-09,2022-12-13,,MA,SEMA,1278.90,Wind,2027-11-30
+1060,Offshore Wind Increase,ISONE,Withdrawn,2020-09-09,2025-10-08,,CT,CT,1200.00,Wind,2027-11-30
+1061,Solar,ISONE,Withdrawn,2020-09-10,2021-07-19,Hartford,CT,CT,135.00,Solar,2022-10-31
+1062,Battery Storage,ISONE,Withdrawn,2020-09-10,2020-12-03,Fairfield,CT,SWCT,100.00,Storage,2023-06-01
+1063,Syncarpha Blandford Solar plus battery storage,ISONE,Done,2020-09-15,,Berkshire,MA,WMA,10.00,Hybrid,2021-12-14
+1064,Solar,ISONE,Withdrawn,2020-09-17,2020-12-01,Washington,ME,BHE,11.80,Solar,2023-09-15
+1065,Solar,ISONE,Withdrawn,2020-09-25,2020-10-09,Penobscot,ME,BHE,100.00,Solar,2024-11-30
+1068,Augusta E. Side 115 kV SS  - Augusta Area Study,ISONE,Withdrawn,2020-10-02,2025-06-13,Kennebec,ME,ME,10.00,Solar,2024-10-21
+1071,Bowman Street 115 kV SS  - Augusta Area Study,ISONE,Done,2020-10-02,,Kennebec,ME,ME,9.94,Hybrid,2022-12-30
+1074,Bowman Street 115 kV SS  - Augusta Area Study,ISONE,Done,2020-10-02,,Kennebec,ME,ME,9.48,Hybrid,2023-03-28
+1080,Solar,ISONE,Withdrawn,2020-10-08,2024-10-18,Oxford,ME,ME,66.50,Solar,2024-10-24
+1081,Solar,ISONE,Withdrawn,2020-10-09,2020-10-21,Penobscot,ME,BHE,100.00,Solar,2024-12-30
+1082,Battery Storage,ISONE,Withdrawn,2020-10-29,2021-05-07,Middlesex,MA,BOST,204.00,Storage,2025-06-01
+1083,Battery Storage,ISONE,Withdrawn,2020-10-29,2020-11-30,Middlesex,MA,BOST,204.00,Storage,2023-12-01
+1084,Battery Storage,ISONE,Withdrawn,2020-11-04,2021-01-27,Kennebec,ME,ME,102.00,Storage,2023-12-01
+1085,Solar,ISONE,Withdrawn,2020-11-17,2021-01-21,Penobscot,ME,BHE,100.00,Solar,2024-12-30
+1086,Warren Meadow Solar,ISONE,Active,2020-11-30,,Knox,ME,ME,74.50,Solar,2028-03-31
+1087,SolarFairfield ,ISONE,Active,2020-12-17,,Somerset,ME,ME,18.14,Solar,2027-06-30
+1088,Solar,ISONE,Withdrawn,2020-12-07,2023-03-09,Grafton,NH,NH,27.00,Solar,2022-06-01
+1089,Naugatuck Avenue Battery Storage,ISONE,Active,2021-01-08,,New Haven,CT,SWCT,205.32,Storage,2028-10-31
+1091,Battery Storage,ISONE,Withdrawn,2021-01-14,2021-11-01,Providence,RI,RI,50.40,Storage,2022-05-02
+1092,Solar,ISONE,Withdrawn,2021-01-20,2025-06-13,Hartford,CT,CT,26.00,Solar,2024-09-01
+1094,CMP County Road 115 kV SS - Winslow-Lakewood Areas Study,ISONE,Withdrawn,2021-02-04,2025-06-13,Kennebec,ME,ME,7.80,Hybrid,2024-04-30
+1095,CMP Lakewood 115 kV SS - Winslow-Lakewood Areas Study,ISONE,Withdrawn,2021-02-04,2025-06-13,Somerset,ME,ME,28.72,Solar,2024-04-30
+1096,CMP Winslow 115 kV SS - Winslow-Lakewood Areas Study,ISONE,Withdrawn,2021-02-04,2025-06-13,Somerset/Kennebec,ME,ME,18.73,Hybrid,2024-04-30
+1097,Green Apple Solar,ISONE,Withdrawn,2021-02-15,2026-04-06,Androscoggin,ME,ME,178.59,Solar,2027-11-01
+1098,Solar,ISONE,Withdrawn,2021-02-19,2024-04-01,Hancock,ME,BHE,51.40,Solar,2024-12-31
+1099,Solar,ISONE,Withdrawn,2021-02-19,2022-12-15,Knox,ME,ME,31.40,Solar,2024-12-31
+1100,Solar,ISONE,Active,2021-02-19,,Somerset,ME,ME,143.30,Solar,2029-11-29
+1102,Battery Storage,ISONE,Withdrawn,2021-03-01,2021-11-26,Kent,RI,RI,200.00,Storage,2023-03-01
+1103,Berlin Energy Uprate and Battery Addition,ISONE,Done,2021-03-10,,Coos,NH,NH,44.20,Hydro,2023-12-19
+1104,Bonny Eagle Energy Storage - Uprate,ISONE,Done,2021-03-11,,York,ME,ME,25.50,Hydro,2023-04-20
+1105,Battery Storage,ISONE,Withdrawn,2021-03-15,2021-10-20,Worcester,MA,CMA,104.50,Storage,2025-05-15
+1106,Battery Storage,ISONE,Withdrawn,2021-03-15,2021-04-22,Franklin,MA,WMA,55.05,Storage,2025-05-15
+1107,Battery Storage,ISONE,Withdrawn,2021-03-16,2025-01-08,Plymouth,MA,SEMA,182.23,Storage,2027-05-14
+1108,Battery Storage,ISONE,Withdrawn,2021-03-16,2024-11-15,Plymouth,MA,SEMA,188.96,Storage,2027-05-14
+1109,Offshore Wind Inc. (Q806),ISONE,Withdrawn,2021-03-17,2026-01-23,,MA,SEMA,1314.00,Wind,2032-12-31
+1110,Norman Street Battery Storage,ISONE,Active,2021-03-18,,Middlesex,MA,BOST,204.00,Storage,2028-03-18
+1111,Battery Storage,ISONE,Withdrawn,2021-03-22,2023-09-21,Norfolk,MA,SEMA,20.00,Storage,2026-03-01
+1112,Battery Storage,ISONE,Withdrawn,2021-03-24,2024-07-03,Franklin,MA,WMA,105.00,Storage,2029-12-30
+1113,Rumford Uprate and Battery addition,ISONE,Done,2021-03-24,,Oxford,ME,ME,52.50,Hydro,2023-05-05
+1114,Solar,ISONE,Withdrawn,2021-04-01,2021-04-20,Somerset,ME,ME,103.00,Solar,2024-01-31
+1115,Hecate Energy Eastern Ave Energy Center,ISONE,Active,2021-04-08,,Suffolk,MA,BOST,250.00,Storage,2027-08-31
+1117,Streamfield,ISONE,Withdrawn,2021-04-15,2025-04-28,Hampden,MA,WMA,202.40,Storage,2027-05-31
+1118,Offshore wind Increase (QP909),ISONE,Withdrawn,2021-04-15,2024-02-13,,MA,SEMA,1200.00,Wind,2027-09-30
+1119,Offshore wind,ISONE,Withdrawn,2021-04-14,2022-04-25,,MA,SEMA,1320.00,Wind,2027-09-01
+1120,Battery Storage,ISONE,Withdrawn,2021-04-14,2022-04-22,Windham,CT,CT,204.64,Storage,2025-05-01
+1121,Offshore wind,ISONE,Withdrawn,2021-04-19,2025-10-11,,MA,SEMA,1200.00,Wind,2033-05-31
+1122,Battery Storage,ISONE,Withdrawn,2021-04-19,2021-06-16,Addison,VT,VT,20.00,Storage,2022-12-31
+1124,Battery Storage,ISONE,Withdrawn,2021-04-21,2023-06-26,Hampden,MA,WMA,107.50,Storage,2025-01-01
+1125,Solar,ISONE,Withdrawn,2021-04-21,2023-09-28,Somerset,ME,ME,72.00,Solar,2024-01-31
+1131,Solar + Battery Storage,ISONE,Withdrawn,2021-04-23,2022-09-20,Barnstable,MA,SEMA,9.90,Hybrid,2021-12-31
+1133,Stored Solar Fitchburg CNR Only,ISONE,Done,2021-04-27,,Worcester,MA,CMA,17.00,Thermal,2024-08-08
+1134,Noresco Navy,ISONE,Withdrawn,2021-05-06,2025-06-13,New London,CT,CT,10.80,Thermal,2023-04-15
+1135,Solar + Battery Storage,ISONE,Withdrawn,2021-05-13,2023-02-02,Coos,NH,NH,113.01,Hybrid,2025-05-15
+1136,Nutes Solar,ISONE,Active,2021-05-20,,Strafford,NH,NH,20.00,Solar,2026-09-22
+1137,Nasonville Substation – NG RI-Nasonville-21-Comp-1 Study,ISONE,Withdrawn,2021-05-25,2025-06-13,Providence,RI,RI,9.50,Solar,2023-03-15
+1138,Husky Solar,ISONE,Active,2021-06-03,,Windham,CT,CT,50.16,Solar,2029-05-10
+1139,Turner Meadow Solar,ISONE,Active,2021-06-04,,Androscoggin ,ME,ME,20.00,Solar,2027-11-30
+1140,Regional Network Service Request ,ISONE,Withdrawn,2021-06-03,2022-01-11,Hampden,MA,WMA,395.00,Other,2023-10-01
+1143,Battery Storage,ISONE,Active,2021-06-15,,Middlesex,MA,BOST,508.25,Storage,2028-05-31
+1145,Solar,ISONE,Withdrawn,2021-07-07,2025-05-21,Hancock,ME,BHE,20.70,Solar,2024-07-08
+1146,Swain Solar,ISONE,Withdrawn,2021-07-07,2024-10-30,Oxford,ME,ME,40.91,Solar,2027-07-09
+1147,Solar,ISONE,Done,2021-07-08,,Rensselaer,NY,,20.00,Solar,2022-12-30
+1150,Offshore Wind,ISONE,Withdrawn,2021-07-29,2023-05-22,,ME,ME,11.55,Wind,2023-09-01
+1152,Solar + Battery Storage,ISONE,Withdrawn,2021-08-04,2022-09-08,Hampshire,MA,WMA,10.00,Hybrid,2022-09-01
+1153,Offshore wind,ISONE,Withdrawn,2021-08-11,2022-09-28,,MA,SEMA,440.00,Wind,2026-11-01
+1154,Offshore wind Inc (QP700),ISONE,Withdrawn,2021-08-13,2026-01-23,,MA,SEMA,856.20,Wind,2026-10-30
+1155,Solar,ISONE,Withdrawn,2021-08-16,2021-09-21,Hartford,CT,CT,101.09,Solar,2024-10-15
+1156,Solar,ISONE,Withdrawn,2021-08-16,2021-09-21,Hartford,CT,CT,101.16,Solar,2024-10-15
+1159,Battery Storage,ISONE,Withdrawn,2021-08-27,2023-08-18,Suffolk,MA,BOST,276.00,Storage,2023-12-30
+1162,Solar with Battery,ISONE,Withdrawn,2021-09-21,2023-06-01,Windham,CT,CT,95.60,Hybrid,2023-12-31
+1163,Battery Storage,ISONE,Active,2021-09-22,,Washington,RI,RI,201.43,Storage,2029-12-07
+1164,Solar,ISONE,Withdrawn,2021-09-23,2022-12-07,Coos,NH,NH,20.00,Solar,2023-11-01
+1166,Battery Storage,ISONE,Withdrawn,2021-10-04,2025-06-13,New Haven,CT,CT,20.00,Storage,2024-09-01
+1168,Fuel Cell,ISONE,Withdrawn,2021-10-04,2025-06-13,Hartford,CT,CT,8.70,Thermal,2023-10-15
+1170,Battery Storage,ISONE,Withdrawn,2021-10-22,2023-10-11,Franklin,MA,WMA,100.00,Storage,2023-01-11
+1172,Solar plus Battery,ISONE,Withdrawn,2021-10-27,2024-10-02,Merrimack,NH,NH,53.07,Hybrid,2025-07-31
+1173,Barre Substation - NG WMA Group 3,ISONE,Withdrawn,2021-10-27,2025-06-13,Worcester,MA,WMA,12.40,Hybrid,2027-12-31
+1174,Crystal Lake Substation - NG WMA Group 3,ISONE,Withdrawn,2021-10-27,2025-06-13,Worcester,MA,WMA,8.00,Storage,2026-12-31
+1176,E. Winchendon Substation - NG WMA Group 3,ISONE,Withdrawn,2021-10-27,2025-06-13,Worcester,MA,WMA,34.97,Hybrid,2026-12-31
+1177,Lashaway Substation - NG WMA Group 3,ISONE,Withdrawn,2021-10-27,2025-06-13,Worcester,MA,WMA,14.94,Storage,2027-12-31
+1178,Little Rest Rd Substation - NG WMA Group 3,ISONE,Withdrawn,2021-10-27,2025-06-13,Worcester,MA,WMA,5.80,Hybrid,2027-12-31
+1179,Meadow Street 552 Substation - NG WMA Group 3,ISONE,Withdrawn,2021-10-27,2025-06-13,Worcester,MA,WMA,13.80,Hybrid,2027-12-31
+1180,Millbury Substation - NG WMA Group 3,ISONE,Withdrawn,2021-10-27,2025-06-13,Worcester,MA,WMA,11.74,Hybrid,2027-12-31
+1181,N. Oxford Substation - NG WMA Group 3,ISONE,Withdrawn,2021-10-27,2025-06-13,Worcester,MA,WMA,20.40,Hybrid,2027-12-31
+1182,Pratts Junc. Substation - NG WMA Group 3,ISONE,Withdrawn,2021-10-27,2025-06-13,Worcester,MA,WMA,14.94,Storage,2027-12-31
+1183,Royalston Substation - NG WMA Group 3,ISONE,Withdrawn,2021-10-27,2025-06-13,Worcester,MA,WMA,5.00,Hybrid,2027-12-31
+1184,Snow St. Substation - NG WMA Group 3,ISONE,Withdrawn,2021-10-27,2025-06-13,Worcester,MA,WMA,27.84,Hybrid,2027-12-31
+1185,Stafford St. Substation - NG WMA Group 3,ISONE,Withdrawn,2021-10-27,2025-06-13,Worcester,MA,WMA,22.45,Hybrid,2027-12-31
+1186,Treasure Valley Substation - NG WMA Group 3,ISONE,Withdrawn,2021-10-27,2025-06-13,Worcester,MA,WMA,9.99,Storage,2027-12-31
+1187,W. Charlton Substation - NG WMA Group 3,ISONE,Withdrawn,2021-10-27,2025-06-13,Worcester,MA,WMA,19.98,Storage,2027-12-31
+1188,Ware Substation - NG WMA Group 3,ISONE,Withdrawn,2021-10-27,2025-06-13,Hampshire,MA,WMA,11.00,Hybrid,2027-12-31
+1189,Wendall Depot Substation - NG WMA Group 3,ISONE,Withdrawn,2021-10-27,2025-06-13,Franklin,MA,WMA,27.98,Hybrid,2027-12-31
+1190,Solar Knox ,ISONE,Active,2021-10-28,,Knox,ME,ME,33.50,Solar,2028-01-31
+1191,Increase to Pumping load,ISONE,Withdrawn,2021-11-03,2021-11-09,Berkshire,MA,WMA,333.00,Hydro,2021-11-03
+1192,Broadleaf Solar,ISONE,Active,2021-11-04,,Hartford,CT,CT,101.13,Solar,2027-10-15
+1193,Battery Storage,ISONE,Withdrawn,2021-11-09,2025-05-30,Windham,CT,CT,325.00,Storage,2028-05-12
+1194,Bear Swamp Pumping Load Increase,ISONE,Done,2021-11-09,,Berkshire,MA,WMA,333.00,Hydro,2021-11-09
+1195,Regional Network Service,ISONE,Done,2021-11-23,,Middlesex,MA,BOST,6.30,Other,2024-11-20
+1196,Energy Storage,ISONE,Withdrawn,2021-12-14,2022-03-08,Hampden,MA,WMA,99.90,Storage,2024-10-01
+1197,Battery Storage,ISONE,Withdrawn,2021-12-20,2025-10-11,Bristol,MA,SEMA,150.00,Storage,2027-12-31
+1198,Storage,ISONE,Withdrawn,2021-12-30,2025-09-25,Bristol,MA,RI,241.80,Storage,2028-05-12
+1206,Battery Storage,ISONE,Withdrawn,2021-12-30,2022-03-08,Berkshire,MA,WMA,200.00,Storage,2024-12-31
+1207,Battery Storage,ISONE,Withdrawn,2021-12-30,2022-01-28,Barnstable,MA,SEMA,200.00,Storage,2024-12-31
+1208,Battery Storage,ISONE,Withdrawn,2021-12-30,2022-03-08,New Haven,CT,CT,160.00,Storage,2024-12-31
+1209,Battery Storage,ISONE,Withdrawn,2021-12-30,2022-03-08,Providence,RI,RI,170.00,Storage,2024-12-31
+1210,Wind,ISONE,Withdrawn,2022-01-07,2025-10-11,Aroostook,ME,ME,572.00,Wind,2025-11-28
+1211,Wind,ISONE,Withdrawn,2022-01-10,2025-10-11,Aroostook,ME,ME,527.00,Wind,2026-11-27
+1214,Group @ Medway 65 - EMA ASO,ISONE,Withdrawn,2022-01-14,2025-06-13,Middlesex/Norfolk,MA,BOST,17.50,Hybrid,2023-11-30
+1215,Group @ Maynard 416 - EMA ASO,ISONE,Withdrawn,2022-01-14,2025-06-13,Middlesex,MA,BOST,8.48,Hybrid,2023-11-30
+1216,Group @ Podick - WMA ASO,ISONE,Withdrawn,2022-01-14,2025-06-13,Hampden/Franklin,MA,WMA,7.70,Hybrid,2023-11-30
+1218,Group @ Montigue - WMA ASO,ISONE,Withdrawn,2022-01-14,2025-06-13,Franklin,MA,WMA,9.86,Hybrid,2023-11-30
+1219,Group @ French King  - WMA ASO,ISONE,Withdrawn,2022-01-14,2025-06-13,Franklin/Hampshire,MA,WMA,8.90,Hybrid,2023-11-30
+1220,Group @ Blandford 19J - WMA ASO,ISONE,Withdrawn,2022-01-14,2025-06-13,Berkshire,MA,WMA,6.99,Hybrid,2023-11-30
+1222,Group @ Berkshire 18C,ISONE,Withdrawn,2022-01-14,2025-06-13,Hampden,MA,WMA,7.65,Hybrid,2023-11-30
+1223,Battery Storage,ISONE,Withdrawn,2022-01-18,2022-03-15,Worcester,MA,CMA,9.99,Storage,2022-04-29
+1225,Offshore Wind,ISONE,Withdrawn,2022-02-03,2025-09-30,,MA,SEMA,1200.00,Wind,2029-01-31
+1231,Battery Storage CNR Only,ISONE,Withdrawn,2022-03-04,2022-04-22,Windham,CT,CT,204.64,Storage,2025-05-01
+1232,Battery Storage,ISONE,Withdrawn,2022-03-04,2024-10-23,Providence,RI,RI,27.44,Storage,2025-12-31
+1233,Battery Storage,ISONE,Withdrawn,2022-03-14,2022-08-11,Bristol,MA,SEMA,20.00,Storage,2024-12-31
+1234,Battery Storage,ISONE,Withdrawn,2022-03-14,2022-08-11,Bristol,MA,SEMA,20.00,Storage,2024-12-31
+1235,Battery Storage,ISONE,Withdrawn,2022-03-14,2022-08-11,Bristol,MA,SEMA,20.00,Storage,2024-12-31
+1237,Battery Storage CNR only,ISONE,Withdrawn,2022-03-21,2025-10-10,Washinton,RI,RI,205.00,Storage,2029-12-07
+1239,Solar plus Battery,ISONE,Withdrawn,2022-03-25,2025-10-02,Oxford,ME,ME,183.60,Hybrid,2029-12-31
+1240,Battery Storage,ISONE,Withdrawn,2022-03-25,2024-10-23,Kent,RI,RI,62.84,Storage,2025-12-31
+1241,Sanford/Quaker Hill CMP Cluster 4,ISONE,Withdrawn,2022-03-28,2025-06-13,York,ME,ME,21.18,Hybrid,2028-06-30
+1242,Lewiston CMP Cluster 5,ISONE,Withdrawn,2022-03-28,2025-06-13,Oxford/Androscoggin,ME,ME,52.46,Hybrid,2028-06-30
+1243,Solar,ISONE,Withdrawn,2022-03-31,2025-10-11,Aroostook,ME,ME,300.00,Solar,2026-11-01
+1244,Solar,ISONE,Withdrawn,2022-03-31,2022-11-14,Franklin,ME,ME,75.00,Solar,2025-11-01
+1245,Solar,ISONE,Active,2022-03-31,,Hartford,CT,CT,150.00,Solar,2028-10-31
+1246,Solar,ISONE,Withdrawn,2022-03-31,2023-07-25,Grafton,NH,NH,150.00,Solar,2025-11-01
+1247,Solar,ISONE,Active,2022-04-05,,Hartford,CT,CT,25.00,Solar,2027-11-15
+1248,Battery Storage,ISONE,Withdrawn,2022-04-06,2025-10-11,Bristol,MA,RI,154.66,Storage,2026-05-31
+1249,Battery Storage Addition,ISONE,Withdrawn,2022-04-19,2023-03-28,New London,CT,CT,16.02,Storage,2027-05-14
+1250,Battery Storage,ISONE,Withdrawn,2022-04-14,2023-05-18,York,ME,ME,50.70,Storage,2024-11-01
+1251,Battery Storage,ISONE,Withdrawn,2022-04-11,2022-08-26,Hartford,CT,CT,60.00,Storage,2024-12-31
+1253,Battery Storage CNR Only (see QP887),ISONE,Withdrawn,2022-04-27,2023-11-14,Norfolk,MA,SEMA,150.00,Storage,2026-05-31
+1254,Kimball DG Area Study,ISONE,Withdrawn,2022-05-02,2025-06-13,York/Oxford/Cumberland,ME,ME,7.89,Hybrid,2028-06-30
+1255,Detroit/Guilford/Belfast DG Area Study,ISONE,Withdrawn,2022-05-02,2025-06-13,Piscataquis/Penobscot/Somerset/Waldo/Hancock,ME,ME,57.72,Hybrid,2027-12-31
+1256,Wind,ISONE,Withdrawn,2022-05-03,2025-10-11,Aroostook,ME,BHE,905.00,Wind,2026-12-09
+1257,Solar,ISONE,Withdrawn,2022-05-03,2025-10-11,Aroostook,ME,BHE,319.20,Solar,2026-12-09
+1258,Battery Storage CNR Only,ISONE,Withdrawn,2022-05-03,2025-10-11,Norfolk,MA,SEMA,170.00,Storage,2027-07-26
+1259,Battery Storage,ISONE,Withdrawn,2022-06-15,2025-08-01,Berkshire,MA,WMA,20.00,Storage,2027-06-28
+1261,Battery Storage Addition (to QP1086),ISONE,Active,2022-05-17,,Knox,ME,ME,160.00,Hybrid,2028-03-31
+1262,Battery Storage,ISONE,Withdrawn,2022-05-17,2024-08-29,Middlesex,CT,CT,80.88,Storage,2026-07-06
+1264,Bear Swamp Pump Load increase,ISONE,Done,2022-05-19,,Berkshire,MA,WMA,333.00,Hydro,2023-01-06
+1265,Revolution Offshore Wind CNR only,ISONE,Active,2022-05-23,,,RI,RI,750.75,Wind,2026-11-05
+1266,Battery Storage,ISONE,Withdrawn,2022-05-23,2024-08-28,Hartford,CT,CT,100.00,Storage,2025-08-04
+1267,Battery Storage,ISONE,Withdrawn,2022-05-20,2022-06-24,New London,CT,CT,51.73,Storage,2025-08-08
+1268,Coolidge Solar CNR Only,ISONE,Done,2022-05-24,,Windsor,VT,VT,19.90,Solar,2018-12-20
+1269,Sanford Airport Solar CNR Only,ISONE,Done,2022-05-27,,York,ME,ME,50.00,Solar,2023-08-02
+1270,Nutmeg Solar CNR Only,ISONE,Done,2022-05-31,,Hartford,CT,CT,19.90,Solar,2020-12-07
+1272,West Springfield 45 MW BESS,ISONE,Active,2022-06-08,,Hampden,MA,WMA,45.00,Storage,2029-05-04
+1273,Canton 470 - EMA ASO,ISONE,Withdrawn,2022-06-08,2025-06-13,Norfolk,MA,SEMA,5.00,Hybrid,2023-11-30
+1275,Group @ Duxbury 738 - EMA ASO,ISONE,Withdrawn,2022-06-08,2025-06-13,Plymouth,MA,SEMA,6.78,Hybrid,2023-11-30
+1279,Group @ Hatchville 936 - EMA ASO,ISONE,Withdrawn,2022-06-08,2025-06-13,Barnstable,MA,SEMA,18.49,Hybrid,2023-11-30
+1281,Group @ Industrial Park 636 - EMA ASO,ISONE,Withdrawn,2022-06-08,2025-06-13,Bristol,MA,SEMA,16.51,Hybrid,2023-11-30
+1284,Group @ Orleans 975 - EMA ASO,ISONE,Withdrawn,2022-06-08,2025-06-13,Barnstable,MA,SEMA,10.00,Hybrid,2023-11-30
+1286,Tremont 713 - EMA ASO,ISONE,Withdrawn,2022-06-08,2025-06-13,Plymouth,MA,SEMA,5.00,Hybrid,2025-07-31
+1289,Group @ West Pond 737 - EMA ASO,ISONE,Withdrawn,2022-06-08,2025-06-13,Middlesex,MA,SEMA,6.98,Hybrid,2025-07-31
+1290,Group @ Wing Lane 624 - EMA ASO,ISONE,Withdrawn,2022-06-08,2025-06-13,Bristol,MA,SEMA,14.98,Hybrid,2023-11-30
+1292,Battery Storage,ISONE,Withdrawn,2022-07-12,2023-05-01,Worcester,MA,CMA,95.00,Storage,2023-09-30
+1293,GRID RNS,ISONE,Done,2022-07-13,,Middlesex,MA,BOST,183.70,Other,2025-08-01
+1294,Solar,ISONE,Withdrawn,2022-07-27,2023-06-06,Washington,ME,BHE,75.32,Solar,2026-08-04
+1295,Solar plus Battery,ISONE,Withdrawn,2022-08-09,2024-08-13,Aroostook,ME,ME,205.00,Hybrid,2025-11-28
+1296,Battery Storage,ISONE,Withdrawn,2022-08-10,2024-12-10,Hartford,CT,CT,125.00,Storage,2027-04-01
+1297,Offshore Wind,ISONE,Withdrawn,2022-08-15,2022-09-13,,MA,SEMA,1200.00,Wind,2029-05-31
+1298,Battery Storage,ISONE,Withdrawn,2022-08-16,2024-05-31,Worcester,MA,CMA,157.92,Storage,2027-06-30
+1299,Solar Increase (QP1145),ISONE,Withdrawn,2022-08-18,2025-05-21,Hancock,ME,BHE,74.80,Solar,2026-09-25
+1301,Battery Storage,ISONE,Withdrawn,2022-09-06,2022-12-09,Worcester,MA,CMA,10.00,Storage,2025-05-15
+1302,Battery Storage,ISONE,Withdrawn,2022-09-22,2023-03-24,Franklin,MA,WMA,8.50,Storage,2027-05-28
+1303,Battery Storage,ISONE,Withdrawn,2022-09-22,2023-05-25,Franklin,MA,WMA,11.90,Storage,2027-05-28
+1308,Uxbridge Substation – NG Hopedale West Group Study,ISONE,Withdrawn,2022-09-09,2025-06-13,Worcester,MA,SEMA,6.99,Storage,2025-12-31
+1310,Battery Storage,ISONE,Withdrawn,2022-09-23,2023-12-08,Berkshire,MA,WMA,118.75,Storage,2025-10-31
+1311,RNS - move load to new substation,ISONE,Active,2022-09-23,,Plymouth,MA,SEMA,85.32,Other,2026-07-01
+1314,Offshore Wind,ISONE,Withdrawn,2022-09-27,2024-10-14,,MA,SEMA,470.00,Wind,2029-11-01
+1315,Battery Storage,ISONE,Withdrawn,2022-09-29,2024-10-02,Windham,CT,CT,106.97,Storage,2026-06-12
+1316,Solar plus Battery,ISONE,Withdrawn,2022-09-30,2023-08-25,Cheshire,NH,NH,102.00,Hybrid,2027-10-28
+1318,GRID LNS,ISONE,Withdrawn,2022-10-03,2023-07-03,Middlesex/Worcester,MA,CMA,45.00,Other,2023-10-03
+1319,Battery Storage,ISONE,Active,2022-10-07,,Litchfield,CT,CT,141.60,Storage,2028-05-30
+1320,Battery Storage,ISONE,Active,2022-10-07,,Worcester,MA,SEMA,203.95,Storage,2027-02-23
+1321,NEP LNS,ISONE,Withdrawn,2022-10-06,2022-11-30,Somerset,MA,SEMA,17.56,Other,2024-12-01
+1324,Battery Storage,ISONE,Withdrawn,2022-10-18,2024-10-23,Providence,RI,RI,55.00,Storage,2027-12-30
+1325,Battery Storage,ISONE,Withdrawn,2022-10-19,2024-05-31,Providence,RI,RI,307.80,Storage,2027-12-30
+1326,Battery Storage,ISONE,Withdrawn,2022-10-19,2023-10-13,Kent,RI,RI,40.00,Storage,2027-12-30
+1327,Battery Storage,ISONE,Withdrawn,2022-10-20,2023-02-14,Norfolk,MA,SEMA,270.00,Storage,2023-12-02
+1328,Solar,ISONE,Withdrawn,2022-10-24,2023-04-27,Grafton,NH,NH,21.44,Solar,2024-06-05
+1329,Solar,ISONE,Withdrawn,2022-10-24,2023-05-19,Grafton,NH,NH,54.40,Solar,2024-06-05
+1330,Solar,ISONE,Withdrawn,2022-11-01,2022-12-16,Sullivan,NH,NH,46.50,Solar,2023-12-20
+1331,Battery Storage,ISONE,Withdrawn,2022-11-02,2023-12-19,Hampden,MA,WMA,300.00,Storage,2025-12-23
+1334,Battery Storage,ISONE,Withdrawn,2022-11-10,2024-10-08,New London,CT,CT,93.20,Storage,2027-05-01
+1335,Battery Storage,ISONE,Withdrawn,2022-11-10,2024-10-08,Bristol,MA,SEMA,205.80,Storage,2027-04-01
+1336,Battery Storage,ISONE,Withdrawn,2022-11-22,2024-01-05,Worcester,MA,CMA,130.00,Storage,2026-12-31
+1337,Battery Storage,ISONE,Withdrawn,2022-11-22,2023-11-17,Berkshire,MA,WMA,130.00,Storage,2026-12-31
+1338,Battery Storage,ISONE,Withdrawn,2022-12-06,2024-07-30,Hampden,MA,WMA,275.06,Storage,2027-06-30
+1339,Battery Storage,ISONE,Withdrawn,2022-12-06,2023-01-30,Bristol,MA,SEMA,257.06,Storage,2027-06-30
+1340,Battery Storage,ISONE,Withdrawn,2022-12-06,2023-01-30,Bristol,MA,SEMA,550.12,Storage,2027-06-30
+1341,Battery Storage,ISONE,Withdrawn,2022-12-06,2023-01-30,Bristol,MA,SEMA,667.42,Storage,2027-06-30
+1342,Western Maine Wind CNR,ISONE,Withdrawn,2022-12-15,2025-10-11,Somerset,ME,ME,58.80,Wind,2025-09-24
+1343,Offshore Wind,ISONE,Withdrawn,2022-12-19,2025-10-10,,MA,SEMA,1200.00,Wind,2029-12-15
+1344,Offshore Wind CNR only,ISONE,Withdrawn,2022-12-28,2025-10-11,,MA,SEMA,827.00,Wind,2025-10-15
+1345,Battery Storage,ISONE,Withdrawn,2023-01-10,2025-10-11,New London,CT,CT,75.00,Storage,2028-06-01
+1346,Battery Storage,ISONE,Withdrawn,2023-01-12,2024-10-09,Hartford,CT,CT,196.47,Storage,2026-09-15
+1347,Enfield DG Cluster,ISONE,Withdrawn,2023-01-26,2025-06-13,Hartford,CT,CT,18.77,Hybrid,2025-07-27
+1348,Battery Storage,ISONE,Withdrawn,2023-01-26,2025-06-13,Middlesex,CT,CT,5.06,Storage,2025-07-27
+1349,Scitico DG Cluster,ISONE,Withdrawn,2023-01-26,2025-06-13,Hartford,CT,CT,5.20,Hybrid,2023-12-31
+1351,Battery Storage,ISONE,Withdrawn,2023-02-06,2025-10-10,Fairfield,CT,SWCT,156.24,Storage,2027-10-01
+1352,Battery Storage,ISONE,Withdrawn,2023-02-06,2025-10-10,New Haven,CT,CT,262.68,Storage,2027-10-01
+1353,Battery Storage,ISONE,Withdrawn,2023-02-06,2025-10-10,New London,CT,CT,289.29,Storage,2027-10-01
+1354,Battery Storage,ISONE,Withdrawn,2023-02-06,2023-04-13,Middlesex,CT,CT,289.29,Storage,2024-10-01
+1355,Battery Storage,ISONE,Withdrawn,2023-02-06,2025-10-10,New Haven,CT,SWCT,136.32,Storage,2027-10-01
+1356,(Offshore wind Increase (Q700 +Q1154),ISONE,Withdrawn,2023-02-09,2024-10-14,,MA,SEMA,895.00,Wind,2026-10-30
+1357,Solar Increase,ISONE,Active,2023-02-16,,Hartford,CT,CT,152.04,Solar,2027-11-15
+1358,Battery Storage,ISONE,Withdrawn,2023-02-21,2025-10-11,Hartford,CT,CT,100.00,Storage,2026-07-31
+1360,Battery Storage,ISONE,Withdrawn,2023-02-22,2025-06-13,Middlesex,CT,CT,10.00,Storage,2024-06-15
+1361,Offshore Wind,ISONE,Withdrawn,2023-02-24,2023-09-08,,MA,SEMA,882.00,Wind,2030-02-15
+1362,Battery Storage Increase (QP1238),ISONE,Withdrawn,2023-02-24,2025-10-10,Norfolk,MA,SEMA,602.52,Storage,2027-11-12
+1363,Battery Storage,ISONE,Withdrawn,2023-03-01,2025-10-10,Hampden,MA,WMA,301.26,Storage,2026-11-20
+1364,Battery Storage,ISONE,Withdrawn,2023-03-01,2025-01-13,Rockingham,NH,NH,401.68,Storage,2026-11-20
+1366,Battery Storage,ISONE,Withdrawn,2023-03-09,2024-08-19,Fairfield,CT,SWCT,200.84,Storage,2026-11-20
+1367,Battery Storage,ISONE,Withdrawn,2023-03-09,2023-11-30,Bristol,MA,SEMA,271.40,Storage,2027-04-01
+1368,Battery Storage,ISONE,Withdrawn,2023-03-09,2023-04-12,Essex,MA,BOST,240.80,Storage,2027-04-01
+1373,Battery Storage Increase (QP1362),ISONE,Withdrawn,2023-03-15,2025-10-10,Norfolk,MA,SEMA,743.00,Storage,2027-11-12
+1374,Battery Storage,ISONE,Withdrawn,2023-03-28,2025-10-11,Merrimack,NH,NH,226.00,Storage,2027-04-07
+1375,Wind,ISONE,Withdrawn,2023-03-29,2025-10-11,Aroostook,ME,BHE,217.00,Wind,2026-12-09
+1376,Battery Storage,ISONE,Withdrawn,2023-03-29,2024-10-08,New Haven,CT,CT,325.70,Storage,2027-04-01
+1377,Battery Storage,ISONE,Withdrawn,2023-04-03,2023-12-12,Windsor,VT,VT,180.00,Storage,2027-04-08
+1378,Battery Storage,ISONE,Withdrawn,2023-04-03,2023-12-12,Windsor,VT,VT,105.00,Storage,2027-04-08
+1379,Solar,ISONE,Withdrawn,2023-04-06,2025-10-11,Aroostook,ME,BHE,218.40,Solar,2028-10-31
+1380,Fuel Cell CNR,ISONE,Done,2023-04-06,,Hartford,CT,CT,20.10,Other,2024-12-12
+1382,Vineyard Offshore Wind CNR,ISONE,Done,2023-04-11,,,MA,SEMA,843.20,Wind,2026-04-24
+1383,Solar and Battery ,ISONE,Withdrawn,2023-04-13,2023-12-15,Penoboscot,ME,BHE,139.00,Hybrid,2028-12-31
+1384,Battery Storage,ISONE,Withdrawn,2023-04-26,2024-07-29,Worcester,MA,CMA,300.00,Storage,2026-12-31
+1385,Battery Storage,ISONE,Withdrawn,2023-04-26,2024-07-29,Worcester,MA,CMA,233.00,Storage,2026-12-31
+1386,Battery Storage,ISONE,Withdrawn,2023-04-26,2024-10-04,Berkshire,MA,WMA,100.00,Storage,2026-12-31
+1388,Wind CNR,ISONE,Done,2023-04-28,,Penobscot,ME,BHE,61.20,Wind,2026-04-09
+1389,Wind CNR,ISONE,Done,2023-04-28,,Washington,ME,BHE,58.14,Wind,2026-04-09
+1390,Wind CNR,ISONE,Withdrawn,2023-04-28,2025-10-11,Hancock,ME,BHE,34.49,Wind,2023-11-01
+1391,Wind CNR,ISONE,Done,2023-04-28,,Washington,ME,BHE,26.01,Wind,2026-04-09
+1392,Battery Storage,ISONE,Withdrawn,2023-05-03,2025-09-23,New Haven,CT,CT,53.74,Storage,2026-09-15
+1393,Gas Turbine,ISONE,Withdrawn,2023-05-03,2023-09-13,Fairfield,CT,SWCT,233.00,Thermal,2026-06-01
+1394,Battery Storage Addition,ISONE,Withdrawn,2023-05-04,2025-10-10,Middlesex,CT,CT,284.05,Storage,2026-07-01
+1395,Battery Storage,ISONE,Withdrawn,2023-05-05,2023-05-22,Hampshire,MA,WMA,20.00,Storage,2027-06-30
+1396,Battery Storage,ISONE,Withdrawn,2023-05-05,2025-10-08,Providence,RI,RI,101.97,Storage,2026-12-31
+1397,Battery Storage,ISONE,Withdrawn,2023-05-05,2025-10-08,Worcester,MA,CMA,100.24,Storage,2026-12-31
+1398,Battery Storage,ISONE,Withdrawn,2023-05-08,2024-12-03,Worcester,MA,CMA,101.97,Storage,2026-12-31
+1399,Battery Storage,ISONE,Withdrawn,2023-05-18,2025-10-11,Hampden,MA,WMA,92.44,Storage,2027-05-31
+1400,Battery Storage,ISONE,Withdrawn,2023-05-18,2025-10-08,Hartford,CT,CT,101.97,Storage,2026-12-31
+1402,Battery Storage,ISONE,Withdrawn,2023-06-07,2025-10-11,Hampden,MA,WMA,171.60,Storage,2027-06-01
+1403,Battery Storage,ISONE,Withdrawn,2023-06-09,2025-01-13,Middlesex,CT,CT,304.72,Storage,2026-11-20
+1405,EE Group @ Southwick,ISONE,Withdrawn,2023-06-13,2025-06-13,Hampden,MA,WMA,7.00,Hybrid,2024-12-31
+1406,EE Group @ Doreen,ISONE,Withdrawn,2023-06-13,2025-06-13,Berkshire,MA,WMA,9.15,Hybrid,2024-12-31
+1407,EE Group @ Blandford,ISONE,Withdrawn,2023-06-13,2025-06-13,Hampshire,MA,WMA,28.93,Hybrid,2024-12-31
+1415,Battery Storage,ISONE,Withdrawn,2023-06-20,2024-09-26,Worcester,MA,CMA,261.90,Storage,2024-08-12
+1416,Battery Storage,ISONE,Withdrawn,2023-06-26,2023-08-08,Hampshire,MA,WMA,196.00,Storage,2027-05-19
+1417,Battery Storage,ISONE,Withdrawn,2023-06-26,2024-12-11,Windham,CT,CT,300.00,Storage,2028-06-01
+1418,Battery Storage,ISONE,Withdrawn,2023-06-27,2023-11-30,Providence,RI,RI,108.70,Storage,2027-04-01
+1419,Battery Storage,ISONE,Withdrawn,2023-06-28,2024-03-06,Bristol,MA,SEMA,108.70,Storage,2027-04-01
+1420,Battery Storage,ISONE,Withdrawn,2023-06-29,2025-10-11,New London,CT,CT,175.10,Storage,2027-12-31
+1421,Battery Storage,ISONE,Withdrawn,2023-07-06,2024-01-26,Bristol,MA,SEMA,175.67,Storage,2024-09-08
+1422,Battery Storage,ISONE,Withdrawn,2023-07-07,2025-04-25,Hartford,CT,CT,326.00,Storage,2029-02-02
+1423,Battery Storage,ISONE,Withdrawn,2023-07-10,2024-09-04,Worcester,MA,CMA,121.60,Storage,2026-09-01
+1424,Battery Storage,ISONE,Withdrawn,2023-07-10,2023-08-15,Worcester,MA,CMA,41.20,Storage,2026-09-01
+1425,Battery Storage,ISONE,Withdrawn,2023-07-10,2024-09-04,Hampden,MA,WMA,151.60,Storage,2026-10-01
+1426,Battery Storage,ISONE,Withdrawn,2023-07-14,2024-12-10,Bristol,MA,SEMA,528.75,Storage,2028-03-31
+1429,Wind,ISONE,Withdrawn,2023-08-08,2025-10-11,Aroostook,ME,BHE,197.40,Wind,2028-10-01
+1430,Battery Storage,ISONE,Withdrawn,2023-08-09,2025-10-11,Bristol,MA,RI,237.54,Storage,2027-10-17
+1431,Battery Storage,ISONE,Withdrawn,2023-08-09,2025-06-13,Hartford,CT,CT,7.00,Storage,2024-12-29
+1432,Battery Storage,ISONE,Withdrawn,2023-08-11,2024-08-15,New London,CT,CT,256.53,Storage,2028-09-30
+1433,Battery Storage,ISONE,Withdrawn,2023-08-15,2024-06-19,Hampden,MA,WMA,100.00,Storage,2027-12-31
+1434,Battery Storage,ISONE,Withdrawn,2023-08-15,2024-06-19,Franklin,MA,WMA,160.00,Storage,2027-12-31
+1436,Battery Storage,ISONE,Withdrawn,2023-08-29,2025-10-11,New London,CT,CT,300.00,Storage,2028-06-01
+1437,Battery Storage,ISONE,Withdrawn,2023-08-31,2025-09-30,New London,CT,CT,103.32,Storage,2029-02-01
+1438,Solar,ISONE,Withdrawn,2023-10-10,2023-12-11,York,ME,ME,15.58,Solar,2024-12-31
+1439,Battery Storage,ISONE,Withdrawn,2023-09-18,2024-10-29,Hampshire,MA,WMA,151.31,Storage,2027-05-31
+1440,Battery Storage,ISONE,Withdrawn,2023-09-18,2025-04-09,Hampden,MA,WMA,151.56,Storage,2027-05-31
+1441,Battery Storage,ISONE,Withdrawn,2023-09-18,2023-11-02,Hampden,MA,WMA,103.00,Storage,2027-05-31
+1442,Battery Storage,ISONE,Withdrawn,2023-09-18,2024-09-04,Bristol,MA,SEMA,151.58,Storage,2027-05-31
+1443,Battery Storage,ISONE,Withdrawn,2023-09-20,2023-11-20,Rockingham,NH,NH,202.69,Storage,2026-12-30
+1444,Battery Storage,ISONE,Withdrawn,2023-09-21,2023-11-06,Norfolk,MA,SEMA,250.00,Storage,2027-09-15
+1445,Solar,ISONE,Withdrawn,2023-09-21,2023-12-15,Somerset,ME,ME,51.50,Solar,2027-12-15
+1446,Raymond 115 kV SS - Raymond Area DG Study,ISONE,Withdrawn,2023-09-29,2025-06-13,Cumberland,ME,ME,9.95,Solar,2025-06-20
+1447,Leeds 115 kV SS - Sturtevant-Leeds-Livermore-Ludden-Riley Area DG Study,ISONE,Withdrawn,2023-09-29,2025-06-13,Androscoggin,ME,ME,5.00,Solar,2024-09-01
+1451,Offshore wind,ISONE,Withdrawn,2023-10-05,2024-07-30,,MA,SEMA,1309.00,Wind,2030-09-27
+1452,Battery Storage,ISONE,Withdrawn,2023-10-05,2024-08-08,Worcester,MA,CMA,151.29,Storage,2027-05-28
+1454,Newcastle 115 kV SS - Midcoast Area DG Study,ISONE,Withdrawn,2023-10-02,2025-06-13,Cumberland/Kennedbec/Sagadahoc/Lincoln,ME,ME,11.65,Solar,2024-12-31
+1461,Battery Addition ,ISONE,Withdrawn,2023-10-18,2025-10-11,Rockingham,NH,NH,165.38,Storage,2028-09-01
+1462,Battery Storage,ISONE,Withdrawn,2023-11-27,2024-02-20,Norfolk,MA,SEMA,115.00,Storage,2029-12-20
+1463,EE Valley DG Group Study,ISONE,Withdrawn,2023-11-22,2025-06-13,Plymouth,MA,SEMA,8.00,Solar,2026-12-31
+1464,Wind Repower,ISONE,Withdrawn,2023-12-05,2025-10-11,Caledonia,VT,VT,35.20,Wind,2026-12-31
+1465,Augusta E/Puddledock/Bowman St 115 kV SS - Midcoast Area DG Study,ISONE,Withdrawn,2023-12-05,2025-06-13,Kennebec,ME,ME,18.61,Hybrid,2024-12-31
+1466,Winslow-County Rd Lakewood 115 kV SS - Winslow-County Rd-Lakewood 2 DG Study,ISONE,Withdrawn,2023-12-05,2025-06-13,Kennebec/Somerset,ME,ME,20.97,Solar,2024-12-31
+1467,Battery Storage,ISONE,Withdrawn,2023-12-12,2025-10-06,Worcester,MA,CMA,69.40,Storage,2026-10-31
+1468,Battery Storage,ISONE,Withdrawn,2023-12-12,2024-01-26,Plymouth,MA,SEMA,76.00,Storage,2027-01-31
+1469,Battery Storage,ISONE,Withdrawn,2023-12-12,2024-02-15,Worcester,MA,CMA,190.00,Storage,2027-01-31
+1470,Battery Storage,ISONE,Withdrawn,2023-12-12,2024-02-01,Hartford,CT,CT,237.60,Storage,2027-01-31
+1471,Battery Storage,ISONE,Withdrawn,2023-12-12,2024-02-01,New Haven,CT,CT,134.70,Storage,2027-01-31
+1472,Battery Storage,ISONE,Withdrawn,2023-12-12,2024-01-09,Providence,RI,RI,108.00,Storage,2027-01-31
+1473,Battery Storage,ISONE,Withdrawn,2023-12-14,2024-01-22,Hampden,MA,WMA,202.07,Storage,2028-04-04
+1474,NG NEMA Group DER Study,ISONE,Withdrawn,2023-12-18,2025-06-13,Essex,MA,BOST,9.98,Storage,2025-12-31
+1475,NG NEMA Group DER Study,ISONE,Withdrawn,2023-12-18,2025-06-13,Essex,MA,BOST,5.00,Hybrid,2025-12-31
+1476,NG NEMA Group DER Study,ISONE,Withdrawn,2023-12-18,2025-06-13,Middlesex,MA,BOST,5.00,Storage,2025-12-31
+1477,NG DG @ Sykes Road,ISONE,Withdrawn,2023-12-19,2025-06-13,Bristol,MA,SEMA,10.00,Storage,2025-12-31
+1478,Battery Storage,ISONE,Withdrawn,2023-12-28,2025-10-10,Hampden,MA,WMA,50.00,Storage,2028-05-25
+1485,Offshore Wind CNR,ISONE,Withdrawn,2024-01-02,2024-08-07,,CT,CT,1200.00,Wind,2031-05-31
+1486,Battery Storage,ISONE,Withdrawn,2024-01-02,2025-01-24,New Haven,CT,SWCT,300.00,Storage,2027-06-30
+1487,EE CT DG Group Study,ISONE,Withdrawn,2024-01-09,2025-06-13,New Haven,CT,CT,5.00,Solar,2024-12-31
+1488,Offshore Wind,ISONE,Withdrawn,2024-01-11,2025-10-09,,CT,CT,1275.00,Wind,2031-09-01
+1489,EE Mansfield Center DG Cluster,ISONE,Withdrawn,2024-01-17,2025-06-13,Tolland,CT,CT,10.80,Hybrid,2025-07-27
+1490,EE Mansfield Center DG Cluster,ISONE,Withdrawn,2024-01-17,2025-06-13,Tolland,CT,CT,19.98,Solar,2024-12-31
+1496,Battery Storage addition(QP1192),ISONE,Withdrawn,2024-02-07,2025-10-11,Hartford,CT,CT,202.23,Hybrid,2027-12-15
+1497,Solar,ISONE,Withdrawn,2024-02-07,2024-05-14,Penobscot,ME,BHE,68.00,Solar,2028-07-15
+1498,Battery Storage,ISONE,Withdrawn,2024-02-08,2025-08-21,Fairfield,CT,SWCT,109.52,Storage,2027-12-31
+1499,Battery Storage,ISONE,Withdrawn,2024-02-13,2025-06-12,Hampden,MA,WMA,115.60,Storage,2026-10-31
+1500,Offshore Wind CNR only,ISONE,Withdrawn,2024-02-20,2025-10-11,,MA,RI,1249.50,Wind,2033-11-04
+1501,Battery Storage,ISONE,Withdrawn,2024-02-29,2024-12-11,New London,CT,CT,167.10,Storage,2028-04-01
+1503,EE Lost Nation Group DG Study,ISONE,Withdrawn,2024-03-13,2024-03-20,Coos,NH,NH,9.98,Solar,2025-12-31
+1504,Solar,ISONE,Withdrawn,2024-03-13,2024-03-20,Belknap,NH,NH,10.00,Solar,2025-12-31
+1505,Offshore Wind,ISONE,Withdrawn,2024-03-14,2025-10-09,,CT,CT,1275.00,Wind,2031-09-01
+1506,Battery Storage,ISONE,Withdrawn,2024-03-22,2024-04-18,Middlesex,MA,BOST,152.66,Storage,2028-06-01
+1507,Solar Increase,ISONE,Withdrawn,2024-03-27,2025-10-11,Hartford,CT,CT,177.41,Solar,2028-12-15
+1508,Battery Storage,ISONE,Withdrawn,2024-04-01,2024-09-26,Hartford,CT,CT,167.10,Storage,2028-04-01
+1509,Battery Storage,ISONE,Withdrawn,2024-04-03,2025-10-07,Worcester,MA,CMA,152.76,Storage,2027-12-31
+1510,Battery Storage,ISONE,Withdrawn,2024-04-03,2025-10-07,Wocester,MA,CMA,152.76,Storage,2027-12-31
+1511,Battery Storage,ISONE,Withdrawn,2024-04-08,2024-05-14,Hampden,MA,WMA,250.89,Storage,2027-12-31
+1512,Battery Storage + Solar,ISONE,Withdrawn,2024-04-08,2024-05-29,Franklin,MA,WMA,100.46,Hybrid,2027-12-31
+1514,Battery Storage,ISONE,Withdrawn,2024-04-08,2025-10-11,Worcester,MA,CMA,408.10,Storage,2028-08-30
+1516,Battery Storage,ISONE,Withdrawn,2024-04-09,2025-10-11,Windsor,VT,VT,114.70,Storage,2028-08-30
+1517,Battery Storage,ISONE,Withdrawn,2024-04-09,2025-10-11,Franklin,MA,WMA,365.80,Storage,2028-08-30
+1519,Offshore Wind,ISONE,Withdrawn,2024-04-12,2025-06-02,,RI,RI,1200.00,Wind,2031-04-10
+1520,Battery Storage,ISONE,Withdrawn,2024-04-16,2025-09-03,New Haven,CT,CT,125.00,Storage,2028-05-01
+1521,Solar CNR only,ISONE,Withdrawn,2024-04-22,2025-10-11,Addison,VT,VT,50.00,Solar,2026-05-31
+1522,Battery Storage,ISONE,Withdrawn,2024-04-25,2024-08-16,Bristol,MA,RI,125.50,Storage,2028-05-01
+1523,Battery Storage,ISONE,Withdrawn,2024-05-06,2025-10-11,Norfolk,MA,RI,253.82,Storage,2029-06-01
+1524,Battery Storage,ISONE,Withdrawn,2024-05-06,2025-10-10,Hartford,CT,CT,235.01,Storage,2027-01-31
+1525,Battery Storage,ISONE,Withdrawn,2024-05-06,2024-06-25,New Haven,CT,CT,134.70,Storage,2027-01-31
+1528,EE 2024 SEMA/Cape ASO Group Study,ISONE,Withdrawn,2024-05-08,2025-06-13,Plymouth,MA,SEMA,5.00,Storage,2026-12-31
+1530,EE 2024 SEMA/Cape ASO Group Study,ISONE,Withdrawn,2024-05-08,2025-06-13,Bristol,MA,SEMA,5.00,Hybrid,2026-12-31
+1532,EE 2024 SEMA/Cape ASO Group Study	,ISONE,Withdrawn,2024-05-08,2025-06-13,Plymouth,MA,SEMA,5.00,Hybrid,2026-12-31
+1533,EE 2024 SEMA/Cape ASO Group Study	,ISONE,Withdrawn,2024-05-08,2025-06-13,Plymouth,MA,SEMA,16.94,Hybrid,2026-12-31
+1539,EE CT DER Group Study,ISONE,Withdrawn,2024-05-15,2025-06-13,Middlesex,CT,CT,20.00,Storage,2027-04-05
+1540,EE CT DER Group Study,ISONE,Withdrawn,2024-05-15,2025-06-13,Hartford,CT,CT,20.00,Storage,2025-12-31
+1541,Battery Storage,ISONE,Withdrawn,2024-05-28,2025-10-11,Middlesex,MA,BOST,101.00,Storage,2028-05-31
+1544,Battery Storage,ISONE,Withdrawn,2024-05-29,2024-07-03,Franklin,MA,WMA,105.00,Storage,2029-12-30
+1545,Battery Storage,ISONE,Withdrawn,2024-05-30,2025-10-10,Franklin,MA,WMA,100.75,Storage,2028-08-01
+1548,Battery Storage,ISONE,Withdrawn,2024-05-31,2024-10-17,Providence,RI,RI,165.76,Storage,2028-03-01
+1549,Battery Storage,ISONE,Withdrawn,2024-06-03,2024-10-18,Providence ,RI,RI,108.00,Storage,2027-01-31
+1550,Battery Storage,ISONE,Withdrawn,2024-05-31,2024-08-02,Plymouth,MA,SEMA,76.00,Storage,2027-01-31
+1552,Battery Storage,ISONE,Withdrawn,2024-06-04,2024-11-22,Hartford,CT,CT,133.20,Storage,2028-04-01
+1554,Battery Storage,ISONE,Withdrawn,2024-06-07,2024-11-07,Providence,RI,RI,414.63,Storage,2027-10-11
+1556,Battery Storage,ISONE,Withdrawn,2024-06-06,2025-10-10,Worcester,MA,CMA,204.82,Storage,2027-10-11
+1558,Battery Storage,ISONE,Withdrawn,2024-06-06,2025-09-22,Bristol,MA,SEMA,141.50,Storage,2028-01-01
+1559,Battery Storage,ISONE,Withdrawn,2024-06-06,2025-09-22,New London,CT,CT,93.20,Storage,2027-05-01
+1560,Battery Storage,ISONE,Withdrawn,2024-06-06,2025-09-22,Bristol,MA,SEMA,133.80,Storage,2027-04-01
+1561,Battery Storage,ISONE,Withdrawn,2024-06-06,2025-05-09,Litchfield,CT,CT,141.60,Storage,2027-04-01
+1562,Battery Storage,ISONE,Withdrawn,2024-06-07,2024-08-28,Litchfield,CT,CT,45.29,Storage,2027-06-01
+1563,Solar,ISONE,Withdrawn,2024-06-06,2025-05-01,Somerset,ME,ME,165.00,Solar,2028-06-06
+1564,Battery Storage,ISONE,Withdrawn,2024-06-06,2025-10-06,Windham,VT,VT,100.96,Storage,2027-09-30
+1565,Battery Storage,ISONE,Withdrawn,2024-06-10,2024-09-11,Bristol,MA,SEMA,81.00,Storage,2027-01-31
+1566,Wind,ISONE,Withdrawn,2024-06-11,2025-10-11,Aroostook,ME,BHE,197.40,Wind,2028-10-01
+1568,Battery Storage,ISONE,Withdrawn,2024-06-12,2025-10-10,Washington,RI,RI,152.76,Storage,2027-01-31
+1570,Battery Storage,ISONE,Withdrawn,2024-06-13,2024-09-27,Worcester,MA,CMA,19.73,Storage,2027-06-30
+1571,Battery Storage,ISONE,Withdrawn,2024-06-13,2025-10-11,Worcester,MA,CMA,19.73,Storage,2027-06-30
+1573,Solar,ISONE,Withdrawn,2024-06-26,2024-08-12,York,ME,ME,20.00,Solar,2028-06-06
+1574,Battery Storage,ISONE,Withdrawn,2024-06-26,2024-08-12,Merrimack,NH,NH,20.00,Storage,2028-06-06
+1575,Solar ,ISONE,Withdrawn,2024-06-26,2024-08-12,Oxford,ME,ME,20.00,Solar,2028-06-06
+1576,Solar,ISONE,Withdrawn,2024-06-26,2024-08-12,Cheshire,NH,NH,20.00,Solar,2028-06-06
+1577,Solar,ISONE,Withdrawn,2024-06-26,2024-08-12,Knox,ME,ME,20.00,Solar,2028-06-06
+1578,Solar,ISONE,Withdrawn,2024-06-26,2024-08-12,Oxford,ME,ME,20.00,Solar,2028-06-06
+1579,RMLD DER Group Study,ISONE,Withdrawn,2024-07-29,2025-06-13,Middlesex,MA,CMA,5.00,Storage,2025-02-16
+1580,RMLD DER Group Study,ISONE,Withdrawn,2024-07-29,2025-06-13,Middlesex,MA,CMA,9.98,Storage,2025-06-16
+1585,HGE Group Study,ISONE,Withdrawn,2024-08-13,2025-06-13,Hampden,MA,WMA,12.98,Storage,2026-01-01
+1586,Battery Storage,ISONE,Withdrawn,2024-08-14,2025-06-13,Chittenden,VT,VT,16.00,Storage,2026-04-01
+1588,Wood River Substation - Western RI DER Study #3,ISONE,Withdrawn,2024-08-19,2025-06-13,Washington,RI,RI,49.00,Solar,2026-12-31
+1589,Kent County Substation - Western RI DER Study #3,ISONE,Withdrawn,2024-08-19,2025-06-13,Kent,RI,RI,21.75,Solar,2026-12-31
+1595,Willard Storage (NYISO-C24-148),ISONE,Active,2024-12-12,,Rensselaer,NY,,300.00,Storage,2028-10-01
+1596,NY Chateaugay 0 Willis Rd Storage (NYISO-C24-304-004),ISONE,Active,2024-12-12,,Franklin,NY,,150.00,Storage,2028-02-01
+1597,New Scotland BESS (NYISO-C24-045),ISONE,Withdrawn,2024-12-12,2025-06-26,Albany,NY,,1350.00,Storage,2027-09-01
+1598,Zenobe Rotterdam LLC (NYISO-C24-191),ISONE,Withdrawn,2024-12-12,2025-12-05,Schenectady,NY,,100.00,Storage,2028-06-01
+1599,Dover NY BESS (NYISO-C24-316),ISONE,Withdrawn,2024-12-12,2025-06-26,Dutchess,NY,,1000.00,Storage,2028-05-01
+1600,Chazy Lake BESS (NYISO-C24-308),ISONE,Withdrawn,2024-12-12,2025-03-14,Clinton,NY,,50.00,Storage,2028-08-01

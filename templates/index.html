@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interconnection Queue Analytics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+
+<!-- Loading overlay -->
+<div id="loading" class="loading-overlay">
+  <div class="loading-box">
+    <div class="spinner"></div>
+    <div class="loading-text">Loading Dashboard…</div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<!-- Navbar -->
+<nav id="navbar">
+  <a class="nav-brand" href="#">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+      <rect width="28" height="28" rx="6" fill="rgba(255,255,255,0.15)"/>
+      <path d="M6 20L10 12L14 16L18 8L22 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="22" cy="14" r="2" fill="#60a5fa"/>
+    </svg>
+    <div>
+      <div>Interconnection Queue Analytics</div>
+      <span class="sub">ISO/RTO Pipeline Intelligence Platform</span>
+    </div>
+  </a>
+  <div class="nav-right">
+    <span id="data-status" class="data-status">Live Data Ready</span>
+    <button class="nav-btn" onclick="toggleSidebar()">
+      <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M0 3a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3zm5 0v10h9a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H5z"/>
+      </svg>
+      Filters
+    </button>
+    <button class="nav-btn" id="theme-btn" onclick="toggleTheme()">
+      <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16" id="theme-icon">
+        <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
+      </svg>
+      Dark Mode
+    </button>
+  </div>
+</nav>
+
+<!-- Layout -->
+<div id="layout">
+
+<!-- Sidebar -->
+<aside id="sidebar">
+  <div class="sidebar-title">
+    <svg width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+      <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
+    </svg>
+    Filter Panel
+  </div>
+
+  <!-- ── Developer Insights filters ── -->
+  <div class="iso-filter-group" data-tab="developer-insights">
+    <div class="filter-section">
+      <span class="filter-label">Data Snapshot</span>
+      <select id="snapshotDateFilter" class="sidebar-select">
+        <option value="">Loading snapshots…</option>
+      </select>
+      <button type="button" id="snapshotReloadButton" class="small-btn" style="margin-top:7px;width:100%;">Reload Snapshot List</button>
+      <div id="snapshotStatus" style="margin-top:6px;font-size:.72rem;color:var(--text-muted);"></div>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Upload JSON (manual fallback)</span>
+      <input type="file" id="fileInput" multiple style="font-size:.78rem;color:var(--text-muted);">
+      <div id="status" style="margin-top:5px;font-size:.72rem;color:var(--accent);font-weight:600;"></div>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Scope</span>
+      <select id="filterType" class="sidebar-select" style="margin-bottom:8px;">
+        <option value="ISO">ISO</option>
+        <option value="State">State</option>
+      </select>
+      <span class="filter-label" id="marketFilterLabel" style="margin-top:4px;">Selected ISO</span>
+      <select id="marketFilter" class="sidebar-select">
+        <option value="All">All ISOs</option>
+      </select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Fuel Type</span>
+      <div class="fuel-dropdown" id="fuelDropdown">
+        <button type="button" id="fuelDropdownButton" class="fuel-dropdown-button">All Fuels</button>
+        <div id="fuelDropdownMenu" class="fuel-dropdown-menu hidden">
+          <label class="fuel-option fuel-option-all">
+            <input type="checkbox" id="fuelAllCheckbox" checked>
+            <span>All Fuels</span>
+          </label>
+          <div id="fuelCheckboxList"></div>
+        </div>
+      </div>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Year Range</span>
+      <div class="year-range-grid">
+        <div>
+          <span style="display:block;font-size:.7rem;color:var(--text-muted);margin-bottom:4px;">Start</span>
+          <select id="yearStart" class="sidebar-select"></select>
+        </div>
+        <div>
+          <span style="display:block;font-size:.7rem;color:var(--text-muted);margin-bottom:4px;">End</span>
+          <select id="yearEnd" class="sidebar-select"></select>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-actions">
+      <button id="resetFilters" class="btn-filter btn-reset">Reset All Filters</button>
+    </div>
+  </div>
+
+  <!-- ── ERCOT filters ── -->
+  <div class="iso-filter-group hidden" data-tab="ercot">
+    <div class="filter-section">
+      <span class="filter-label">Zone</span>
+      <select id="ercotZoneFilter" class="sidebar-select"><option value="All">All Zones</option></select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">County</span>
+      <select id="ercotCountyFilter" class="sidebar-select"><option value="All">All Counties</option></select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Fuel Type</span>
+      <select id="ercotFuelFilter" class="sidebar-select"><option value="All">All Fuels</option></select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Status</span>
+      <select id="ercotStatusFilter" class="sidebar-select"><option value="All">All Statuses</option></select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Developer</span>
+      <select id="ercotDeveloperFilter" class="sidebar-select"><option value="All">All Developers</option></select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Queue Year Range</span>
+      <div class="year-range-grid">
+        <div><span style="display:block;font-size:.7rem;color:var(--text-muted);margin-bottom:4px;">Start</span><select id="ercotQueueYearStart" class="sidebar-select"></select></div>
+        <div><span style="display:block;font-size:.7rem;color:var(--text-muted);margin-bottom:4px;">End</span><select id="ercotQueueYearEnd" class="sidebar-select"></select></div>
+      </div>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Proposed Year Range</span>
+      <div class="year-range-grid">
+        <div><span style="display:block;font-size:.7rem;color:var(--text-muted);margin-bottom:4px;">Start</span><select id="ercotProposedYearStart" class="sidebar-select"></select></div>
+        <div><span style="display:block;font-size:.7rem;color:var(--text-muted);margin-bottom:4px;">End</span><select id="ercotProposedYearEnd" class="sidebar-select"></select></div>
+      </div>
+    </div>
+    <div class="sidebar-actions">
+      <button id="ercotResetFilters" class="btn-filter btn-reset">Reset ERCOT Filters</button>
+    </div>
+  </div>
+
+  <!-- ── ISO-NE filters ── -->
+  <div class="iso-filter-group hidden" data-tab="isone">
+    <div class="filter-section">
+      <span class="filter-label">Zone</span>
+      <select id="isoneZoneFilter" class="sidebar-select"><option value="All">All Zones</option></select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">State</span>
+      <select id="isoneStateFilter" class="sidebar-select"><option value="All">All States</option></select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">County</span>
+      <select id="isoneCountyFilter" class="sidebar-select"><option value="All">All Counties</option></select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Fuel Type</span>
+      <select id="isoneFuelFilter" class="sidebar-select"><option value="All">All Fuels</option></select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Status</span>
+      <select id="isoneStatusFilter" class="sidebar-select"><option value="All">All Statuses</option></select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Queue Year Range</span>
+      <div class="year-range-grid">
+        <div><span style="display:block;font-size:.7rem;color:var(--text-muted);margin-bottom:4px;">Start</span><select id="isoneQueueYearStart" class="sidebar-select"></select></div>
+        <div><span style="display:block;font-size:.7rem;color:var(--text-muted);margin-bottom:4px;">End</span><select id="isoneQueueYearEnd" class="sidebar-select"></select></div>
+      </div>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Proposed Year Range</span>
+      <div class="year-range-grid">
+        <div><span style="display:block;font-size:.7rem;color:var(--text-muted);margin-bottom:4px;">Start</span><select id="isoneProposedYearStart" class="sidebar-select"></select></div>
+        <div><span style="display:block;font-size:.7rem;color:var(--text-muted);margin-bottom:4px;">End</span><select id="isoneProposedYearEnd" class="sidebar-select"></select></div>
+      </div>
+    </div>
+    <div class="sidebar-actions">
+      <button id="isoneResetFilters" class="btn-filter btn-reset">Reset ISO-NE Filters</button>
+    </div>
+  </div>
+
+  <!-- ── MISO filters ── -->
+  <div class="iso-filter-group hidden" data-tab="miso">
+    <div class="filter-section">
+      <span class="filter-label">State</span>
+      <select id="misoStateFilter" class="sidebar-select"><option value="All">All States</option></select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">County</span>
+      <select id="misoCountyFilter" class="sidebar-select"><option value="All">All Counties</option></select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Fuel Type</span>
+      <select id="misoFuelFilter" class="sidebar-select"><option value="All">All Fuels</option></select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Status</span>
+      <select id="misoStatusFilter" class="sidebar-select"><option value="All">All Statuses</option></select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Study Cycle</span>
+      <select id="misoStudyCycleFilter" class="sidebar-select"><option value="All">All Study Cycles</option></select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Study Group</span>
+      <select id="misoStudyGroupFilter" class="sidebar-select"><option value="All">All Study Groups</option></select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Service Type</span>
+      <select id="misoServiceTypeFilter" class="sidebar-select"><option value="All">All Service Types</option></select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Queue Year Range</span>
+      <div class="year-range-grid">
+        <div><span style="display:block;font-size:.7rem;color:var(--text-muted);margin-bottom:4px;">Start</span><select id="misoQueueYearStart" class="sidebar-select"></select></div>
+        <div><span style="display:block;font-size:.7rem;color:var(--text-muted);margin-bottom:4px;">End</span><select id="misoQueueYearEnd" class="sidebar-select"></select></div>
+      </div>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Proposed Year Range</span>
+      <div class="year-range-grid">
+        <div><span style="display:block;font-size:.7rem;color:var(--text-muted);margin-bottom:4px;">Start</span><select id="misoProposedYearStart" class="sidebar-select"></select></div>
+        <div><span style="display:block;font-size:.7rem;color:var(--text-muted);margin-bottom:4px;">End</span><select id="misoProposedYearEnd" class="sidebar-select"></select></div>
+      </div>
+    </div>
+    <div class="sidebar-actions">
+      <button id="misoResetFilters" class="btn-filter btn-reset">Reset MISO Filters</button>
+    </div>
+  </div>
+
+  <!-- ── PJM filters ── -->
+  <div class="iso-filter-group hidden" data-tab="pjm">
+    <div class="filter-section">
+      <span class="filter-label">Study Cycle</span>
+      <select id="pjmStudyCycleFilter" class="sidebar-select"><option value="All">All Study Cycles</option></select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Study Phase</span>
+      <select id="pjmStudyPhaseFilter" class="sidebar-select"><option value="All">All Study Phases</option></select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Status</span>
+      <select id="pjmStatusFilter" class="sidebar-select"><option value="All">All Statuses</option></select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Fuel Type</span>
+      <select id="pjmFuelFilter" class="sidebar-select"><option value="All">All Fuels</option></select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Transmission Owner</span>
+      <select id="pjmTransmissionOwnerFilter" class="sidebar-select"><option value="All">All Transmission Owners</option></select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Queue Year Range</span>
+      <div class="year-range-grid">
+        <div><span style="display:block;font-size:.7rem;color:var(--text-muted);margin-bottom:4px;">Start</span><select id="pjmQueueYearStart" class="sidebar-select"></select></div>
+        <div><span style="display:block;font-size:.7rem;color:var(--text-muted);margin-bottom:4px;">End</span><select id="pjmQueueYearEnd" class="sidebar-select"></select></div>
+      </div>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Proposed Year Range</span>
+      <div class="year-range-grid">
+        <div><span style="display:block;font-size:.7rem;color:var(--text-muted);margin-bottom:4px;">Start</span><select id="pjmProposedYearStart" class="sidebar-select"></select></div>
+        <div><span style="display:block;font-size:.7rem;color:var(--text-muted);margin-bottom:4px;">End</span><select id="pjmProposedYearEnd" class="sidebar-select"></select></div>
+      </div>
+    </div>
+    <div class="sidebar-actions">
+      <button id="pjmResetFilters" class="btn-filter btn-reset">Reset PJM Filters</button>
+    </div>
+  </div>
+
+  <!-- ── SPP filters ── -->
+  <div class="iso-filter-group hidden" data-tab="spp">
+    <div class="filter-section">
+      <span class="filter-label">State</span>
+      <select id="sppStateFilter" class="sidebar-select"><option value="All">All States</option></select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">County</span>
+      <select id="sppCountyFilter" class="sidebar-select"><option value="All">All Counties</option></select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Fuel Type</span>
+      <select id="sppFuelFilter" class="sidebar-select"><option value="All">All Fuels</option></select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Status</span>
+      <select id="sppStatusFilter" class="sidebar-select"><option value="All">All Statuses</option></select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Study Cycle</span>
+      <select id="sppStudyCycleFilter" class="sidebar-select"><option value="All">All Study Cycles</option></select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Study Group</span>
+      <select id="sppStudyGroupFilter" class="sidebar-select"><option value="All">All Study Groups</option></select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Service Type</span>
+      <select id="sppServiceTypeFilter" class="sidebar-select"><option value="All">All Service Types</option></select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Transmission Owner</span>
+      <select id="sppTransmissionOwnerFilter" class="sidebar-select"><option value="All">All Transmission Owners</option></select>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Queue Year Range</span>
+      <div class="year-range-grid">
+        <div><span style="display:block;font-size:.7rem;color:var(--text-muted);margin-bottom:4px;">Start</span><select id="sppQueueYearStart" class="sidebar-select"></select></div>
+        <div><span style="display:block;font-size:.7rem;color:var(--text-muted);margin-bottom:4px;">End</span><select id="sppQueueYearEnd" class="sidebar-select"></select></div>
+      </div>
+    </div>
+    <div class="filter-section">
+      <span class="filter-label">Proposed Year Range</span>
+      <div class="year-range-grid">
+        <div><span style="display:block;font-size:.7rem;color:var(--text-muted);margin-bottom:4px;">Start</span><select id="sppProposedYearStart" class="sidebar-select"></select></div>
+        <div><span style="display:block;font-size:.7rem;color:var(--text-muted);margin-bottom:4px;">End</span><select id="sppProposedYearEnd" class="sidebar-select"></select></div>
+      </div>
+    </div>
+    <div class="sidebar-actions">
+      <button id="sppResetFilters" class="btn-filter btn-reset">Reset SPP Filters</button>
+    </div>
+  </div>
+
+</aside>
+
+<main id="main">
+<div class="page">
+
+    <div class="header">
+        <div class="header-text">
+            <p class="header-eyebrow">Grid Interconnection Intelligence</p>
+            <h1>Queue Dashboard</h1>
+            <p>Developer-facing intelligence across ERCOT, ISO-NE, MISO, PJM, and SPP. Track project volumes, fuel mix shifts, and queue timing across all major U.S. markets.</p>
+        </div>
+        <div class="header-badge">Live Data Ready</div>
+    </div>
+
+    <div class="tab-nav" role="tablist" aria-label="Dashboard sections">
+        <button class="tab-button active" data-tab="developer-insights">Developer Insights</button>
+        <button class="tab-button" data-tab="ercot">ERCOT</button>
+        <button class="tab-button" data-tab="isone">ISO-NE</button>
+        <button class="tab-button" data-tab="miso">MISO</button>
+        <button class="tab-button" data-tab="pjm">PJM</button>
+        <button class="tab-button" data-tab="spp">SPP</button>
+    </div>
+
+    <!-- ══════════════════ DEVELOPER INSIGHTS ══════════════════ -->
+    <div id="tab-developer-insights-panel" class="tab-panel active">
+
+    <div class="section-header">
+        <span class="section-num">01</span>
+        <h2>Executive Summary</h2>
+        <span class="section-badge">Key metrics for the current filtered view</span>
+    </div>
+    <div class="summary-grid">
+        <div class="summary-card kpi-accent">
+            <div class="label">Visible Projects</div>
+            <div class="value" id="summaryProjects">0</div>
+            <div class="sub">Projects in the current filtered view</div>
+        </div>
+        <div class="summary-card kpi-info">
+            <div class="label">Visible Capacity</div>
+            <div class="value" id="summaryCapacity">0 GW</div>
+            <div class="sub">Queued capacity represented in the current view</div>
+        </div>
+        <div class="summary-card kpi-success">
+            <div class="label">Average Project Size</div>
+            <div class="value" id="summaryAverageSize">0 MW</div>
+            <div class="sub">Average project size in the selected market</div>
+        </div>
+        <div class="summary-card kpi-warning">
+            <div class="label">Dominant Fuel</div>
+            <div class="value" id="summaryFuel">—</div>
+            <div class="sub" id="summaryFuelShare">Largest fuel type by visible MW</div>
+        </div>
+        <div class="summary-card kpi-danger">
+            <div class="label">Dominant ISO</div>
+            <div class="value" id="summaryTopISO">—</div>
+            <div class="sub" id="summaryTopISOShare">Largest ISO by visible MW</div>
+        </div>
+        <div class="summary-card">
+            <div class="label">Active Market View</div>
+            <div class="value" id="summaryISO">All ISOs</div>
+            <div class="sub">ERCOT is included in time-based charts using Queue Date from the master dataset</div>
+        </div>
+    </div>
+
+    <div class="developer-card">
+        <h3>Developer Readout</h3>
+        <p id="developerReadout1">Load the master dataset to begin.</p>
+        <p id="developerReadout2"></p>
+    </div>
+
+    <div class="section-header">
+        <span class="section-num">02</span>
+        <h2>Capacity &amp; Fuel Mix Analysis</h2>
+        <span class="section-badge">Queue timing · Technology mix · Cross-market comparison</span>
+    </div>
+    <div class="chart-grid">
+        <div class="chart-card">
+            <h3>When are projects entering the queue, and how large are they?</h3>
+            <p>Each bubble is one queue entry. Use this view to spot clusters in queue timing, large outlier projects, and which fuels are driving visible queue activity.</p>
+            <div id="fuel" class="chart-box"></div>
+            <p class="chart-why">Why this matters: This helps developers see when market activity accelerated and whether the visible queue is dominated by smaller distributed projects or larger utility-scale entries.</p>
+        </div>
+
+        <div class="chart-card">
+            <div class="chart-filter-row">
+                <div>
+                    <h3 style="margin-bottom: 6px;">What technologies dominate the selected market?</h3>
+                </div>
+                <div class="inline-filter">
+                    <label for="fuelMixView">Fuel Mix View</label>
+                    <select id="fuelMixView">
+                        <option value="stacked">Stacked Bar by Year</option>
+                        <option value="pie">Fuel Share Pie Chart</option>
+                    </select>
+                </div>
+            </div>
+            <p id="fuelMixSubtitle">View annual queued capacity by fuel type or switch to a share-based view to see how concentrated the selected market is by technology.</p>
+            <div id="isoChart" class="chart-box small"></div>
+            <p class="chart-why">Why this matters: This helps developers understand whether a market is leaning toward solar, wind, storage, hybrid, or thermal buildout and how that mix is changing over time.</p>
+        </div>
+
+        <div class="chart-card" style="grid-column: 1 / -1;">
+            <h3 id="comparisonTitle">How does the selected market compare over time?</h3>
+            <p id="comparisonSubtitle">Switch between total capacity, project counts, and average project size. When a specific ISO is selected, this view breaks out by state. When a specific state is selected, it stays scoped to that state.</p>
+
+            <div class="comparison-controls">
+                <div class="inline-filter">
+                    <label for="metricView">Comparison View</label>
+                    <select id="metricView">
+                        <option value="capacity">Total Capacity</option>
+                        <option value="projects">Number of Projects</option>
+                        <option value="average">Average Project Size</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="comparisonChart" class="chart-box"></div>
+            <p class="chart-why">Why this matters: This lets developers compare market size, queue crowding, and typical project scale across years, regions, and technologies using a single flexible comparison view.</p>
+        </div>
+    </div>
+</div>
+
+    <!-- ══════════════════ ERCOT ══════════════════ -->
+    <div id="tab-ercot-panel" class="tab-panel">
+        <div id="ercotBlankState" class="blank-state">
+            <div class="blank-state-card">
+                <div class="blank-state-icon">⚡</div>
+                <h2>ERCOT Deep Dive</h2>
+                <p>Load the wide master JSON to view ERCOT-specific queue analysis, milestone timing, and project-level detail.</p>
+            </div>
+        </div>
+
+        <div id="ercotContent" class="hidden">
+            <div class="developer-card">
+                <h3>ERCOT Deep Dive Data Source</h3>
+                <p id="ercotStatus">ERCOT deep dive is using ERCOT rows from the loaded wide master JSON.</p>
+            </div>
+
+            <div class="summary-grid">
+                <div class="summary-card"><div class="label">Total ERCOT Projects</div><div class="value" id="ercotKpiProjects">0</div><div class="sub">Projects in the active ERCOT view</div></div>
+                <div class="summary-card"><div class="label">Total ERCOT Capacity</div><div class="value" id="ercotKpiCapacity">0 GW</div><div class="sub">Visible queued capacity in ERCOT</div></div>
+                <div class="summary-card"><div class="label">Average Project Size</div><div class="value" id="ercotKpiAverage">0 MW</div><div class="sub">Average project size in the filtered set</div></div>
+                <div class="summary-card"><div class="label">Top Zone</div><div class="value" id="ercotKpiZone">—</div><div class="sub" id="ercotKpiZoneShare">Largest zone by visible capacity</div></div>
+                <div class="summary-card"><div class="label">Average Completion Probability</div><div class="value" id="ercotKpiProbability">0%</div><div class="sub">Average completion probability in the filtered set</div></div>
+                <div class="summary-card"><div class="label">Percent Active</div><div class="value" id="ercotKpiPercentActive">0%</div><div class="sub">Share of visible projects marked Active</div></div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-card">
+                    <div class="chart-filter-row">
+                        <div><h3 style="margin-bottom: 6px;">ERCOT Zone View</h3></div>
+                        <div class="inline-filter">
+                            <label for="ercotZoneMetricView">Zone Metric</label>
+                            <select id="ercotZoneMetricView" onchange="updateErcotDeepDive()">
+                                <option value="capacity">Capacity by Zone</option>
+                                <option value="projects">Project Count by Zone</option>
+                            </select>
+                        </div>
+                    </div>
+                    <p>Switch between total queued capacity and project count by ERCOT zone.</p>
+                    <div id="ercotZoneChart" class="chart-box"></div>
+                </div>
+
+                <div class="chart-card">
+                    <h3>Top Counties by Capacity</h3>
+                    <p>Regional concentration of queued capacity by county, shown in GW.</p>
+                    <div id="ercotCountyChart" class="chart-box"></div>
+                </div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-card" style="grid-column: 1 / -1;">
+                    <div class="chart-filter-row">
+                        <div><h3 style="margin-bottom: 6px;">ERCOT Fuel Mix Over Time</h3></div>
+                        <div class="inline-filter">
+                            <label for="ercotFuelDateView">Date View</label>
+                            <select id="ercotFuelDateView" onchange="updateErcotDeepDive()">
+                                <option value="queue">Fuel Mix by Queue Year</option>
+                                <option value="proposed">Fuel Mix by Proposed Year</option>
+                            </select>
+                        </div>
+                    </div>
+                    <p>Switch between queue-entry timing and proposed COD timing, stacked by fuel type.</p>
+                    <div id="ercotYearFuelChart" class="chart-box"></div>
+                </div>
+            </div>
+
+            <div class="chart-card" style="margin-top: 16px;">
+                <h3>ERCOT Queue Advancement Summary</h3>
+                <p>This table shows how many projects reach each major milestone, how much capacity reaches that milestone, the median time from Queue Date, and the average completion probability for projects that reach that milestone.</p>
+                <div class="ercot-table-wrap" style="margin-top: 10px; max-height: 420px; overflow-y: auto; border: 1px solid var(--border); border-radius: 10px;">
+                    <table class="ercot-table">
+                        <thead style="position: sticky; top: 0; z-index: 2;">
+                            <tr>
+                                <th>Milestone</th>
+                                <th>Projects Reached</th>
+                                <th>% of Projects</th>
+                                <th>Capacity Reached</th>
+                                <th>% of Capacity</th>
+                                <th>Median Days from Queue Date</th>
+                                <th>Avg Completion Probability</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ercotAdvancementTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-card" style="grid-column: 1 / -1;">
+                    <h3>Queue Date vs Proposed Date</h3>
+                    <p>Scatter of queue timing versus proposed COD timing.</p>
+                    <div id="ercotQueueVsProposedChart" class="chart-box"></div>
+                </div>
+            </div>
+
+            <div class="chart-card" style="margin-top: 16px;">
+                <h3>ERCOT Project Table</h3>
+                <p>The table below updates with the current ERCOT filters. Use the search box to filter and click column headers to sort. Export the current view to CSV or Excel.</p>
+                <div class="dt-wrap">
+                    <table id="ercot-dt" class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Project ID</th>
+                                <th>Name</th>
+                                <th>Developer</th>
+                                <th>POI</th>
+                                <th>County</th>
+                                <th>Zone</th>
+                                <th>Queue Date</th>
+                                <th>Fuel Type</th>
+                                <th>MW Capacity</th>
+                                <th>Proposed Date</th>
+                                <th>Status</th>
+                                <th>Completion %</th>
+                                <th>Latest Milestone</th>
+                                <th>Milestone Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ercotProjectTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════ ISO-NE ══════════════════ -->
+    <div id="tab-isone-panel" class="tab-panel">
+        <div id="isoneBlankState" class="blank-state">
+            <div class="blank-state-card">
+                <div class="blank-state-icon">🌐</div>
+                <h2>ISO-NE Deep Dive</h2>
+                <p>Load the wide master JSON to view ISO-NE queue timing, zone concentration, and project-level detail.</p>
+            </div>
+        </div>
+
+        <div id="isoneContent" class="hidden">
+            <div class="developer-card">
+                <h3>ISO-NE Deep Dive Data Source</h3>
+                <p id="isoneStatus">ISO-NE deep dive is using ISO-NE rows from the loaded wide master JSON.</p>
+            </div>
+
+            <div class="summary-grid">
+                <div class="summary-card"><div class="label">Total ISO-NE Projects</div><div class="value" id="isoneKpiProjects">0</div><div class="sub">Projects in the current ISO-NE view</div></div>
+                <div class="summary-card"><div class="label">Total ISO-NE Capacity</div><div class="value" id="isoneKpiCapacity">0 GW</div><div class="sub">Visible queued capacity</div></div>
+                <div class="summary-card"><div class="label">Average Project Size</div><div class="value" id="isoneKpiAverage">0 MW</div><div class="sub">Average visible project size</div></div>
+                <div class="summary-card"><div class="label">Top Zone</div><div class="value" id="isoneKpiTopZone">—</div><div class="sub" id="isoneKpiTopZoneShare">Largest zone by capacity</div></div>
+                <div class="summary-card"><div class="label">Withdrawal Share</div><div class="value" id="isoneKpiWithdrawnShare">0%</div><div class="sub">Share of visible projects withdrawn</div></div>
+                <div class="summary-card"><div class="label">Median Queue → Proposed</div><div class="value" id="isoneKpiMedianYears">—</div><div class="sub">Median years where both dates exist</div></div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-card" style="grid-column:1/-1;">
+                    <div class="chart-filter-row"><div><h3 style="margin-bottom:6px;">ISO-NE Fuel Mix Over Time</h3></div><div class="inline-filter"><label for="isoneFuelDateView">Date View</label><select id="isoneFuelDateView" onchange="updateIsoneDeepDive()"><option value="queue">Fuel Mix by Queue Year</option><option value="proposed">Fuel Mix by Proposed Year</option></select></div></div>
+                    <p>Switch between when ISO-NE projects entered the queue and when projects are proposed online, stacked by fuel type.</p>
+                    <div id="isoneYearFuelChart" class="chart-box"></div>
+                </div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-card">
+                    <h3>Zone Status Concentration</h3>
+                    <p>Capacity by ISO-NE zone, split by project status, to show where active versus withdrawn capacity is concentrated.</p>
+                    <div id="isoneZoneStatusChart" class="chart-box"></div>
+                </div>
+                <div class="chart-card">
+                    <h3>Queue Date vs Proposed Date</h3>
+                    <p>Each point is an ISO-NE project. Bubbles are a consistent size and color represents fuel type.</p>
+                    <div id="isoneQueueVsProposedChart" class="chart-box"></div>
+                </div>
+            </div>
+
+            <div class="chart-card" style="margin-top:16px;">
+                <h3>ISO-NE Project Table</h3>
+                <p>The table updates with ISO-NE filters. Use the search box to search any column and click headers to sort. Export the current view to CSV or Excel.</p>
+                <div class="dt-wrap">
+                    <table id="isone-dt" class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Project ID</th>
+                                <th>Name</th>
+                                <th>Status</th>
+                                <th>Queue Date</th>
+                                <th>Withdrawn Date</th>
+                                <th>County</th>
+                                <th>State</th>
+                                <th>Zone</th>
+                                <th>MW Capacity</th>
+                                <th>Fuel Type</th>
+                                <th>Proposed Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="isoneProjectTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════ MISO ══════════════════ -->
+    <div id="tab-miso-panel" class="tab-panel">
+        <div id="misoBlankState" class="blank-state"><div class="blank-state-card"><div class="blank-state-icon">📈</div><h2>MISO Deep Dive</h2><p>Load the wide master JSON to view MISO-specific queue timing, study cycle, study group, service type, and project-level detail.</p></div></div>
+        <div id="misoContent" class="hidden">
+            <div class="developer-card"><h3>MISO Deep Dive Data Source</h3><p id="misoStatus">MISO deep dive is using MISO rows from the loaded wide master JSON.</p></div>
+
+            <div class="summary-grid">
+                <div class="summary-card"><div class="label">Total MISO Projects</div><div class="value" id="misoKpiProjects">0</div><div class="sub">Projects in the active MISO view</div></div>
+                <div class="summary-card"><div class="label">Total MISO Capacity</div><div class="value" id="misoKpiCapacity">0 GW</div><div class="sub">Visible queued capacity in MISO</div></div>
+                <div class="summary-card"><div class="label">Average Project Size</div><div class="value" id="misoKpiAverage">0 MW</div><div class="sub">Average project size</div></div>
+                <div class="summary-card"><div class="label">Top Study Cycle</div><div class="value" id="misoKpiStudyCycle">—</div><div class="sub" id="misoKpiStudyCycleShare">Largest cycle by capacity</div></div>
+                <div class="summary-card"><div class="label">Top Study Group</div><div class="value" id="misoKpiStudyGroup">—</div><div class="sub" id="misoKpiStudyGroupShare">Largest group by capacity</div></div>
+                <div class="summary-card"><div class="label">Median Queue → Proposed</div><div class="value" id="misoKpiMedianYears">—</div><div class="sub">Median years where both dates exist</div></div>
+            </div>
+
+            <div class="chart-grid"><div class="chart-card" style="grid-column:1/-1;"><div class="chart-filter-row"><div><h3 style="margin-bottom:6px;">MISO Fuel Mix Over Time</h3></div><div class="inline-filter"><label for="misoFuelDateView">Date View</label><select id="misoFuelDateView" onchange="updateMisoDeepDive()"><option value="queue">Fuel Mix by Queue Year</option><option value="proposed">Fuel Mix by Proposed Year</option></select></div></div><p>Switch between when projects entered the queue and when projects are proposed to come online, stacked by fuel type.</p><div id="misoYearFuelChart" class="chart-box"></div></div></div>
+            <div class="chart-grid"><div class="chart-card" style="grid-column:1/-1;"><div class="chart-filter-row"><div><h3 style="margin-bottom:6px;">Study Cycle / Study Group View</h3></div><div class="inline-filter"><label for="misoCombinedGroupByView">Group By</label><select id="misoCombinedGroupByView" onchange="updateMisoDeepDive()"><option value="cycle">Study Cycle</option><option value="group">Study Group</option></select></div><div class="inline-filter" style="margin-left:8px;"><label for="misoCombinedMetricView">Metric</label><select id="misoCombinedMetricView" onchange="updateMisoDeepDive()"><option value="capacity">Capacity</option><option value="projects">Project Count</option></select></div></div><p>Switch between Study Cycle and Study Group to see where MISO queue work is concentrated, split by status.</p><div id="misoCombinedCycleGroupChart" class="chart-box"></div></div></div>
+            <div class="chart-grid"><div class="chart-card" style="grid-column:1/-1;"><h3>Queue Date vs Proposed Date</h3><p>Each point is a MISO project. Use this view to compare entry timing and expected online timing.</p><div id="misoQueueVsProposedChart" class="chart-box"></div></div></div>
+
+            <div class="chart-card" style="margin-top:16px;">
+                <h3>MISO Project Table</h3>
+                <p>The table below updates with the MISO filters. Use the search box to search any column and click headers to sort. Export the current view to CSV or Excel.</p>
+                <div class="dt-wrap">
+                    <table id="miso-dt" class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Project ID</th>
+                                <th>Queue Date</th>
+                                <th>Status</th>
+                                <th>County</th>
+                                <th>State</th>
+                                <th>POI Name</th>
+                                <th>MW Capacity</th>
+                                <th>Fuel Type</th>
+                                <th>Proposed Date</th>
+                                <th>Transmission Owner</th>
+                                <th>Study Cycle</th>
+                                <th>Study Group</th>
+                                <th>Service Type</th>
+                            </tr>
+                        </thead>
+                        <tbody id="misoProjectTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════ PJM ══════════════════ -->
+    <div id="tab-pjm-panel" class="tab-panel">
+        <div id="pjmBlankState" class="blank-state">
+            <div class="blank-state-card">
+                <div class="blank-state-icon">🧭</div>
+                <h2>PJM Deep Dive</h2>
+                <p>Load the wide master JSON to view PJM queue timing, study cycle, study phase, and project-level detail.</p>
+            </div>
+        </div>
+
+        <div id="pjmContent" class="hidden">
+            <div class="developer-card">
+                <h3>PJM Deep Dive Data Source</h3>
+                <p id="pjmStatus">PJM deep dive is using PJM rows from the loaded wide master JSON.</p>
+            </div>
+
+            <div class="summary-grid">
+                <div class="summary-card"><div class="label">Total PJM Projects</div><div class="value" id="pjmKpiProjects">0</div><div class="sub">Projects in the current PJM view</div></div>
+                <div class="summary-card"><div class="label">Total PJM Capacity</div><div class="value" id="pjmKpiCapacity">0 GW</div><div class="sub">Visible queued capacity</div></div>
+                <div class="summary-card"><div class="label">Average Project Size</div><div class="value" id="pjmKpiAverage">0 MW</div><div class="sub">Average visible project size</div></div>
+                <div class="summary-card"><div class="label">Top Study Phase</div><div class="value" id="pjmKpiTopPhase">—</div><div class="sub" id="pjmKpiTopPhaseShare">Largest phase by capacity</div></div>
+                <div class="summary-card"><div class="label">Top Study Cycle</div><div class="value" id="pjmKpiTopCycle">—</div><div class="sub" id="pjmKpiTopCycleShare">Largest cycle by capacity</div></div>
+                <div class="summary-card"><div class="label">Median Queue → Proposed</div><div class="value" id="pjmKpiMedianYears">—</div><div class="sub">Median years where both dates exist</div></div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-card" style="grid-column:1/-1;">
+                    <div class="chart-filter-row"><div><h3 style="margin-bottom:6px;">PJM Fuel Mix Over Time</h3></div><div class="inline-filter"><label for="pjmFuelDateView">Date View</label><select id="pjmFuelDateView" onchange="updatePjmDeepDive()"><option value="queue">Fuel Mix by Queue Year</option><option value="proposed">Fuel Mix by Proposed Year</option></select></div></div>
+                    <p>Switch between when PJM projects entered the queue and when projects are proposed online, stacked by fuel type.</p>
+                    <div id="pjmYearFuelChart" class="chart-box"></div>
+                </div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-card" style="grid-column:1/-1;">
+                    <h3>Queue Date vs Proposed Date</h3>
+                    <p>Each point is a PJM project. Color represents study phase and bubble size represents MW capacity.</p>
+                    <div id="pjmQueueVsProposedChart" class="chart-box"></div>
+                </div>
+            </div>
+
+            <div class="chart-card" style="margin-top:16px;">
+                <h3>PJM Study Phase Advancement Summary</h3>
+                <p>Summary of PJM projects and capacity by study phase. Updates with the filters in the sidebar.</p>
+                <div style="overflow-x:auto;margin-top:10px;">
+                <table class="ercot-table" id="pjmPhaseAdvancementTable">
+                    <thead><tr>
+                        <th><span class="pjm-th-label">Study Phase</span></th>
+                        <th><span class="pjm-th-label">Projects</span></th>
+                        <th><span class="pjm-th-label">% of Projects</span></th>
+                        <th><span class="pjm-th-label">Capacity (GW)</span></th>
+                        <th><span class="pjm-th-label">% of Capacity</span></th>
+                        <th><span class="pjm-th-label">Active</span></th>
+                        <th><span class="pjm-th-label">Done / Complete</span></th>
+                        <th><span class="pjm-th-label">Withdrawn</span></th>
+                    </tr></thead>
+                    <tbody id="pjmPhaseAdvancementBody"></tbody>
+                </table>
+                </div>
+            </div>
+
+            <div class="chart-card" style="margin-top:16px;">
+                <h3>PJM Project Table</h3>
+                <p>The table updates with PJM filters. Use the search box to search any column and click headers to sort. Export the current view to CSV or Excel.</p>
+                <div class="dt-wrap">
+                    <table id="pjm-dt" class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Project ID</th>
+                                <th>ISO</th>
+                                <th>Queue Date</th>
+                                <th>Status</th>
+                                <th>Withdrawn Date</th>
+                                <th>Proposed Date</th>
+                                <th>Study Cycle</th>
+                                <th>Study Phase</th>
+                                <th>POI Name</th>
+                                <th>Transmission Owner</th>
+                                <th>MW Capacity</th>
+                                <th>Fuel Type</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pjmProjectTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════ SPP ══════════════════ -->
+    <div id="tab-spp-panel" class="tab-panel">
+        <div id="sppBlankState" class="blank-state">
+            <div class="blank-state-card">
+                <div class="blank-state-icon">🛰️</div>
+                <h2>SPP Deep Dive</h2>
+                <p>Load the wide master JSON to view SPP queue timing, study cycle, study group, service type, and project-level detail.</p>
+            </div>
+        </div>
+        <div id="sppContent" class="hidden">
+            <div class="developer-card"><h3>SPP Deep Dive Data Source</h3><p id="sppStatus">SPP deep dive is using SPP rows from the loaded wide master JSON.</p></div>
+
+            <div class="summary-grid">
+                <div class="summary-card"><div class="label">Total SPP Projects</div><div class="value" id="sppKpiProjects">0</div><div class="sub">Projects in the active SPP view</div></div>
+                <div class="summary-card"><div class="label">Total SPP Capacity</div><div class="value" id="sppKpiCapacity">0 GW</div><div class="sub">Visible queued capacity in SPP</div></div>
+                <div class="summary-card"><div class="label">Average Project Size</div><div class="value" id="sppKpiAverage">0 MW</div><div class="sub">Average visible project size</div></div>
+                <div class="summary-card"><div class="label">Top Study Cycle</div><div class="value" id="sppKpiStudyCycle">—</div><div class="sub" id="sppKpiStudyCycleShare">Largest cycle by capacity</div></div>
+                <div class="summary-card"><div class="label">Top Study Group</div><div class="value" id="sppKpiStudyGroup">—</div><div class="sub" id="sppKpiStudyGroupShare">Largest group by capacity</div></div>
+                <div class="summary-card"><div class="label">Median Queue → Proposed</div><div class="value" id="sppKpiMedianYears">—</div><div class="sub">Median years where both dates exist</div></div>
+            </div>
+
+            <div class="chart-grid"><div class="chart-card" style="grid-column:1/-1;"><div class="chart-filter-row"><div><h3 style="margin-bottom:6px;">SPP Fuel Mix Over Time</h3></div><div class="inline-filter"><label for="sppFuelDateView">Date View</label><select id="sppFuelDateView" onchange="updateSppDeepDive()"><option value="queue">Fuel Mix by Queue Year</option><option value="proposed">Fuel Mix by Proposed Year</option></select></div></div><p>Switch between queue-entry timing and proposed in-service timing, stacked by fuel type.</p><div id="sppYearFuelChart" class="chart-box"></div></div></div>
+            <div class="chart-grid"><div class="chart-card"><div class="chart-filter-row"><div><h3 style="margin-bottom:6px;">Study Cycle View</h3></div><div class="inline-filter"><label for="sppStudyCycleMetricView">Metric</label><select id="sppStudyCycleMetricView" onchange="updateSppDeepDive()"><option value="capacity">Capacity</option><option value="projects">Project Count</option></select></div></div><p>Study cycle shows which SPP cluster cycles hold the most capacity or projects, split by status.</p><div id="sppStudyCycleChart" class="chart-box"></div></div><div class="chart-card"><div class="chart-filter-row"><div><h3 style="margin-bottom:6px;">Study Group View</h3></div><div class="inline-filter"><label for="sppStudyGroupMetricView">Metric</label><select id="sppStudyGroupMetricView" onchange="updateSppDeepDive()"><option value="capacity">Capacity</option><option value="projects">Project Count</option></select></div></div><p>Study group helps show where the SPP queue is concentrated within the cluster-study structure.</p><div id="sppStudyGroupChart" class="chart-box"></div></div></div>
+            <div class="chart-grid"><div class="chart-card" style="grid-column:1/-1;"><h3>Queue Date vs Proposed Date</h3><p>Each point is an SPP project. Bubble size represents MW capacity and color represents fuel type.</p><div id="sppQueueVsProposedChart" class="chart-box"></div></div></div>
+            <div class="chart-grid"><div class="chart-card" style="grid-column:1/-1;"><h3>Top Counties by Capacity</h3><p>County-level concentration of SPP capacity in the current filtered view.</p><div id="sppCountyChart" class="chart-box"></div></div></div>
+
+            <div class="chart-card" style="margin-top:16px;">
+                <h3>SPP Project Table</h3>
+                <p>The table below updates with the SPP filters. Use the search box to search any column and click headers to sort. Export the current view to CSV or Excel.</p>
+                <div class="dt-wrap">
+                    <table id="spp-dt" class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Project ID</th>
+                                <th>ISO</th>
+                                <th>Status</th>
+                                <th>Queue Date</th>
+                                <th>Proposed Date</th>
+                                <th>Transmission Owner</th>
+                                <th>Service Type</th>
+                                <th>County</th>
+                                <th>State</th>
+                                <th>Study Cycle</th>
+                                <th>Study Group</th>
+                                <th>MW Capacity</th>
+                                <th>Fuel Type</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sppProjectTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</main><!-- /main -->
+</div><!-- /layout -->
+
+<!-- Scripts: jQuery before DataTables before app.js -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
