@@ -2843,3 +2843,52 @@ function renderSppProjectTable(data){
     }).join("") || '<tr><td colspan="13" style="text-align:center;">No matching SPP projects.</td></tr>';
     _dtSpp = _dtInit("#spp-dt", 11);
 }
+
+// ── Lazy tab rendering ──────────────────────────────────────────────────────
+// Wraps the five ISO updateXxxDeepDive functions so they skip chart rendering
+// when their tab is not visible. A dirty flag is set instead and the render
+// fires the first time the user actually clicks that tab.
+(function () {
+    var _dirty = { ercot: false, isone: false, miso: false, pjm: false, spp: false };
+
+    function isActive(tabId) {
+        var btn = document.querySelector(".tab-button.active");
+        return btn ? btn.dataset.tab === tabId : false;
+    }
+
+    var isoMap = {
+        ercot: "updateErcotDeepDive",
+        isone: "updateIsoneDeepDive",
+        miso:  "updateMisoDeepDive",
+        pjm:   "updatePjmDeepDive",
+        spp:   "updateSppDeepDive"
+    };
+
+    Object.keys(isoMap).forEach(function (tabId) {
+        var fnName = isoMap[tabId];
+        var orig = window[fnName];
+        if (typeof orig !== "function") return;
+        window[fnName] = function () {
+            if (!isActive(tabId)) { _dirty[tabId] = true; return; }
+            _dirty[tabId] = false;
+            orig.apply(this, arguments);
+        };
+    });
+
+    // Extend the existing showTab wrapper — when switching to a non-ERCOT ISO tab
+    // that has a pending dirty render, fire it now. ERCOT is already handled by
+    // the original showTab logic inside app.js.
+    var _prevShowTab = showTab;
+    showTab = function (tabId) {
+        _prevShowTab(tabId);
+        var lazyRender = {
+            isone: function () { if (typeof updateIsoneDeepDive === "function") updateIsoneDeepDive(); },
+            miso:  function () { if (typeof updateMisoDeepDive  === "function") updateMisoDeepDive();  },
+            pjm:   function () { if (typeof updatePjmDeepDive   === "function") updatePjmDeepDive();   },
+            spp:   function () { if (typeof updateSppDeepDive   === "function") updateSppDeepDive();   }
+        };
+        if (lazyRender[tabId] && _dirty[tabId]) {
+            setTimeout(lazyRender[tabId], 80);
+        }
+    };
+}());
