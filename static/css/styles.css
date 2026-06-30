@@ -13,9 +13,9 @@
   --border: #dee2e6;
   --text: #1a1d23;
   --text-muted: #6c757d;
-  --primary: #1e3a5f;
-  --primary-light: #2563a8;
-  --accent: #0077bb;
+  --primary: #1a3d1b;
+  --primary-light: #357535;
+  --accent: #429644;
   --success: #198754;
   --warning: #f59e0b;
   --danger: #dc3545;
@@ -38,9 +38,9 @@
   --brand: var(--accent);
   --brand-dark: var(--primary);
   --brand-mid: var(--primary-light);
-  --brand-soft: rgba(0,119,187,0.08);
-  --brand-border: rgba(0,119,187,0.25);
-  --brand-glow: rgba(0,119,187,0.15);
+  --brand-soft: rgba(66,150,68,0.08);
+  --brand-border: rgba(66,150,68,0.25);
+  --brand-glow: rgba(66,150,68,0.15);
 
   --bg-secondary: var(--surface);
   --bg-tertiary: var(--surface2);
@@ -66,14 +66,14 @@
   --border: #30363d;
   --text: #e6edf3;
   --text-muted: #848d97;
-  --primary: #2563a8;
-  --primary-light: #3b82f6;
+  --primary: #2d6630;
+  --primary-light: #5ab85c;
   --shadow-sm: 0 1px 3px rgba(0,0,0,.3);
   --shadow: 0 2px 8px rgba(0,0,0,.4);
   --shadow-lg: 0 4px 20px rgba(0,0,0,.5);
 
-  --brand-soft: rgba(37,99,168,0.12);
-  --brand-border: rgba(37,99,168,0.30);
+  --brand-soft: rgba(66,150,68,0.12);
+  --brand-border: rgba(66,150,68,0.30);
 }
 
 /* ── Reset & Base ───────────────────────────────────────────────────────── */
@@ -122,7 +122,12 @@ body {
   text-decoration: none;
 }
 
-.nav-brand svg { opacity: .9; }
+.nav-logo {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+  border-radius: 4px;
+}
 
 .nav-brand span.sub {
   font-size: .7rem;
@@ -548,7 +553,7 @@ body {
 .fuel-dropdown-button:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(0,119,187,0.20);
+  box-shadow: 0 0 0 3px rgba(66,150,68,0.20);
 }
 
 .control-card button {
@@ -563,7 +568,7 @@ body {
   padding: 9px 14px;
 }
 
-.control-card button:hover { background: #005fa3; }
+.control-card button:hover { background: #2d6b2f; }
 
 .small-btn {
   cursor: pointer;
@@ -960,7 +965,7 @@ input[type="text"] {
 input[type="text"]:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(0,119,187,0.18);
+  box-shadow: 0 0 0 3px rgba(66,150,68,0.18);
 }
 input[type="text"]::placeholder { color: var(--text-muted); }
 
