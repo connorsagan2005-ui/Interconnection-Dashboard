@@ -304,6 +304,7 @@ function applyMasterDataRecords(records, sourceLabel){
     if (typeof syncIsoneDataFromMaster === "function") syncIsoneDataFromMaster(true);
     if (typeof syncPjmDataFromMaster === "function") syncPjmDataFromMaster(true);
     if (typeof syncSppDataFromMaster === "function") syncSppDataFromMaster(true);
+    renderDataQualitySummary(masterData);
     return true;
 }
 
@@ -1149,7 +1150,7 @@ function renderErcotKpis(data){
     });
     const dominantZone = Object.entries(zoneTotals).sort((a, b) => b[1] - a[1])[0] || ["—", 0];
 
-    const probabilityValues = data.map(d => d.CompletionProbability || 0).filter(v => v > 0);
+    const probabilityValues = data.map(d => d.CompletionProbability).filter(v => v != null && Number.isFinite(v));
     const averageProbability = probabilityValues.length ? probabilityValues.reduce((sum, v) => sum + v, 0) / probabilityValues.length : 0;
 
     const activeProjects = data.filter(d => String(d.Status || "").toLowerCase() === "active").length;
@@ -1325,6 +1326,9 @@ function renderErcotAdvancementTable(data){
 
 function renderErcotProposedDateCharts(data){
     const scatterRows = data.filter(d => d.QueueDate && d.ProposedDate);
+    const hidden = data.length - scatterRows.length;
+    const noteEl = document.getElementById("ercotScatterNote");
+    if (noteEl) noteEl.innerText = hidden > 0 ? `${hidden.toLocaleString()} project${hidden === 1 ? "" : "s"} not shown — missing queue or proposed date.` : "";
     const fuels = [...new Set(scatterRows.map(d => d.Fuel || "Unknown"))].sort();
     const traceGroups = fuels.map(fuel => {
         const rows = scatterRows.filter(d => (d.Fuel || "Unknown") === fuel);
@@ -1348,9 +1352,9 @@ function renderErcotProposedDateCharts(data){
                 d.County || "",
                 d.MW || 0,
                 d.Status || "",
-                d.CompletionProbability || 0
+                d.CompletionProbability != null ? d.CompletionProbability : "—"
             ]),
-            hovertemplate: "Project ID: %{customdata[0]}<br>Name: %{customdata[1]}<br>Developer: %{customdata[2]}<br>Zone: %{customdata[3]}<br>County: %{customdata[4]}<br>MW Capacity: %{customdata[5]:.0f}<br>Status: %{customdata[6]}<br>Completion Probability: %{customdata[7]:.0f}%<extra></extra>"
+            hovertemplate: "Project ID: %{customdata[0]}<br>Name: %{customdata[1]}<br>Developer: %{customdata[2]}<br>Zone: %{customdata[3]}<br>County: %{customdata[4]}<br>MW Capacity: %{customdata[5]:.0f}<br>Status: %{customdata[6]}<br>Completion Probability: %{customdata[7]}%<extra></extra>"
         };
     });
 
@@ -1993,7 +1997,7 @@ function renderMisoCombinedCycleGroupChart(data){
     const chartTitle=(metric==="projects"?"Project Count":"Capacity")+" by "+(groupBy==="group"?"Study Group":"Study Cycle")+" and Status";
     Plotly.newPlot("misoCombinedCycleGroupChart",statuses.map(st=>({x:cats,y:cats.map(c=>(totals[c]&&totals[c][st])||0),name:st,type:"bar",hovertemplate:xTitle+": %{x}<br>Status: "+st+"<br>"+(metric==="projects"?"Projects: %{y}":"Capacity: %{y:.2f} GW")+"<extra></extra>"})),{title:chartTitle,barmode:"stack",xaxis:{title:xTitle},yaxis:{title:yTitle},margin:{t:30,r:20,b:85,l:60}},{displayModeBar:false,responsive:true});
 }
-function renderMisoQueueVsProposedChart(data){const rows=data.filter(d=>d.QueueDate&&d.ProposedDate), fuels=[...new Set(rows.map(d=>d.Fuel||"Unknown"))].sort();Plotly.newPlot("misoQueueVsProposedChart",fuels.map(f=>{const r=rows.filter(d=>(d.Fuel||"Unknown")===f);return{x:r.map(d=>d.QueueDate),y:r.map(d=>d.ProposedDate),mode:"markers",type:"scatter",name:f,marker:{size:9,color:fuelColors[f]||"#6b7280",opacity:.75,line:{width:.5,color:"#fff"}},customdata:r.map(d=>[d.ProjectID,d.State,d.County,d.POIName,d.MW,d.Fuel,d.Status,d.StudyCycle,d.StudyGroup,d.ServiceType]),hovertemplate:"Project ID: %{customdata[0]}<br>State: %{customdata[1]}<br>County: %{customdata[2]}<br>POI: %{customdata[3]}<br>MW Capacity: %{customdata[4]:.0f}<br>Fuel Type: %{customdata[5]}<br>Status: %{customdata[6]}<br>Study Cycle: %{customdata[7]}<br>Study Group: %{customdata[8]}<br>Service Type: %{customdata[9]}<extra></extra>"};}),{title:"Queue Date vs Proposed Date",xaxis:{title:"Queue Date"},yaxis:{title:"Proposed Date"},hovermode:"closest",hoverdistance:2,margin:{t:30,r:20,b:40,l:60}},{displayModeBar:false,responsive:true});}
+function renderMisoQueueVsProposedChart(data){const rows=data.filter(d=>d.QueueDate&&d.ProposedDate);const hidden=data.length-rows.length;const misoNoteEl=document.getElementById("misoScatterNote");if(misoNoteEl)misoNoteEl.innerText=hidden>0?`${hidden.toLocaleString()} project${hidden===1?"":"s"} not shown — missing queue or proposed date.`:"";const fuels=[...new Set(rows.map(d=>d.Fuel||"Unknown"))].sort();Plotly.newPlot("misoQueueVsProposedChart",fuels.map(f=>{const r=rows.filter(d=>(d.Fuel||"Unknown")===f);return{x:r.map(d=>d.QueueDate),y:r.map(d=>d.ProposedDate),mode:"markers",type:"scatter",name:f,marker:{size:9,color:fuelColors[f]||"#6b7280",opacity:.75,line:{width:.5,color:"#fff"}},customdata:r.map(d=>[d.ProjectID,d.State,d.County,d.POIName,d.MW,d.Fuel,d.Status,d.StudyCycle,d.StudyGroup,d.ServiceType]),hovertemplate:"Project ID: %{customdata[0]}<br>State: %{customdata[1]}<br>County: %{customdata[2]}<br>POI: %{customdata[3]}<br>MW Capacity: %{customdata[4]:.0f}<br>Fuel Type: %{customdata[5]}<br>Status: %{customdata[6]}<br>Study Cycle: %{customdata[7]}<br>Study Group: %{customdata[8]}<br>Service Type: %{customdata[9]}<extra></extra>"};}),{title:"Queue Date vs Proposed Date",xaxis:{title:"Queue Date"},yaxis:{title:"Proposed Date"},hovermode:"closest",hoverdistance:2,margin:{t:30,r:20,b:40,l:60}},{displayModeBar:false,responsive:true});}
 function setMisoProjectTableSort(key,type,direction){misoProjectTableSort={key,type,direction};document.querySelectorAll(".miso-header-sort").forEach(s=>{if(s.dataset.key!==key)s.value="";});renderMisoProjectTable(getFilteredMisoData());}
 function misoSortValue(row,key,type){const v=row[key];if(type==="number")return Number.isFinite(Number(v))?Number(v):null;if(type==="date")return v instanceof Date&&!isNaN(v)?v.getTime():null;return v==null?"":String(v).toLowerCase();}
 function renderMisoProjectTable(data){const tbody=misoEl("misoProjectTableBody");if(!tbody)return;const search=(misoEl("misoTableSearch")?.value||"").trim().toLowerCase();let rows=search?data.filter(d=>String(d.ProjectID||"").toLowerCase().includes(search)||String(d.POIName||"").toLowerCase().includes(search)||String(d.TransmissionOwner||"").toLowerCase().includes(search)):data;if(misoProjectTableSort.key&&misoProjectTableSort.direction){const m=misoProjectTableSort.direction==="desc"?-1:1;rows=[...rows].sort((a,b)=>{const av=misoSortValue(a,misoProjectTableSort.key,misoProjectTableSort.type),bv=misoSortValue(b,misoProjectTableSort.key,misoProjectTableSort.type);if(av===null||av==="")return 1;if(bv===null||bv==="")return -1;return (misoProjectTableSort.type==="number"||misoProjectTableSort.type==="date"?(av-bv):String(av).localeCompare(String(bv)))*m;});}
@@ -2137,6 +2141,9 @@ function renderIsoneZoneStatusChart(data){
 
 function renderIsoneQueueVsProposedChart(data){
     const rows = data.filter(d => d.QueueDate && d.ProposedDate);
+    const hidden = data.length - rows.length;
+    const noteEl = document.getElementById("isoneScatterNote");
+    if (noteEl) noteEl.innerText = hidden > 0 ? `${hidden.toLocaleString()} project${hidden === 1 ? "" : "s"} not shown — missing queue or proposed date.` : "";
     const fuels = [...new Set(rows.map(d => d.Fuel || "Unknown"))].sort();
     Plotly.newPlot("isoneQueueVsProposedChart", fuels.map(f => {
         const r = rows.filter(d => (d.Fuel || "Unknown") === f);
@@ -2328,7 +2335,11 @@ function renderSppStackedCategoryChart(divId, data, categoryKey, metricView, tit
 function renderSppStudyCycleChart(data){ renderSppStackedCategoryChart("sppStudyCycleChart", data, "StudyCycle", sppEl("sppStudyCycleMetricView")?.value||"capacity", "SPP Study Cycle by Status", "Study Cycle"); }
 function renderSppStudyGroupChart(data){ renderSppStackedCategoryChart("sppStudyGroupChart", data, "StudyGroup", sppEl("sppStudyGroupMetricView")?.value||"capacity", "SPP Study Group by Status", "Study Group"); }
 function renderSppQueueVsProposedChart(data){
-    const rows=data.filter(d=>d.QueueDate&&d.ProposedDate); const fuels=[...new Set(rows.map(d=>d.Fuel||"Unknown"))].sort();
+    const rows=data.filter(d=>d.QueueDate&&d.ProposedDate);
+    const hidden=data.length-rows.length;
+    const noteEl=document.getElementById("sppScatterNote");
+    if(noteEl)noteEl.innerText=hidden>0?`${hidden.toLocaleString()} project${hidden===1?"":"s"} not shown — missing queue or proposed date.`:"";
+    const fuels=[...new Set(rows.map(d=>d.Fuel||"Unknown"))].sort();
     Plotly.newPlot("sppQueueVsProposedChart", fuels.map(f=>{ const r=rows.filter(d=>(d.Fuel||"Unknown")===f); return {x:r.map(d=>d.QueueDate),y:r.map(d=>d.ProposedDate),mode:"markers",type:"scatter",name:f,marker:{size:r.map(d=>Math.max(7,Math.min(26,Math.sqrt(d.MW||0)*1.35))),color:fuelColors[f]||"#6b7280",opacity:0.78,line:{width:0.5,color:"#ffffff"}},customdata:r.map(d=>[d.ProjectID,d.Status,d.TransmissionOwner,d.ServiceType,d.County,d.State,d.StudyCycle,d.StudyGroup,d.MW,d.Fuel]),hovertemplate:"Project ID: %{customdata[0]}<br>Status: %{customdata[1]}<br>Transmission Owner: %{customdata[2]}<br>Service Type: %{customdata[3]}<br>County: %{customdata[4]}<br>State: %{customdata[5]}<br>Study Cycle: %{customdata[6]}<br>Study Group: %{customdata[7]}<br>MW Capacity: %{customdata[8]:.0f}<br>Fuel Type: %{customdata[9]}<extra></extra>"}; }), {title:"SPP Queue Date vs Proposed Date",xaxis:{title:"Queue Date"},yaxis:{title:"Proposed Date"},margin:{t:30,r:20,b:45,l:60}}, {displayModeBar:false,responsive:true});
 }
 function renderSppLocationCharts(data){
@@ -2564,6 +2575,9 @@ function renderPjmYearFuelChart(data){
 }
 function renderPjmQueueVsProposedChart(data){
     const rows = data.filter(d => d.QueueDate && d.ProposedDate);
+    const hidden = data.length - rows.length;
+    const noteEl = document.getElementById("pjmScatterNote");
+    if (noteEl) noteEl.innerText = hidden > 0 ? `${hidden.toLocaleString()} project${hidden === 1 ? "" : "s"} not shown — missing queue or proposed date.` : "";
     const phases = pjmSortedPhases(rows.map(d => d.StudyPhase || "Unknown"));
     Plotly.newPlot("pjmQueueVsProposedChart", phases.map(ph => {
         const r = rows.filter(d => (d.StudyPhase || "Unknown") === ph);
@@ -2676,6 +2690,41 @@ showTab = function(tabId){
 };
 setupPjmDeepDive();
 
+
+function renderDataQualitySummary(data) {
+    const panel = document.getElementById("dataQualityPanel");
+    if (!panel || !data || !data.length) return;
+
+    const isos = ["ERCOT", "ISO-NE", "MISO", "PJM", "SPP"];
+    const rows = isos.map(iso => {
+        const subset = data.filter(d => String(d.ISO || "").toUpperCase() === iso.toUpperCase() ||
+            (iso === "ISO-NE" && String(d.ISO || "").toUpperCase() === "ISONE"));
+        if (!subset.length) return null;
+        const total = subset.length;
+        const missingMW = subset.filter(d => !d.MW || d.MW <= 0).length;
+        const missingQueue = subset.filter(d => !d.QueueDate).length;
+        const missingProposed = subset.filter(d => !d.ProposedDate).length;
+        const pct = (n) => total ? `${Math.round(n / total * 100)}%` : "—";
+        return `<tr>
+            <td style="font-weight:600">${iso}</td>
+            <td>${total.toLocaleString()}</td>
+            <td>${missingMW > 0 ? `<span style="color:var(--warning)">${missingMW} (${pct(missingMW)})</span>` : `<span style="color:var(--success)">✓</span>`}</td>
+            <td>${missingQueue > 0 ? `<span style="color:var(--warning)">${missingQueue} (${pct(missingQueue)})</span>` : `<span style="color:var(--success)">✓</span>`}</td>
+            <td>${missingProposed > 0 ? `<span style="color:var(--warning)">${missingProposed} (${pct(missingProposed)})</span>` : `<span style="color:var(--success)">✓</span>`}</td>
+        </tr>`;
+    }).filter(Boolean).join("");
+
+    panel.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:.82rem;">
+        <thead><tr style="text-align:left;border-bottom:1px solid var(--border)">
+            <th style="padding:6px 10px">ISO</th>
+            <th style="padding:6px 10px">Total</th>
+            <th style="padding:6px 10px">Missing MW</th>
+            <th style="padding:6px 10px">Missing Queue Date</th>
+            <th style="padding:6px 10px">Missing Proposed Date</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+    </table>`;
+}
 
 // ============================================================
 // DataTables integration — overrides the original hand-rolled
@@ -2876,6 +2925,7 @@ function renderSppProjectTable(data){
     });
 
     // Extend the existing showTab wrapper — when switching to a non-ERCOT ISO tab
+
     // that has a pending dirty render, fire it now. ERCOT is already handled by
     // the original showTab logic inside app.js.
     var _prevShowTab = showTab;

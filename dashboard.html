@@ -420,6 +420,12 @@
         <p id="developerReadout2"></p>
     </div>
 
+    <div class="developer-card" style="margin-top:16px;">
+        <h3>Data Quality</h3>
+        <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:10px;">Missing fields per ISO — projects excluded from relevant charts are shown below.</p>
+        <div id="dataQualityPanel" style="color:var(--text);">—</div>
+    </div>
+
     <div class="section-header">
         <span class="section-num">02</span>
         <h2>Capacity &amp; Fuel Mix Analysis</h2>
@@ -562,6 +568,7 @@
                 <div class="chart-card" style="grid-column: 1 / -1;">
                     <h3>Queue Date vs Proposed Date</h3>
                     <p>Scatter of queue timing versus proposed COD timing.</p>
+                    <p id="ercotScatterNote" style="font-size:.78rem;color:var(--text-muted);margin-top:4px;"></p>
                     <div id="ercotQueueVsProposedChart" class="chart-box"></div>
                 </div>
             </div>
@@ -638,6 +645,7 @@
                 <div class="chart-card">
                     <h3>Queue Date vs Proposed Date</h3>
                     <p>Each point is an ISO-NE project. Bubbles are a consistent size and color represents fuel type.</p>
+                    <p id="isoneScatterNote" style="font-size:.78rem;color:var(--text-muted);margin-top:4px;"></p>
                     <div id="isoneQueueVsProposedChart" class="chart-box"></div>
                 </div>
             </div>
@@ -686,7 +694,7 @@
 
             <div class="chart-grid"><div class="chart-card" style="grid-column:1/-1;"><div class="chart-filter-row"><div><h3 style="margin-bottom:6px;">MISO Fuel Mix Over Time</h3></div><div class="inline-filter"><label for="misoFuelDateView">Date View</label><select id="misoFuelDateView" onchange="updateMisoDeepDive()"><option value="queue">Fuel Mix by Queue Year</option><option value="proposed">Fuel Mix by Proposed Year</option></select></div></div><p>Switch between when projects entered the queue and when projects are proposed to come online, stacked by fuel type.</p><div id="misoYearFuelChart" class="chart-box"></div></div></div>
             <div class="chart-grid"><div class="chart-card" style="grid-column:1/-1;"><div class="chart-filter-row"><div><h3 style="margin-bottom:6px;">Study Cycle / Study Group View</h3></div><div class="inline-filter"><label for="misoCombinedGroupByView">Group By</label><select id="misoCombinedGroupByView" onchange="updateMisoDeepDive()"><option value="cycle">Study Cycle</option><option value="group">Study Group</option></select></div><div class="inline-filter" style="margin-left:8px;"><label for="misoCombinedMetricView">Metric</label><select id="misoCombinedMetricView" onchange="updateMisoDeepDive()"><option value="capacity">Capacity</option><option value="projects">Project Count</option></select></div></div><p>Switch between Study Cycle and Study Group to see where MISO queue work is concentrated, split by status.</p><div id="misoCombinedCycleGroupChart" class="chart-box"></div></div></div>
-            <div class="chart-grid"><div class="chart-card" style="grid-column:1/-1;"><h3>Queue Date vs Proposed Date</h3><p>Each point is a MISO project. Use this view to compare entry timing and expected online timing.</p><div id="misoQueueVsProposedChart" class="chart-box"></div></div></div>
+            <div class="chart-grid"><div class="chart-card" style="grid-column:1/-1;"><h3>Queue Date vs Proposed Date</h3><p>Each point is a MISO project. Use this view to compare entry timing and expected online timing.</p><p id="misoScatterNote" style="font-size:.78rem;color:var(--text-muted);margin-top:4px;"></p><div id="misoQueueVsProposedChart" class="chart-box"></div></div></div>
 
             <div class="chart-card" style="margin-top:16px;">
                 <h3>MISO Project Table</h3>
@@ -754,6 +762,7 @@
                 <div class="chart-card" style="grid-column:1/-1;">
                     <h3>Queue Date vs Proposed Date</h3>
                     <p>Each point is a PJM project. Color represents study phase and bubble size represents MW capacity.</p>
+                    <p id="pjmScatterNote" style="font-size:.78rem;color:var(--text-muted);margin-top:4px;"></p>
                     <div id="pjmQueueVsProposedChart" class="chart-box"></div>
                 </div>
             </div>
@@ -829,7 +838,7 @@
 
             <div class="chart-grid"><div class="chart-card" style="grid-column:1/-1;"><div class="chart-filter-row"><div><h3 style="margin-bottom:6px;">SPP Fuel Mix Over Time</h3></div><div class="inline-filter"><label for="sppFuelDateView">Date View</label><select id="sppFuelDateView" onchange="updateSppDeepDive()"><option value="queue">Fuel Mix by Queue Year</option><option value="proposed">Fuel Mix by Proposed Year</option></select></div></div><p>Switch between queue-entry timing and proposed in-service timing, stacked by fuel type.</p><div id="sppYearFuelChart" class="chart-box"></div></div></div>
             <div class="chart-grid"><div class="chart-card"><div class="chart-filter-row"><div><h3 style="margin-bottom:6px;">Study Cycle View</h3></div><div class="inline-filter"><label for="sppStudyCycleMetricView">Metric</label><select id="sppStudyCycleMetricView" onchange="updateSppDeepDive()"><option value="capacity">Capacity</option><option value="projects">Project Count</option></select></div></div><p>Study cycle shows which SPP cluster cycles hold the most capacity or projects, split by status.</p><div id="sppStudyCycleChart" class="chart-box"></div></div><div class="chart-card"><div class="chart-filter-row"><div><h3 style="margin-bottom:6px;">Study Group View</h3></div><div class="inline-filter"><label for="sppStudyGroupMetricView">Metric</label><select id="sppStudyGroupMetricView" onchange="updateSppDeepDive()"><option value="capacity">Capacity</option><option value="projects">Project Count</option></select></div></div><p>Study group helps show where the SPP queue is concentrated within the cluster-study structure.</p><div id="sppStudyGroupChart" class="chart-box"></div></div></div>
-            <div class="chart-grid"><div class="chart-card" style="grid-column:1/-1;"><h3>Queue Date vs Proposed Date</h3><p>Each point is an SPP project. Bubble size represents MW capacity and color represents fuel type.</p><div id="sppQueueVsProposedChart" class="chart-box"></div></div></div>
+            <div class="chart-grid"><div class="chart-card" style="grid-column:1/-1;"><h3>Queue Date vs Proposed Date</h3><p>Each point is an SPP project. Bubble size represents MW capacity and color represents fuel type.</p><p id="sppScatterNote" style="font-size:.78rem;color:var(--text-muted);margin-top:4px;"></p><div id="sppQueueVsProposedChart" class="chart-box"></div></div></div>
             <div class="chart-grid"><div class="chart-card" style="grid-column:1/-1;"><h3>Top Counties by Capacity</h3><p>County-level concentration of SPP capacity in the current filtered view.</p><div id="sppCountyChart" class="chart-box"></div></div></div>
 
             <div class="chart-card" style="margin-top:16px;">
