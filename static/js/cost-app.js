@@ -239,8 +239,8 @@ function computeSummary(data) {
     avg_total_per_kw:     nzKw.length ? nzKw.reduce((s, d) => s + d.total_per_kw, 0) / nzKw.length : 0,
     highest_cost_project: highest ? projCard(highest) : null,
     lowest_cost_project:  lowest  ? projCard(lowest)  : null,
-    eris_projects:        data.filter(d => (d.study_group || '').toUpperCase() === 'ERIS').length,
-    nris_projects:        data.filter(d => (d.study_group || '').toUpperCase() === 'NRIS').length,
+    eris_projects:        data.filter(d => (d.eris_cost || 0) > 0).length,
+    nris_projects:        data.filter(d => (d.nris_cost || 0) > 0).length,
   };
 }
 
