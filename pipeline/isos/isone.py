@@ -13,7 +13,20 @@ _CLEAN_COLUMNS = [
 ]
 
 
+_PROJECT_STATUS_MAP = {
+    "under study": "Active",
+    "under construction": "Active",
+    "suspended": "Active",
+    "partially in service": "Done",
+    "in service": "Done",
+}
+
+
 def _isone_status(row):
+    official = str(row.get("Project Status") or "").strip().lower()
+    if official in _PROJECT_STATUS_MAP:
+        return _PROJECT_STATUS_MAP[official]
+
     withdrawn_date = row.get("Withdrawn Date")
     proposed_date = row.get("Proposed Date")
 
@@ -72,6 +85,7 @@ def clean(df):
         "Summer MW": "MW Capacity",
         "Fuel Type": "Fuel Type",
         "Op Date": "Proposed Date",
+        "Project Status": "Project Status",
     }
     df = df.rename(columns=rename_map)
     df["ISO"] = "ISONE"
