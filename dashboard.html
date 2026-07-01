@@ -10,6 +10,9 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
 <link rel="stylesheet" href="/static/css/styles.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
 </head>
 <body>
 
@@ -24,6 +27,20 @@
 <!-- Toast container -->
 <div id="toast-container"></div>
 
+<!-- Detail modal -->
+<div id="detail-modal" role="dialog" aria-modal="true" aria-labelledby="detail-modal-title">
+  <div class="detail-card">
+    <div class="detail-header">
+      <div class="detail-header-left">
+        <span class="detail-iso-badge" id="detail-modal-badge"></span>
+        <div class="detail-title" id="detail-modal-title"></div>
+      </div>
+      <button class="detail-close" id="detail-modal-close" aria-label="Close">&#x2715;</button>
+    </div>
+    <div class="detail-body" id="detail-modal-body"></div>
+  </div>
+</div>
+
 <!-- Navbar -->
 <nav id="navbar">
   <a class="nav-brand" href="#">
@@ -35,6 +52,10 @@
   </a>
   <div class="nav-right">
     <span id="data-status" class="data-status">Live Data Ready</span>
+    <span id="data-freshness-badge" class="data-freshness" style="display:none;">
+      <span class="data-freshness-dot" id="data-freshness-dot"></span>
+      <span id="data-freshness-label">—</span>
+    </span>
     <a class="nav-btn" href="/index.html" style="text-decoration:none;">
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
@@ -70,15 +91,16 @@
 
   <!-- ── Developer Insights filters ── -->
   <div class="iso-filter-group" data-tab="developer-insights">
-    <div class="filter-section">
+    <div class="filter-section" data-accordion>
       <span class="filter-label">Data Snapshot</span>
       <select id="snapshotDateFilter" class="sidebar-select">
         <option value="">Loading snapshots…</option>
       </select>
       <button type="button" id="snapshotReloadButton" class="small-btn" style="margin-top:7px;width:100%;">Reload Snapshot List</button>
+      <button type="button" id="snapshotDiffButton" class="small-btn" style="margin-top:5px;width:100%;" title="Compare current snapshot with the previous one">Compare Snapshots</button>
       <div id="snapshotStatus" style="margin-top:6px;font-size:.72rem;color:var(--text-muted);"></div>
     </div>
-    <div class="filter-section">
+    <div class="filter-section" data-accordion>
       <span class="filter-label">Upload JSON (manual fallback)</span>
       <input type="file" id="fileInput" multiple style="font-size:.78rem;color:var(--text-muted);">
       <div id="status" style="margin-top:5px;font-size:.72rem;color:var(--accent);font-weight:600;"></div>
@@ -382,6 +404,7 @@
 
     <div class="tab-nav" role="tablist" aria-label="Dashboard sections">
         <button class="tab-button active" data-tab="developer-insights">Developer Insights</button>
+        <button class="tab-button" data-tab="scorecard">ISO Scorecard</button>
         <button class="tab-button" data-tab="ercot">ERCOT</button>
         <button class="tab-button" data-tab="isone">ISO-NE</button>
         <button class="tab-button" data-tab="miso">MISO</button>
@@ -392,6 +415,60 @@
     <!-- ══════════════════ DEVELOPER INSIGHTS ══════════════════ -->
     <div id="tab-developer-insights-panel" class="tab-panel active">
 
+    <!-- Snapshot diff banner (hidden until two snapshots compared) -->
+    <div id="snapshotDiffBanner" class="snapshot-diff-banner hidden">
+      <div class="diff-banner-header">
+        <span class="diff-banner-icon">📊</span>
+        <span class="diff-banner-title">Changes Since <span id="diffFromLabel">—</span></span>
+        <button class="diff-banner-close" onclick="document.getElementById('snapshotDiffBanner').classList.add('hidden')" title="Dismiss">✕</button>
+      </div>
+      <div class="diff-stats" id="diffStats"></div>
+    </div>
+
+    <div class="developer-card" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
+        <div>
+            <h3 style="margin:0 0 2px;">View</h3>
+        </div>
+        <div class="ercot-view-toggle">
+            <button id="devViewCharts" class="view-toggle-btn active" onclick="setDevView('charts')">Charts</button>
+            <button id="devViewMap" class="view-toggle-btn" onclick="setDevView('map')">Map</button>
+        </div>
+    </div>
+
+    <!-- ── Dev Insights Map view ── -->
+    <div id="devMapView" class="hidden">
+        <div class="chart-card" style="margin-bottom:16px;">
+            <div class="ercot-map-header">
+                <div>
+                    <h3>Project Map</h3>
+                    <p>County choropleth across all ISOs — hover a county for project summary, click for individual project details.</p>
+                </div>
+                <div class="ercot-map-controls">
+                    <label class="map-control-label">
+                        <input type="checkbox" id="devMapActiveOnly" onchange="renderDevMap()"> Active only
+                    </label>
+                </div>
+            </div>
+            <div style="position:relative;">
+                <div id="devMap"></div>
+                <div id="devCountyDetail" class="county-detail-panel hidden">
+                    <div class="cdp-header">
+                        <div>
+                            <div id="cdpCountyName" class="cdp-county-name"></div>
+                            <div id="cdpStats" class="cdp-stats"></div>
+                        </div>
+                        <button class="cdp-close" onclick="closeCountyDetail()" title="Close">&#10005;</button>
+                    </div>
+                    <div id="cdpProjectList" class="cdp-project-list"></div>
+                </div>
+            </div>
+            <div id="devMapLegend" class="ercot-map-legend"></div>
+            <div id="devCountyLegend" class="dev-county-legend hidden"></div>
+            <div id="devMapDisclaimer" class="dev-map-disclaimer hidden"></div>
+        </div>
+    </div>
+
+    <div id="devChartsView">
     <div class="section-header">
         <span class="section-num">01</span>
         <h2>Executive Summary</h2>
@@ -492,7 +569,43 @@
             <p class="chart-why">Why this matters: This lets developers compare market size, queue crowding, and typical project scale across years, regions, and technologies using a single flexible comparison view.</p>
         </div>
     </div>
+    </div><!-- end devChartsView -->
 </div>
+
+    <!-- ══════════════════ ISO SCORECARD ══════════════════ -->
+    <div id="tab-scorecard-panel" class="tab-panel">
+      <div id="scorecardBlankState" class="blank-state">
+        <div class="blank-state-card">
+          <div class="blank-state-icon">📋</div>
+          <h2>ISO Scorecard</h2>
+          <p>Load a data snapshot to view the ISO health scorecard.</p>
+        </div>
+      </div>
+      <div id="scorecardContent" class="hidden">
+        <div class="section-header">
+          <span class="section-num">01</span>
+          <h2>ISO Health Scorecard</h2>
+          <span class="section-badge">Queue depth · Withdrawal rate · Capacity mix — all ISOs at a glance</span>
+        </div>
+        <div id="scorecardGrid" class="scorecard-grid"></div>
+        <div class="section-header" style="margin-top:24px;">
+          <span class="section-num">02</span>
+          <h2>Queue Volume Over Time</h2>
+          <span class="section-badge">Annual projects entering queue per ISO</span>
+        </div>
+        <div class="chart-card" style="margin-bottom:16px;">
+          <div id="scorecardVolumeChart" class="chart-box"></div>
+        </div>
+        <div class="section-header" style="margin-top:8px;">
+          <span class="section-num">03</span>
+          <h2>Fuel Mix by ISO</h2>
+          <span class="section-badge">Share of total queued capacity by technology</span>
+        </div>
+        <div class="chart-card" style="margin-bottom:16px;">
+          <div id="scorecardFuelChart" class="chart-box"></div>
+        </div>
+      </div>
+    </div>
 
     <!-- ══════════════════ ERCOT ══════════════════ -->
     <div id="tab-ercot-panel" class="tab-panel">
@@ -505,10 +618,40 @@
         </div>
 
         <div id="ercotContent" class="hidden">
-            <div class="developer-card">
-                <h3>ERCOT Deep Dive Data Source</h3>
-                <p id="ercotStatus">ERCOT deep dive is using ERCOT rows from the loaded wide master JSON.</p>
+            <div class="developer-card" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+                <div>
+                    <h3>ERCOT Deep Dive Data Source</h3>
+                    <p id="ercotStatus">ERCOT deep dive is using ERCOT rows from the loaded wide master JSON.</p>
+                </div>
+                <div class="ercot-view-toggle">
+                    <button id="ercotViewCharts" class="view-toggle-btn active" onclick="setErcotView('charts')">Charts</button>
+                    <button id="ercotViewMap" class="view-toggle-btn" onclick="setErcotView('map')">Map</button>
+                </div>
             </div>
+
+            <!-- ── Map view ── -->
+            <div id="ercotMapView" class="hidden">
+                <div class="chart-card" style="margin-bottom:16px;">
+                    <div class="ercot-map-header">
+                        <div>
+                            <h3>ERCOT Project Map</h3>
+                            <p>Projects plotted by county centroid. Circle size = MW capacity. Color = fuel type. Filters apply.</p>
+                        </div>
+                        <div class="ercot-map-controls">
+                            <label class="map-control-label">
+                                <input type="checkbox" id="ercotMapShowZones" checked onchange="renderErcotMap()"> Zone overlays
+                            </label>
+                            <label class="map-control-label">
+                                <input type="checkbox" id="ercotMapActiveOnly" onchange="renderErcotMap()"> Active only
+                            </label>
+                        </div>
+                    </div>
+                    <div id="ercotMap"></div>
+                    <div id="ercotMapLegend" class="ercot-map-legend"></div>
+                </div>
+            </div>
+
+            <!-- ── Charts view ── -->
 
             <div class="summary-grid">
                 <div class="summary-card"><div class="label">Total ERCOT Projects</div><div class="value" id="ercotKpiProjects">0</div><div class="sub">Projects in the active ERCOT view</div></div>
@@ -517,6 +660,7 @@
                 <div class="summary-card"><div class="label">Top Zone</div><div class="value" id="ercotKpiZone">—</div><div class="sub" id="ercotKpiZoneShare">Largest zone by visible capacity</div></div>
                 <div class="summary-card"><div class="label">Average Completion Probability</div><div class="value" id="ercotKpiProbability">0%</div><div class="sub">Average completion probability in the filtered set</div></div>
                 <div class="summary-card"><div class="label">IA Signed</div><div class="value" id="ercotKpiPercentActive">0%</div><div class="sub">Share of visible projects with IA Signed</div></div>
+                <div class="summary-card"><div class="label">Most Recent Milestone</div><div class="value" id="ercotKpiLatestMilestone">—</div><div class="milestone-label" id="ercotKpiLatestMilestoneDate"></div><div class="sub">Most common latest milestone in filtered set</div></div>
             </div>
 
             <div class="chart-grid">
@@ -662,6 +806,15 @@
                     <div class="chart-filter-row"><div><h3 style="margin-bottom:6px;">ISO-NE Fuel Mix Over Time</h3></div><div class="inline-filter"><label for="isoneFuelDateView">Date View</label><select id="isoneFuelDateView" onchange="updateIsoneDeepDive()"><option value="queue">Fuel Mix by Queue Year</option><option value="proposed">Fuel Mix by Proposed Year</option></select></div></div>
                     <p>Switch between when ISO-NE projects entered the queue and when projects are proposed online, stacked by fuel type.</p>
                     <div id="isoneYearFuelChart" class="chart-box"></div>
+                </div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-card" style="grid-column:1/-1;">
+                    <h3>Withdrawal Rate Over Time</h3>
+                    <p>Projects withdrawn per queue-entry year, shown as count and share of that year's queue entrants. A rising withdrawal rate indicates increasing queue stress.</p>
+                    <p id="isoneWithdrawalNote" class="isone-withdrawal-note"></p>
+                    <div id="isoneWithdrawalChart" class="chart-box"></div>
                 </div>
             </div>
 
@@ -910,6 +1063,8 @@
                                 <th>State</th>
                                 <th>Study Cycle</th>
                                 <th>Study Group</th>
+                                <th>Cause of Delay</th>
+                                <th>JTIQ Participant</th>
                                 <th>MW Capacity</th>
                                 <th>Fuel Type</th>
                             </tr>
@@ -932,16 +1087,5 @@
 <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
 <script src="/static/js/app.js"></script>
-
-<!-- ── Project / Bar Info Modal ── -->
-<div id="iqModalOverlay" class="iq-modal-overlay" role="dialog" aria-modal="true">
-  <div class="iq-modal">
-    <div class="iq-modal-header">
-      <h2 id="iqModalTitle">Project Detail</h2>
-      <button class="iq-modal-close" onclick="closeIqModal()" aria-label="Close">&times;</button>
-    </div>
-    <div class="iq-modal-body" id="iqModalBody"></div>
-  </div>
-</div>
 </body>
 </html>

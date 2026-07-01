@@ -39,6 +39,7 @@ _CLEAN_COLUMNS = [
     "Project ID", "ISO", "Queue Date", "Status", "Withdrawn Date",
     "Proposed Date", "Study Cycle", "Study Phase", "POI Name",
     "Transmission Owner", "MW Capacity", "Fuel Type",
+    "State", "County", "Developer",
 ]
 
 
@@ -83,6 +84,9 @@ def clean(df):
         df["Fuel Type"].apply(lambda x: map_fuel(x, "PJM"))
         if "Fuel Type" in df.columns else "Other"
     )
+
+    if "County" in df.columns:
+        df["County"] = df["County"].replace("Not Specified", None)
 
     df = clean_numeric_columns(df, ["MW Capacity"])
     df = clean_date_columns(df, ["Queue Date", "Proposed Date", "Withdrawn Date"])

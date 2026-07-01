@@ -64,12 +64,22 @@ if (typeof Plotly !== "undefined" && !Plotly.__themePatched) {
         if ((layout || {}).title && typeof layout.title === "string") {
             merged.title = { text: layout.title, font: PLOTLY_THEME.title.font };
         }
+        const el = typeof div === "string" ? document.getElementById(div) : div;
+        if (el) el.classList.remove("chart-loading");
         return _origNewPlot(div, data, merged, config);
     };
     Plotly.__themePatched = true;
 }
 
 // ---------------- THEME TOGGLE / INIT ----------------
+function markChartsLoading(panelId) {
+    var panel = document.getElementById(panelId);
+    if (!panel) return;
+    panel.querySelectorAll(".chart-box").forEach(function(el) {
+        if (!el.children.length) el.classList.add("chart-loading");
+    });
+}
+
 function refreshActiveTabCharts() {
     // Rebuild Plotly theme then re-render whichever tab is active so charts
     // pick up the new dark/light colors. Uses existing update functions only.
@@ -78,6 +88,7 @@ function refreshActiveTabCharts() {
     const tabId = activeBtn ? activeBtn.dataset.tab : "developer-insights";
     try {
         if (tabId === "developer-insights" && typeof render === "function") render();
+        else if (tabId === "scorecard" && typeof updateScorecard === "function") updateScorecard();
         else if (tabId === "ercot" && typeof updateErcotDeepDive === "function") updateErcotDeepDive();
         else if (tabId === "isone" && typeof updateIsoneDeepDive === "function") updateIsoneDeepDive();
         else if (tabId === "miso" && typeof updateMisoDeepDive === "function") updateMisoDeepDive();
@@ -263,6 +274,14 @@ function showTab(tabId){
             }
         }, 80);
     }
+
+    if (tabId === "scorecard") {
+        setTimeout(() => {
+            if (Array.isArray(masterData) && masterData.length > 0) {
+                updateScorecard();
+            }
+        }, 80);
+    }
 }
 
 tabButtons.forEach(btn => {
@@ -281,6 +300,30 @@ function formatSnapshotLabel(item){
     return item.label || item.date || item.path || "Unknown snapshot";
 }
 
+function setDataFreshnessBadge(dateStr) {
+    var badge = document.getElementById("data-freshness-badge");
+    var dot   = document.getElementById("data-freshness-dot");
+    var label = document.getElementById("data-freshness-label");
+    if (!badge || !label) return;
+    if (!dateStr) { badge.style.display = "none"; return; }
+    // Parse YYYY-MM-DD as local date to avoid UTC-offset day shift
+    var d, text;
+    var isoMatch = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateStr);
+    if (isoMatch) {
+        d = new Date(+isoMatch[1], +isoMatch[2] - 1, +isoMatch[3]);
+        text = "Data: " + d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    } else {
+        d = new Date(dateStr);
+        text = "Data: " + (isNaN(d.getTime()) ? dateStr : d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }));
+    }
+    var today = new Date();
+    today = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    var diffDays = Math.floor((today - d) / (1000 * 60 * 60 * 24));
+    label.textContent = text;
+    dot.className = "data-freshness-dot" + (diffDays > 2 ? " stale" : "");
+    badge.style.display = "inline-flex";
+}
+
 function applyMasterDataRecords(records, sourceLabel){
     masterData = normalize(Array.isArray(records) ? records : []);
 
@@ -290,9 +333,9 @@ function applyMasterDataRecords(records, sourceLabel){
     }
 
     document.getElementById("status").innerText = sourceLabel ? `Loaded ${sourceLabel} ✅` : "Loaded ✅";
+    populateYearFilters();
     populateMarketFilter();
     populateFuelFilter();
-    populateYearFilters();
     render();
 
     if (typeof syncErcotDataFromMaster === "function") syncErcotDataFromMaster(true);
@@ -301,6 +344,7 @@ function applyMasterDataRecords(records, sourceLabel){
     if (typeof syncPjmDataFromMaster === "function") syncPjmDataFromMaster(true);
     if (typeof syncSppDataFromMaster === "function") syncSppDataFromMaster(true);
     renderDataQualitySummary(masterData);
+    if (typeof updateScorecard === "function") updateScorecard();
     return true;
 }
 
@@ -366,6 +410,7 @@ async function loadSelectedSnapshot(){
         const records = await response.json();
         if (applyMasterDataRecords(records, formatSnapshotLabel(entry))) {
             setSnapshotStatus(`Viewing ${formatSnapshotLabel(entry)}.`);
+            setDataFreshnessBadge(entry.date || entry.label || null);
         }
     } catch (error) {
         setSnapshotStatus(`Unable to load ${formatSnapshotLabel(entry)}. Check that ${entry.path} exists relative to this HTML file.`);
@@ -383,6 +428,98 @@ if (snapshotReloadButton) {
     snapshotReloadButton.addEventListener("click", loadSnapshotIndex);
 }
 loadSnapshotIndex();
+
+// ---------------- SNAPSHOT DIFF ----------------
+
+const snapshotDiffButton = document.getElementById("snapshotDiffButton");
+
+async function runSnapshotDiff() {
+    if (!snapshotIndex.length) { showToast("No snapshots loaded.", "error"); return; }
+    const currentIdx = Number(snapshotDateFilter.value);
+    const prevIdx = currentIdx + 1; // index 0 = newest; higher = older
+
+    if (prevIdx >= snapshotIndex.length) {
+        showToast("No previous snapshot to compare against.", "info");
+        return;
+    }
+
+    const currentEntry = snapshotIndex[currentIdx];
+    const prevEntry    = snapshotIndex[prevIdx];
+
+    if (!currentEntry?.path || !prevEntry?.path) {
+        showToast("Snapshot path missing.", "error");
+        return;
+    }
+
+    showToast("Comparing snapshots…", "info");
+
+    try {
+        const [currentRaw, prevRaw] = await Promise.all([
+            fetch(currentEntry.path, { cache: "no-store" }).then(r => r.json()),
+            fetch(prevEntry.path,    { cache: "no-store" }).then(r => r.json())
+        ]);
+
+        const currentRecs = normalize(Array.isArray(currentRaw) ? currentRaw : []);
+        const prevRecs    = normalize(Array.isArray(prevRaw)    ? prevRaw    : []);
+
+        const currentIds = new Set(currentRecs.map(d => d.ProjectID));
+        const prevIds    = new Set(prevRecs.map(d => d.ProjectID));
+
+        const added     = currentRecs.filter(d => !prevIds.has(d.ProjectID));
+        const removed   = prevRecs.filter(d => !currentIds.has(d.ProjectID));
+
+        // Capacity that withdrew = capacity of removed projects
+        const currentMW  = currentRecs.reduce((s, d) => s + (d.MW || 0), 0);
+        const prevMW     = prevRecs.reduce((s, d)    => s + (d.MW || 0), 0);
+        const addedMW    = added.reduce((s, d)   => s + (d.MW || 0), 0);
+        const removedMW  = removed.reduce((s, d) => s + (d.MW || 0), 0);
+        const netMW      = currentMW - prevMW;
+        const netProjects = currentRecs.length - prevRecs.length;
+
+        // Withdrawals: projects in prev that now have a withdraw status in current
+        const currentById = Object.fromEntries(currentRecs.map(d => [d.ProjectID, d]));
+        const newWithdrawals = prevRecs.filter(d => {
+            const curr = currentById[d.ProjectID];
+            return curr && String(curr.Status || "").toLowerCase().includes("withdraw")
+                && !String(d.Status || "").toLowerCase().includes("withdraw");
+        });
+
+        const diffStats = document.getElementById("diffStats");
+        const fromLabel = document.getElementById("diffFromLabel");
+        const banner    = document.getElementById("snapshotDiffBanner");
+
+        fromLabel.textContent = formatSnapshotLabel(prevEntry);
+
+        const fmt = (n, prefix) => (n > 0 ? prefix + "+" : prefix) + n.toLocaleString();
+        const fmtGW = mw => (mw / 1000).toFixed(2) + " GW";
+
+        const statItems = [
+            { label: "Projects", value: fmt(netProjects, ""), delta: netProjects, detail: `${added.length} added · ${removed.length} removed` },
+            { label: "Total Capacity", value: (netMW >= 0 ? "+" : "") + fmtGW(netMW), delta: netMW, detail: `+${fmtGW(addedMW)} added · −${fmtGW(removedMW)} removed` },
+            { label: "New Entries", value: added.length.toLocaleString(), delta: 1, detail: added.length ? fmtGW(addedMW) + " queued" : "none" },
+            { label: "Removed", value: removed.length.toLocaleString(), delta: -removed.length, detail: removed.length ? fmtGW(removedMW) + " withdrawn" : "none" },
+            { label: "New Withdrawals", value: newWithdrawals.length.toLocaleString(), delta: -newWithdrawals.length, detail: newWithdrawals.length ? "status changed to withdrawn" : "none" }
+        ];
+
+        diffStats.innerHTML = statItems.map(s => `
+            <div class="diff-stat ${s.delta > 0 ? "positive" : s.delta < 0 ? "negative" : "neutral"}">
+                <div class="diff-stat-value">${s.value}</div>
+                <div class="diff-stat-label">${s.label}</div>
+                <div class="diff-stat-detail">${s.detail}</div>
+            </div>
+        `).join("");
+
+        banner.classList.remove("hidden");
+        banner.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    } catch (err) {
+        showToast("Failed to load comparison snapshot.", "error");
+        console.error("Snapshot diff error:", err);
+    }
+}
+
+if (snapshotDiffButton) {
+    snapshotDiffButton.addEventListener("click", runSnapshotDiff);
+}
 
 fileInput.addEventListener("change", function(e){
     const files = Array.from(e.target.files);
@@ -496,9 +633,33 @@ resetFiltersBtn.addEventListener("click", () => {
     render();
 });
 
+// ---- Dropdown positioning helper (escapes sidebar overflow clipping) ----
+function _positionDropdown(btn, menu) {
+    var rect = btn.getBoundingClientRect();
+    var spaceBelow = window.innerHeight - rect.bottom;
+    menu.style.position = "fixed";
+    menu.style.width = rect.width + "px";
+    menu.style.left = rect.left + "px";
+    menu.style.right = "auto";
+    if (spaceBelow >= 160 || spaceBelow >= (window.innerHeight - rect.top)) {
+        menu.style.top = (rect.bottom + 4) + "px";
+        menu.style.bottom = "auto";
+    } else {
+        menu.style.top = "auto";
+        menu.style.bottom = (window.innerHeight - rect.top + 4) + "px";
+    }
+    menu.style.maxHeight = Math.min(280, Math.max(spaceBelow - 8, window.innerHeight - rect.top - 8)) + "px";
+}
+
 // Fuel dropdown interactions
-fuelDropdownButton.addEventListener("click", () => {
-    fuelDropdownMenu.classList.toggle("hidden");
+fuelDropdownButton.addEventListener("click", function(e) {
+    e.stopPropagation();
+    if (fuelDropdownMenu.classList.contains("hidden")) {
+        _positionDropdown(fuelDropdownButton, fuelDropdownMenu);
+        fuelDropdownMenu.classList.remove("hidden");
+    } else {
+        fuelDropdownMenu.classList.add("hidden");
+    }
 });
 
 document.addEventListener("click", (e) => {
@@ -582,6 +743,8 @@ function normalize(data){
             LatestMilestone: d && !isMissing(d["Latest Milestone"]) ? String(d["Latest Milestone"]).trim() : "",
             LatestMilestoneDate: latestMilestoneDate,
             Milestones: d && !isMissing(d["Milestones"]) ? String(d["Milestones"]) : "",
+            Latitude: toNumber(d && d["Latitude"]),
+            Longitude: toNumber(d && d["Longitude"]),
             Raw: d || {}
         };
     }).filter(d => (d.MW || 0) > 0);
@@ -742,7 +905,18 @@ function buildMultiSelect(containerId, values, allLabel, onChangeFn) {
     const menu = document.getElementById(menuId);
     const allCb = document.getElementById(allId);
     const list  = document.getElementById(listId);
-    btn.addEventListener("click", e => { e.stopPropagation(); menu.classList.toggle("hidden"); });
+    btn.addEventListener("click", function(e) {
+        e.stopPropagation();
+        if (menu.classList.contains("hidden")) {
+            _positionDropdown(btn, menu);
+            menu.classList.remove("hidden");
+        } else {
+            menu.classList.add("hidden");
+        }
+    });
+    document.addEventListener("click", function(ev) {
+        if (!container.contains(ev.target)) menu.classList.add("hidden");
+    });
     allCb.addEventListener("change", () => {
         list.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = allCb.checked);
         _updateMsLabel(btnId, listId, allLabel);
@@ -799,6 +973,105 @@ function resetMultiSelect(containerId, allLabel) {
 document.addEventListener("click", () => {
     document.querySelectorAll(".fuel-dropdown-menu:not(.hidden)").forEach(m => m.classList.add("hidden"));
 });
+
+// ── Sidebar accordion ──────────────────────────────────────────────────────
+
+function initSidebarAccordions() {
+    document.querySelectorAll(".iso-filter-group").forEach(function(group) {
+        group.querySelectorAll(".filter-section").forEach(function(section) {
+            if (!section.hasAttribute("data-accordion")) return; // only wrap opted-in sections
+            if (section.closest(".accordion-item")) return; // already wrapped
+
+            var labelEl = section.querySelector(".filter-label");
+            var title   = labelEl ? labelEl.textContent.trim() : "Filter";
+
+            var item = document.createElement("div");
+            item.className = "accordion-item";
+
+            var trigger = document.createElement("button");
+            trigger.type = "button";
+            trigger.className = "accordion-trigger";
+
+            var badge = document.createElement("span");
+            badge.className = "accordion-badge";
+
+            var arrow = document.createElement("span");
+            arrow.className = "accordion-arrow";
+            arrow.textContent = "▶";
+
+            trigger.appendChild(document.createTextNode(title));
+            trigger.appendChild(badge);
+            trigger.appendChild(arrow);
+
+            var body = document.createElement("div");
+            body.className = "accordion-body";
+
+            // Remove the redundant .filter-label since it's now the accordion title
+            if (labelEl) labelEl.remove();
+
+            // Move section contents into body
+            while (section.firstChild) body.appendChild(section.firstChild);
+
+            item.appendChild(trigger);
+            item.appendChild(body);
+            section.parentNode.insertBefore(item, section);
+            section.remove();
+
+            trigger.addEventListener("click", function(e) {
+                e.stopPropagation();
+                item.classList.toggle("open");
+            });
+
+            // Auto-update badge when any checkbox/select inside changes
+            body.addEventListener("change", function() { _updateAccordionBadge(item, badge, body); });
+            body.addEventListener("input",  function() { _updateAccordionBadge(item, badge, body); });
+        });
+    });
+}
+
+function _updateAccordionBadge(item, badge, body) {
+    // Count active (non-default) selections
+    var count = 0;
+
+    // Multi-select dropdowns: count deselected if not all checked
+    body.querySelectorAll(".fuel-dropdown-menu").forEach(function(menu) {
+        var all      = menu.querySelectorAll('input[type="checkbox"]:not(.fuel-option-all input)').length;
+        var checked  = menu.querySelectorAll('input[type="checkbox"]:not(.fuel-option-all input):checked').length;
+        if (checked < all) count += (all - checked);
+    });
+
+    // Year range selects: count if not at default extremes
+    var selects = body.querySelectorAll("select");
+    selects.forEach(function(sel) {
+        if (!sel.options.length) return;
+        var isFirst = sel.selectedIndex === 0;
+        var isLast  = sel.selectedIndex === sel.options.length - 1;
+        if (!isFirst && !isLast) count += 1;
+    });
+
+    if (count > 0) {
+        badge.textContent = count;
+        badge.classList.add("visible");
+        item.classList.add("open");
+    } else {
+        badge.classList.remove("visible");
+    }
+}
+
+// Run after DOM is fully ready
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", function() { setTimeout(initSidebarAccordions, 50); });
+} else {
+    setTimeout(initSidebarAccordions, 50);
+}
+
+// Re-run after filters are rebuilt (ISO-specific filter populations call buildMultiSelect which replaces DOM)
+var _origBuildMultiSelect = buildMultiSelect;
+buildMultiSelect = function(containerId, values, allLabel, onChangeFn) {
+    _origBuildMultiSelect(containerId, values, allLabel, onChangeFn);
+    // Re-init accordions after a tick so rebuilt DOM is stable
+    setTimeout(initSidebarAccordions, 10);
+};
 
 function populateYearFilters(){
     const years = [...new Set(getChartData().map(d => d.year).filter(Boolean))].sort((a,b)=>a-b);
@@ -1070,6 +1343,8 @@ function normalizeErcotData(data){
             ApprovedSyncDate: approvedSyncDate,
             LatestMilestone: latestMilestone,
             LatestMilestoneDate: latestMilestoneDate,
+            Latitude: toNumber(d["Latitude"]),
+            Longitude: toNumber(d["Longitude"]),
             year: queueDate ? queueDate.getFullYear() : null,
             proposedYear: proposedDate ? proposedDate.getFullYear() : null
         };
@@ -1150,6 +1425,7 @@ function updateErcotDeepDive(){
 
     if (blankState) blankState.classList.add("hidden");
     if (content) content.classList.remove("hidden");
+    markChartsLoading("ercotContent");
 
     if (ercotStatus) {
         ercotStatus.innerText = `Loaded ${ercotData.length.toLocaleString()} ERCOT records from the wide master JSON.`;
@@ -1162,6 +1438,10 @@ function updateErcotDeepDive(){
     renderErcotAdvancementTable(filtered);
     renderErcotProposedDateCharts(filtered);
     renderErcotProjectTable(filtered);
+
+    // Re-render map if map view is currently active
+    var mapViewEl = document.getElementById("ercotMapView");
+    if (mapViewEl && !mapViewEl.classList.contains("hidden")) renderErcotMap();
 
     setTimeout(() => {
         ["ercotZoneChart", "ercotCountyChart", "ercotYearFuelChart", "ercotQueueVsProposedChart"].forEach(id => {
@@ -1191,6 +1471,19 @@ function renderErcotKpis(data){
     const activeProjects = data.filter(d => String(d.Status || "").toLowerCase() === "active").length;
     const percentActive = totalProjects ? (activeProjects / totalProjects) * 100 : 0;
 
+    // Most common latest milestone in filtered set
+    const milestoneCounts = {};
+    const milestoneDates = {};
+    data.forEach(d => {
+        const m = d.LatestMilestone;
+        if (!m) return;
+        milestoneCounts[m] = (milestoneCounts[m] || 0) + 1;
+        if (d.LatestMilestoneDate && (!milestoneDates[m] || d.LatestMilestoneDate > milestoneDates[m])) {
+            milestoneDates[m] = d.LatestMilestoneDate;
+        }
+    });
+    const topMilestone = Object.entries(milestoneCounts).sort((a, b) => b[1] - a[1])[0];
+
     document.getElementById("ercotKpiProjects").innerText = totalProjects.toLocaleString();
     document.getElementById("ercotKpiCapacity").innerText = formatGW(totalCapacity);
     document.getElementById("ercotKpiAverage").innerText = `${Math.round(averageProjectSize).toLocaleString()} MW`;
@@ -1198,6 +1491,17 @@ function renderErcotKpis(data){
     document.getElementById("ercotKpiZoneShare").innerText = `${totalCapacity ? (dominantZone[1] / totalCapacity * 100).toFixed(1) : 0}% of visible capacity`;
     document.getElementById("ercotKpiProbability").innerText = formatPercent(averageProbability);
     document.getElementById("ercotKpiPercentActive").innerText = formatPercent(percentActive);
+    const milestoneEl = document.getElementById("ercotKpiLatestMilestone");
+    const milestoneDateEl = document.getElementById("ercotKpiLatestMilestoneDate");
+    if (milestoneEl) milestoneEl.innerText = topMilestone ? topMilestone[0] : "—";
+    if (milestoneDateEl) {
+        if (topMilestone && milestoneDates[topMilestone[0]]) {
+            const d = milestoneDates[topMilestone[0]];
+            milestoneDateEl.innerText = `Latest: ${d.toISOString().split("T")[0]} · ${topMilestone[1].toLocaleString()} projects`;
+        } else {
+            milestoneDateEl.innerText = "";
+        }
+    }
 }
 
 function renderErcotLocationCharts(data){
@@ -1516,6 +1820,629 @@ function renderErcotInsights(data){
     // Removed from ERCOT deep dive layout.
 }
 
+// ---------------- DEV INSIGHTS MAP ----------------
+
+var _devLeafletMap = null;
+var _devMarkerLayer = null;
+var _devZoneLayer = null;
+var _devCountyLayer = null;
+
+// ---- County choropleth caches ----
+var _countyTopoCache = null;
+var _countyFipsLookupCache = null;
+var _cityFipsLookupCache = null;
+var _countyFipsRevCache = null;
+
+var _COUNTY_CHOROPLETH_STATE_FIPS = new Set([
+    "05","19","17","18","21","22","26","27","29","28","30","38","46","48","55", // MISO
+    "09","25","23","33","36","44","50",  // ISO-NE
+    "08","20","31","35","40","56",  // SPP-unique (CO, KS, NE, NM, OK, WY)
+    "10","11","24","34","37","39","42","47","51","54"  // PJM-unique (DE, DC, MD, NJ, NC, OH, PA, TN, VA, WV)
+]);
+
+var _COUNTY_COLOR_STEPS = [
+    [1,  "#dbeafe"],
+    [3,  "#93c5fd"],
+    [6,  "#3b82f6"],
+    [11, "#1d4ed8"],
+    [21, "#1e3a8a"]
+];
+
+var _STATE_NAME_TO_ABBR = { "michigan": "MI", "minnesota": "MN", "illinois": "IL",
+    "indiana": "IN", "iowa": "IA", "wisconsin": "WI", "missouri": "MO",
+    "arkansas": "AR", "louisiana": "LA", "mississippi": "MS", "kentucky": "KY",
+    "north dakota": "ND", "south dakota": "SD", "montana": "MT", "texas": "TX",
+    "connecticut": "CT", "massachusetts": "MA", "maine": "ME", "new hampshire": "NH",
+    "new york": "NY", "rhode island": "RI", "vermont": "VT",
+    "colorado": "CO", "kansas": "KS", "nebraska": "NE", "new mexico": "NM",
+    "oklahoma": "OK", "wyoming": "WY" };
+
+function _loadCountyTopo() {
+    if (_countyTopoCache) return Promise.resolve(_countyTopoCache);
+    return fetch("https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json")
+        .then(function(r) { return r.json(); })
+        .then(function(t) { _countyTopoCache = t; return t; });
+}
+
+function _loadCountyFipsLookup() {
+    if (_countyFipsLookupCache) return Promise.resolve(_countyFipsLookupCache);
+    return fetch("/static/data/county_fips_lookup.json")
+        .then(function(r) { return r.json(); })
+        .then(function(d) { _countyFipsLookupCache = d; return d; });
+}
+
+function _loadCityFipsLookup() {
+    if (_cityFipsLookupCache) return Promise.resolve(_cityFipsLookupCache);
+    return fetch("/static/data/city_fips_lookup.json")
+        .then(function(r) { return r.json(); })
+        .then(function(d) { _cityFipsLookupCache = d; return d; });
+}
+
+function _buildFipsReverse(lookup) {
+    if (_countyFipsRevCache) return _countyFipsRevCache;
+    var rev = {};
+    Object.keys(lookup).forEach(function(state) {
+        Object.keys(lookup[state]).forEach(function(name) {
+            var fips = lookup[state][name];
+            if (!rev[fips] || name.length < rev[fips].name.length) {
+                var title = name.replace(/\b\w/g, function(c) { return c.toUpperCase(); });
+                rev[fips] = { name: title, state: state };
+            }
+        });
+    });
+    _countyFipsRevCache = rev;
+    return rev;
+}
+
+function _normalizeCountyName(name) {
+    if (!name) return "";
+    name = String(name).split(/[,\/]/)[0];
+    name = name.replace(/\s+(county|parish|borough|census area)\s*$/i, "").trim();
+    name = name.replace(/\bsaint\s+/i, "st. ");
+    return name.toLowerCase();
+}
+
+function _countyFipsFromRecord(r, countyLookup, cityLookup) {
+    var state = (r.State || "").trim();
+    state = _STATE_NAME_TO_ABBR[state.toLowerCase()] || state.toUpperCase();
+    var key = _normalizeCountyName(r.County || "");
+    if (!state || !key) return null;
+    // Try county name first
+    var fips = (countyLookup[state] || {})[key];
+    if (fips) return fips;
+    // Fall back to city/town name lookup
+    return (cityLookup && cityLookup[state] && cityLookup[state][key]) || null;
+}
+
+function _buildCountyIndex(records, countyLookup, cityLookup) {
+    var idx = {};
+    records.forEach(function(r) {
+        var fips = _countyFipsFromRecord(r, countyLookup, cityLookup);
+        if (!fips) return;
+        if (!idx[fips]) idx[fips] = { count: 0, mw: 0, projects: [] };
+        idx[fips].count++;
+        idx[fips].mw += (r.MW || 0);
+        idx[fips].projects.push(r);
+    });
+    return idx;
+}
+
+function _countyFillColor(count) {
+    var color = null;
+    for (var i = 0; i < _COUNTY_COLOR_STEPS.length; i++) {
+        if (count >= _COUNTY_COLOR_STEPS[i][0]) color = _COUNTY_COLOR_STEPS[i][1];
+    }
+    return color;
+}
+
+function closeCountyDetail() {
+    var panel = document.getElementById("devCountyDetail");
+    if (panel) panel.classList.add("hidden");
+}
+
+function showCountyDetail(fips, rev, idx) {
+    var panel = document.getElementById("devCountyDetail");
+    if (!panel) return;
+    var info = idx[fips];
+    if (!info) return;
+    var meta = rev[fips] || { name: fips, state: "" };
+    var nameEl = document.getElementById("cdpCountyName");
+    var statsEl = document.getElementById("cdpStats");
+    var listEl  = document.getElementById("cdpProjectList");
+    if (nameEl) nameEl.textContent = meta.name + " County, " + meta.state;
+    if (statsEl) statsEl.textContent = info.count + " project" + (info.count !== 1 ? "s" : "") + " · " + info.mw.toFixed(0) + " MW total";
+    if (listEl) {
+        listEl.innerHTML = info.projects.map(function(p) {
+            var fc = ERCOT_FUEL_COLORS[p.Fuel] || ERCOT_FUEL_COLORS.Other;
+            var pd = p.ProposedDate ? p.ProposedDate.toISOString().split("T")[0] : "—";
+            var statusCls = "cdp-status-" + (p.Status || "").toLowerCase();
+            return "<div class='cdp-project'>" +
+                "<div class='cdp-proj-name'>" + (p.ProjectID || "—") + "</div>" +
+                "<div class='cdp-proj-row'>" +
+                    "<span class='cdp-proj-fuel' style='background:" + fc + "22;color:" + fc + ";'>" + (p.Fuel || "Other") + "</span>" +
+                    "<span class='cdp-proj-mw'>" + (p.MW || 0).toFixed(0) + " MW</span>" +
+                    "<span class='cdp-proj-status " + statusCls + "'>" + (p.Status || "—") + "</span>" +
+                "</div>" +
+                "<div class='cdp-proj-meta'>" +
+                    (p.Developer && p.Developer.toLowerCase() !== "unknown" ? p.Developer + " · " : "") + "COD " + pd +
+                "</div>" +
+            "</div>";
+        }).join("");
+    }
+    panel.classList.remove("hidden");
+}
+
+function _updateCountyChoroplethLegend() {
+    var el = document.getElementById("devCountyLegend");
+    if (!el) return;
+    el.classList.remove("hidden");
+    var labels = ["1–2", "3–5", "6–10", "11–20", "21+"];
+    el.innerHTML = "<span class='county-legend-label'>Projects per county:</span>" +
+        _COUNTY_COLOR_STEPS.map(function(step, i) {
+            return "<span class='county-legend-item'>" +
+                "<span class='county-legend-swatch' style='background:" + step[1] + "'></span>" +
+                labels[i] + "</span>";
+        }).join("");
+}
+
+function _renderCountyChoropleth(leafletMap, records) {
+    if (!records.length) return;
+    if (typeof topojson === "undefined") {
+        console.warn("topojson-client not loaded; county choropleth unavailable");
+        return;
+    }
+    if (_devCountyLayer) {
+        leafletMap.removeLayer(_devCountyLayer);
+        _devCountyLayer = null;
+    }
+    Promise.all([_loadCountyTopo(), _loadCountyFipsLookup(), _loadCityFipsLookup()])
+        .then(function(results) {
+            var topo        = results[0];
+            var countyLookup = results[1];
+            var cityLookup   = results[2];
+            var rev = _buildFipsReverse(countyLookup);
+            var idx = _buildCountyIndex(records, countyLookup, cityLookup);
+            if (!Object.keys(idx).length) return;
+
+            var allFeatures = topojson.feature(topo, topo.objects.counties).features;
+            var features = allFeatures.filter(function(f) {
+                var stateFips = String(f.id).padStart(5, "0").slice(0, 2);
+                return _COUNTY_CHOROPLETH_STATE_FIPS.has(stateFips);
+            });
+
+            _devCountyLayer = L.geoJSON(
+                { type: "FeatureCollection", features: features },
+                {
+                    style: function(feature) {
+                        var fips = String(feature.id).padStart(5, "0");
+                        var d    = idx[fips];
+                        var fill = d ? _countyFillColor(d.count) : null;
+                        return {
+                            fillColor:   fill || "transparent",
+                            fillOpacity: fill ? 0.70 : 0,
+                            color:       fill ? "#475569" : "#cbd5e1",
+                            weight:      fill ? 0.8 : 0.3,
+                            opacity:     0.6
+                        };
+                    },
+                    onEachFeature: function(feature, layer) {
+                        var fips = String(feature.id).padStart(5, "0");
+                        var d    = idx[fips];
+                        if (!d) return;
+                        var meta = rev[fips] || { name: fips, state: "" };
+                        layer.on("mouseover", function(e) {
+                            layer.setStyle({ fillOpacity: 0.92, weight: 1.8 });
+                            layer.bindTooltip(
+                                "<b>" + meta.name + " County, " + meta.state + "</b><br>" +
+                                d.count + " project" + (d.count !== 1 ? "s" : "") + "<br>" +
+                                d.mw.toFixed(0) + " MW total",
+                                { sticky: true, className: "county-hover-tooltip", direction: "top" }
+                            ).openTooltip(e.latlng);
+                        });
+                        layer.on("mouseout", function() {
+                            _devCountyLayer.resetStyle(layer);
+                            layer.closeTooltip();
+                        });
+                        layer.on("click", function() {
+                            showCountyDetail(fips, rev, idx);
+                        });
+                    }
+                }
+            );
+            _devCountyLayer.addTo(leafletMap);
+            _updateCountyChoroplethLegend();
+        })
+        .catch(function(e) { console.warn("County choropleth render failed:", e); });
+}
+
+function setDevView(view) {
+    var chartsBtn  = document.getElementById("devViewCharts");
+    var mapBtn     = document.getElementById("devViewMap");
+    var mapEl      = document.getElementById("devMapView");
+    var chartsEl   = document.getElementById("devChartsView");
+
+    if (view === "map") {
+        if (chartsBtn) chartsBtn.classList.remove("active");
+        if (mapBtn)    mapBtn.classList.add("active");
+        if (mapEl)     mapEl.classList.remove("hidden");
+        if (chartsEl)  chartsEl.classList.add("hidden");
+        setTimeout(function() { renderDevMap(); }, 80);
+    } else {
+        if (chartsBtn) chartsBtn.classList.add("active");
+        if (mapBtn)    mapBtn.classList.remove("active");
+        if (mapEl)     mapEl.classList.add("hidden");
+        if (chartsEl)  chartsEl.classList.remove("hidden");
+    }
+}
+
+function getMapData() {
+    var data = Array.isArray(masterData) ? masterData : [];
+
+    // Market scope (ISO or State)
+    var mode = getFilterType();
+    var selected = getSelectedMarketValue();
+    if (selected !== "All") {
+        data = data.filter(function(d) {
+            return mode === "ISO"
+                ? (d.ISO || "Unknown") === selected
+                : (d.State || "Unknown") === selected;
+        });
+    }
+
+    // Fuel type
+    data = getFuelFilteredData(data);
+
+    // Year range — only filters records that have a year
+    var years = getSelectedYears();
+    data = data.filter(function(d) {
+        if (!d.year) return true;
+        return d.year >= years.start && d.year <= years.end;
+    });
+
+    return data;
+}
+
+function renderDevMap() {
+    var container = document.getElementById("devMap");
+    if (!container) return;
+
+    if (typeof L === "undefined") {
+        container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#ef4444;font-size:0.85rem;">Leaflet failed to load. Check your internet connection and refresh.</div>';
+        return;
+    }
+
+    var activeOnly = document.getElementById("devMapActiveOnly");
+
+    var allData = getMapData();
+    if (activeOnly && activeOnly.checked) {
+        allData = allData.filter(function(d) {
+            var s = String(d.Status || "").toLowerCase();
+            return s !== "done" && !s.includes("withdraw");
+        });
+    }
+
+    // All ISOs use county choropleth
+    var countyRecords = allData.filter(function(d) {
+        return d.County && d.State;
+    });
+
+    // ---- Disclaimer ----
+    var disclaimerEl = document.getElementById("devMapDisclaimer");
+    if (disclaimerEl) {
+        var hidden = allData.length - countyRecords.length;
+        if (hidden > 0) {
+            disclaimerEl.textContent = hidden.toLocaleString() + " project" + (hidden === 1 ? "" : "s") + " not shown — location data (county/state) incomplete in source data.";
+            disclaimerEl.classList.remove("hidden");
+        } else {
+            disclaimerEl.classList.add("hidden");
+        }
+    }
+
+    // ---- Map init ----
+    if (_devLeafletMap) {
+        var c = document.getElementById("devMap");
+        if (c && (c.offsetWidth === 0 || c.offsetHeight === 0)) {
+            _devLeafletMap.remove();
+            _devLeafletMap = null;
+            _devCountyLayer = null;
+        }
+    }
+    if (!_devLeafletMap) {
+        _devLeafletMap = L.map("devMap", {
+            center: [40, -93],
+            zoom: 4,
+            zoomControl: true,
+            scrollWheelZoom: true
+        });
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+            maxZoom: 18
+        }).addTo(_devLeafletMap);
+    }
+
+    // ---- County choropleth (all ISOs, async) ----
+    if (_devCountyLayer) {
+        _devLeafletMap.removeLayer(_devCountyLayer);
+        _devCountyLayer = null;
+    }
+    var countyLegEl = document.getElementById("devCountyLegend");
+    if (countyLegEl) countyLegEl.classList.add("hidden");
+    closeCountyDetail();
+    _renderCountyChoropleth(_devLeafletMap, countyRecords);
+
+    var legendEl = document.getElementById("devMapLegend");
+    if (legendEl) legendEl.innerHTML = "";
+
+    setTimeout(function() {
+        if (!_devLeafletMap) return;
+        _devLeafletMap.invalidateSize();
+    }, 150);
+}
+
+// ---------------- ERCOT MAP ----------------
+
+var _ercotLeafletMap = null;
+var _ercotMarkerLayer = null;
+var _ercotZoneLayer = null;
+
+var ERCOT_ZONE_GEOJSON = {
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": { "zone": "WEST" },
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [[
+                    [-106.65, 31.80], [-104.00, 29.50], [-102.00, 29.75],
+                    [-100.00, 28.20], [-100.00, 31.00], [-101.00, 33.50],
+                    [-103.00, 33.50], [-104.50, 32.00], [-106.65, 31.80]
+                ]]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": { "zone": "SOUTH" },
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [[
+                    [-100.00, 28.20], [-97.50, 25.85], [-97.00, 26.30],
+                    [-96.50, 27.50], [-97.00, 28.50], [-98.50, 29.80],
+                    [-100.00, 31.00], [-100.00, 28.20]
+                ]]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": { "zone": "HOUSTON" },
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [[
+                    [-97.00, 28.50], [-96.50, 27.50], [-94.50, 29.00],
+                    [-93.80, 30.00], [-95.00, 30.50], [-96.00, 30.50],
+                    [-97.00, 29.50], [-97.00, 28.50]
+                ]]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": { "zone": "NORTH" },
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [[
+                    [-101.00, 33.50], [-100.00, 31.00], [-98.50, 29.80],
+                    [-97.00, 29.50], [-96.00, 30.50], [-95.00, 30.50],
+                    [-94.00, 31.00], [-94.00, 33.80], [-97.00, 34.00],
+                    [-100.00, 34.00], [-101.00, 33.50]
+                ]]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": { "zone": "PANHANDLE" },
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [[
+                    [-103.05, 36.55], [-100.00, 36.55], [-100.00, 33.40],
+                    [-103.05, 33.40], [-103.05, 36.55]
+                ]]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": { "zone": "COASTAL" },
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [[
+                    [-97.75, 29.30], [-97.10, 28.55], [-96.55, 27.45],
+                    [-95.80, 25.90], [-95.00, 25.90], [-94.40, 27.00],
+                    [-94.70, 28.60], [-95.60, 29.35], [-97.75, 29.30]
+                ]]
+            }
+        }
+    ]
+};
+
+var ERCOT_ZONE_COLORS = {
+    WEST:      { fill: "#a78bfa", stroke: "#7c3aed" },
+    SOUTH:     { fill: "#fb923c", stroke: "#ea580c" },
+    HOUSTON:   { fill: "#38bdf8", stroke: "#0284c7" },
+    NORTH:     { fill: "#4ade80", stroke: "#16a34a" },
+    PANHANDLE: { fill: "#fbbf24", stroke: "#d97706" },
+    COASTAL:   { fill: "#f472b6", stroke: "#db2777" }
+};
+
+var ERCOT_FUEL_COLORS = {
+    Solar:   "#f59e0b",
+    Wind:    "#3b82f6",
+    Storage: "#10b981",
+    Thermal: "#ef4444",
+    Hybrid:  "#8b5cf6",
+    Nuclear: "#ec4899",
+    Hydro:   "#06b6d4",
+    Other:   "#94a3b8"
+};
+
+function setErcotView(view) {
+    var chartsBtn = document.getElementById("ercotViewCharts");
+    var mapBtn    = document.getElementById("ercotViewMap");
+    var chartsEl  = document.getElementById("ercotMapView");
+
+    // All chart content siblings (everything in ercotContent except map view + header card)
+    var ercotContent = document.getElementById("ercotContent");
+
+    if (view === "map") {
+        if (chartsBtn) chartsBtn.classList.remove("active");
+        if (mapBtn)    mapBtn.classList.add("active");
+        if (chartsEl)  chartsEl.classList.remove("hidden");
+        // Hide chart sections — but NOT anything inside the map view itself
+        if (ercotContent) {
+            ercotContent.querySelectorAll(".summary-grid, .chart-grid, .chart-card, .dt-wrap").forEach(function(el) {
+                if (chartsEl && chartsEl.contains(el)) return;
+                el.dataset.hiddenByMap = "1";
+                el.classList.add("hidden");
+            });
+        }
+        // Delay so browser paints the container before Leaflet measures its size
+        setTimeout(function() { renderErcotMap(); }, 80);
+    } else {
+        if (chartsBtn) chartsBtn.classList.add("active");
+        if (mapBtn)    mapBtn.classList.remove("active");
+        if (chartsEl)  chartsEl.classList.add("hidden");
+        if (ercotContent) {
+            ercotContent.querySelectorAll("[data-hidden-by-map='1']").forEach(function(el) {
+                el.dataset.hiddenByMap = "";
+                el.classList.remove("hidden");
+            });
+        }
+    }
+}
+
+function _ercotMwToRadius() {
+    return 4;
+}
+
+function renderErcotMap() {
+    var container = document.getElementById("ercotMap");
+    if (!container) return;
+
+    if (typeof L === "undefined") {
+        container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#ef4444;font-size:0.85rem;">Leaflet failed to load. Check your internet connection and refresh.</div>';
+        return;
+    }
+
+    var activeOnly = document.getElementById("ercotMapActiveOnly");
+    var showZones  = document.getElementById("ercotMapShowZones");
+
+    var data = getFilteredErcotData().filter(function(d) {
+        return d.Latitude && d.Longitude && isFinite(d.Latitude) && isFinite(d.Longitude);
+    });
+
+    if (activeOnly && activeOnly.checked) {
+        data = data.filter(function(d) {
+            var s = String(d.Status || "").toLowerCase();
+            return s !== "done" && !s.includes("withdraw");
+        });
+    }
+
+    // Init map — destroy stale instance if container was remeasured incorrectly
+    if (_ercotLeafletMap) {
+        var c = document.getElementById("ercotMap");
+        if (c && (c.offsetWidth === 0 || c.offsetHeight === 0)) {
+            _ercotLeafletMap.remove();
+            _ercotLeafletMap = null;
+            _ercotMarkerLayer = null;
+            _ercotZoneLayer = null;
+        }
+    }
+    if (!_ercotLeafletMap) {
+        _ercotLeafletMap = L.map("ercotMap", {
+            center: [31.5, -99.5],
+            zoom: 6,
+            zoomControl: true,
+            scrollWheelZoom: true
+        });
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+            maxZoom: 18
+        }).addTo(_ercotLeafletMap);
+    }
+
+    // Zone overlays
+    if (_ercotZoneLayer) {
+        _ercotLeafletMap.removeLayer(_ercotZoneLayer);
+        _ercotZoneLayer = null;
+    }
+    if (!showZones || showZones.checked) {
+        _ercotZoneLayer = L.geoJSON(ERCOT_ZONE_GEOJSON, {
+            style: function(feature) {
+                var z = feature.properties.zone;
+                var c = ERCOT_ZONE_COLORS[z] || { fill: "#94a3b8", stroke: "#64748b" };
+                return { color: c.stroke, weight: 1.5, fillColor: c.fill, fillOpacity: 0.10, dashArray: "4 3" };
+            },
+            onEachFeature: function(feature, layer) {
+                layer.bindTooltip(feature.properties.zone + " Zone", { sticky: true, className: "ercot-zone-tooltip" });
+            }
+        }).addTo(_ercotLeafletMap);
+    }
+
+    // Markers
+    if (_ercotMarkerLayer) {
+        _ercotLeafletMap.removeLayer(_ercotMarkerLayer);
+    }
+    _ercotMarkerLayer = L.layerGroup();
+
+    data.forEach(function(d) {
+        var color  = ERCOT_FUEL_COLORS[d.Fuel] || ERCOT_FUEL_COLORS.Other;
+        var radius = _ercotMwToRadius(d.MW);
+        var marker = L.circleMarker([d.Latitude, d.Longitude], {
+            radius: radius,
+            fillColor: color,
+            color: "#fff",
+            weight: 1,
+            fillOpacity: 0.82
+        });
+        var qd = d.QueueDate ? d.QueueDate.toISOString().split("T")[0] : "—";
+        var pd = d.ProposedDate ? d.ProposedDate.toISOString().split("T")[0] : "—";
+        marker.bindPopup(
+            "<div class='ercot-map-popup'>" +
+            "<div class='emp-name'>" + (d.Name || d.ProjectID) + "</div>" +
+            "<div class='emp-row'><span class='emp-label'>Developer</span><span>" + (d.Developer || "—") + "</span></div>" +
+            "<div class='emp-row'><span class='emp-label'>Fuel</span><span class='emp-fuel' style='background:" + color + "22;color:" + color + ";'>" + (d.Fuel || "—") + "</span></div>" +
+            "<div class='emp-row'><span class='emp-label'>MW</span><span>" + (d.MW || 0).toFixed(0) + " MW</span></div>" +
+            "<div class='emp-row'><span class='emp-label'>Zone</span><span>" + (d.Zone || "—") + "</span></div>" +
+            "<div class='emp-row'><span class='emp-label'>County</span><span>" + (d.County || "—") + "</span></div>" +
+            "<div class='emp-row'><span class='emp-label'>Status</span><span>" + (d.Status || "—") + "</span></div>" +
+            "<div class='emp-row'><span class='emp-label'>Queue Date</span><span>" + qd + "</span></div>" +
+            "<div class='emp-row'><span class='emp-label'>Proposed COD</span><span>" + pd + "</span></div>" +
+            "<div class='emp-row'><span class='emp-label'>Completion %</span><span>" + (d.CompletionProbability || 0).toFixed(0) + "%</span></div>" +
+            "</div>",
+            { maxWidth: 280 }
+        );
+        _ercotMarkerLayer.addLayer(marker);
+    });
+
+    _ercotMarkerLayer.addTo(_ercotLeafletMap);
+
+    // Legend
+    var legendEl = document.getElementById("ercotMapLegend");
+    if (legendEl) {
+        var fuelsPresent = Object.keys(ERCOT_FUEL_COLORS).filter(function(f) {
+            return data.some(function(d) { return d.Fuel === f; });
+        });
+        legendEl.innerHTML = fuelsPresent.map(function(f) {
+            return "<span class='emp-legend-item'><span class='emp-legend-dot' style='background:" + ERCOT_FUEL_COLORS[f] + "'></span>" + f + "</span>";
+        }).join("");
+    }
+
+    // Recalc size — if map was init'd with bad dimensions, also re-center
+    setTimeout(function() {
+        if (!_ercotLeafletMap) return;
+        _ercotLeafletMap.invalidateSize();
+        _ercotLeafletMap.setView([31.5, -99.5], 6);
+    }, 150);
+}
+
 // ---------------- RENDER ----------------
 
 function render(){
@@ -1528,6 +2455,9 @@ function render(){
     queueBubble(filtered, scopedData);
     fuelMix(filtered, scopedData);
     renderComparisonChart(filtered, scopedData);
+
+    var devMapEl = document.getElementById("devMapView");
+    if (devMapEl && !devMapEl.classList.contains("hidden")) renderDevMap();
 }
 
 // ---------------- SUMMARY ----------------
@@ -2035,7 +2965,7 @@ function getFilteredMisoData(){
 function updateMisoDeepDive(){
     const content=misoEl("misoContent"), blank=misoEl("misoBlankState");
     if(!misoData.length){ if(blank)blank.classList.remove("hidden"); if(content)content.classList.add("hidden"); return; }
-    if(blank)blank.classList.add("hidden"); if(content)content.classList.remove("hidden"); if(misoEl("misoStatus"))misoEl("misoStatus").innerText=`Loaded ${misoData.length.toLocaleString()} MISO records from the wide master JSON.`;
+    if(blank)blank.classList.add("hidden"); if(content)content.classList.remove("hidden"); markChartsLoading("misoContent"); if(misoEl("misoStatus"))misoEl("misoStatus").innerText=`Loaded ${misoData.length.toLocaleString()} MISO records from the wide master JSON.`;
     const data=getFilteredMisoData(); renderMisoKpis(data); renderMisoYearFuelChart(data); renderMisoCombinedCycleGroupChart(data); renderMisoQueueVsProposedChart(data); renderMisoProjectTable(data);
 }
 function misoTop(data,key){const t={};data.forEach(d=>{const v=d[key]||"Unknown";t[v]=(t[v]||0)+(d.MW||0);});return Object.entries(t).sort((a,b)=>b[1]-a[1])[0]||["—",0];}
@@ -2154,10 +3084,12 @@ function updateIsoneDeepDive(){
     }
     if(blank) blank.classList.add("hidden");
     if(content) content.classList.remove("hidden");
+    markChartsLoading("isoneContent");
     if(isoneEl("isoneStatus")) isoneEl("isoneStatus").innerText = `Loaded ${isoneData.length.toLocaleString()} ISO-NE records from the wide master JSON.`;
     const data = getFilteredIsoneData();
     renderIsoneKpis(data);
     renderIsoneYearFuelChart(data);
+    renderIsoneWithdrawalChart(data);
     renderIsoneZoneStatusChart(data);
     renderIsoneQueueVsProposedChart(data);
     renderIsoneProjectTable(data);
@@ -2202,6 +3134,63 @@ function renderIsoneYearFuelChart(data){
         hovertemplate: "Fuel Type: " + f + "<br>" + (view === "proposed" ? "Proposed Year" : "Queue Year") + ": %{x}<br>Capacity: %{y:.2f} GW<extra></extra>"
     })), { title: view === "proposed" ? "ISO-NE Fuel Mix by Proposed Year" : "ISO-NE Fuel Mix by Queue Year", barmode: "stack", xaxis: { title: view === "proposed" ? "Proposed Year" : "Queue Year" }, yaxis: { title: "Capacity (GW)" }, margin: { t:30,r:20,b:40,l:60 } }, { displayModeBar:false, responsive:true });
 }
+function renderIsoneWithdrawalChart(data) {
+    var noteEl = document.getElementById("isoneWithdrawalNote");
+    // Use full isoneData (not filtered) to get denominator per year
+    var allRows = isoneData.length ? isoneData : data;
+    var totalByYear = {};
+    allRows.forEach(function(d) { if (d.year) totalByYear[d.year] = (totalByYear[d.year] || 0) + 1; });
+
+    var wByYear = {};
+    data.forEach(function(d) {
+        if (!d.QueueDate) return;
+        var yr = d.QueueDate.getFullYear();
+        var isWithdrawn = String(d.Status || "").toLowerCase().includes("withdraw");
+        if (isWithdrawn) wByYear[yr] = (wByYear[yr] || 0) + 1;
+    });
+
+    var years = Object.keys(totalByYear).map(Number).sort(function(a,b){return a-b;});
+    // Exclude current year (incomplete)
+    var currentYear = new Date().getFullYear();
+    years = years.filter(function(y){ return y < currentYear; });
+
+    if (!years.length) {
+        if (noteEl) noteEl.innerText = "No queue-entry year data available.";
+        return;
+    }
+
+    var counts = years.map(function(y){ return wByYear[y] || 0; });
+    var rates  = years.map(function(y, i){ return totalByYear[y] ? ((wByYear[y] || 0) / totalByYear[y] * 100) : 0; });
+    var totalWithdrawn = counts.reduce(function(s,v){return s+v;},0);
+    if (noteEl) noteEl.innerText = totalWithdrawn + " withdrawn project" + (totalWithdrawn === 1 ? "" : "s") + " in filtered view across all years.";
+
+    Plotly.newPlot("isoneWithdrawalChart", [
+        {
+            x: years, y: counts, name: "Withdrawn Projects",
+            type: "bar",
+            marker: { color: "rgba(220,53,69,0.75)" },
+            yaxis: "y",
+            hovertemplate: "Year: %{x}<br>Withdrawn: %{y}<extra></extra>"
+        },
+        {
+            x: years, y: rates, name: "Withdrawal Rate %",
+            type: "scatter", mode: "lines+markers",
+            line: { color: "#f59e0b", width: 2 },
+            marker: { size: 6, color: "#f59e0b" },
+            yaxis: "y2",
+            hovertemplate: "Year: %{x}<br>Rate: %{y:.1f}%<extra></extra>"
+        }
+    ], {
+        title: "ISO-NE Withdrawals by Queue-Entry Year",
+        barmode: "overlay",
+        xaxis: { title: "Queue-Entry Year" },
+        yaxis: { title: "Withdrawn Projects", side: "left" },
+        yaxis2: { title: "Withdrawal Rate (%)", overlaying: "y", side: "right", showgrid: false, ticksuffix: "%" },
+        legend: { x: 0, y: 1.12, orientation: "h" },
+        margin: { t: 40, r: 60, b: 45, l: 55 }
+    }, { displayModeBar: false, responsive: true });
+}
+
 function renderIsoneZoneStatusChart(data){
     const zones = [...new Set(data.map(d => d.Zone || "Unknown"))].sort();
     const statuses = [...new Set(data.map(d => d.Status || "Unknown"))].sort();
@@ -2380,6 +3369,7 @@ function updateSppDeepDive(){
         if(content) content.classList.add("hidden"); return;
     }
     if(blank) blank.classList.add("hidden"); if(content) content.classList.remove("hidden");
+    markChartsLoading("sppContent");
     if(sppEl("sppStatus")) sppEl("sppStatus").innerText = `Loaded ${sppData.length.toLocaleString()} SPP records from the wide master JSON.`;
     const data = getFilteredSppData();
     renderSppKpis(data); renderSppFuelCharts(data); renderSppCombinedCycleGroupChart(data); renderSppQueueVsProposedChart(data); renderSppLocationCharts(data); renderSppProjectTable(data);
@@ -2622,6 +3612,7 @@ function updatePjmDeepDive(){
     }
     if(blank) blank.classList.add("hidden");
     if(content) content.classList.remove("hidden");
+    markChartsLoading("pjmContent");
     if(pjmEl("pjmStatus")) pjmEl("pjmStatus").innerText = `Loaded ${pjmData.length.toLocaleString()} PJM records from the wide master JSON.`;
     const data = getFilteredPjmData();
     renderPjmKpis(data);
@@ -2846,7 +3837,8 @@ function _dtDestroy(instance, tableId){
 function _dtInit(tableId, mwColIndex){
     if(typeof $ === "undefined" || !$.fn || !$.fn.DataTable) return null;
     return $(tableId).DataTable({
-        pageLength: 25,
+        destroy: true,
+        pageLength: 10,
         order: [[mwColIndex, "desc"]],
         dom: 'B<"dt-top"lf>rtip',
         buttons: [
@@ -2983,11 +3975,13 @@ function renderSppProjectTable(data){
             "<td>" + sppSafe(d.State) + "</td>" +
             "<td>" + sppSafe(d.StudyCycle) + "</td>" +
             "<td>" + sppSafe(d.StudyGroup) + "</td>" +
+            "<td>" + sppSafe(d.CauseOfDelay) + "</td>" +
+            "<td>" + sppSafe(d.JTIQParticipant) + "</td>" +
             "<td>" + (d.MW || 0).toFixed(0) + "</td>" +
             "<td>" + sppSafe(d.Fuel) + "</td>" +
         "</tr>";
-    }).join("") || '<tr><td colspan="13" style="text-align:center;">No matching SPP projects.</td></tr>';
-    _dtSpp = _dtInit("#spp-dt", 11);
+    }).join("") || '<tr><td colspan="15" style="text-align:center;">No matching SPP projects.</td></tr>';
+    _dtSpp = _dtInit("#spp-dt", 13);
 }
 
 // ── Lazy tab rendering ──────────────────────────────────────────────────────
@@ -3041,310 +4035,550 @@ function renderSppProjectTable(data){
 }());
 
 
-// ============================================================
-// IQ MODAL — project detail & bar-segment info cards
-// ============================================================
+// ── Detail Modal ────────────────────────────────────────────────────────────
+// Opens on scatter-point click (project detail) or stacked-bar click (segment
+// aggregate). One modal, one event delegation point per chart div.
 
-function openIqModal(title, bodyHtml) {
-    document.getElementById("iqModalTitle").textContent = title;
-    document.getElementById("iqModalBody").innerHTML = bodyHtml;
-    document.getElementById("iqModalOverlay").classList.add("open");
-}
-function closeIqModal() {
-    document.getElementById("iqModalOverlay").classList.remove("open");
-}
-document.getElementById("iqModalOverlay").addEventListener("click", function(e) {
-    if (e.target === this) closeIqModal();
-});
-document.addEventListener("keydown", function(e) {
-    if (e.key === "Escape") closeIqModal();
-});
+(function () {
+    var modal     = document.getElementById("detail-modal");
+    var badge     = document.getElementById("detail-modal-badge");
+    var titleEl   = document.getElementById("detail-modal-title");
+    var body      = document.getElementById("detail-modal-body");
+    var closeBtn  = document.getElementById("detail-modal-close");
 
-// Bind a plotly_click handler to a chart div (safe to call after every newPlot)
-function _iqBind(divId, handler) {
-    var el = document.getElementById(divId);
-    if (!el) return;
-    el.removeAllListeners && el.removeAllListeners("plotly_click");
-    el.on("plotly_click", handler);
-}
+    function openModal(badgeText, title, html) {
+        badge.textContent   = badgeText;
+        titleEl.textContent = title;
+        body.innerHTML      = html;
+        modal.classList.add("open");
+        document.body.style.overflow = "hidden";
+    }
 
-function _iqField(label, value, accent) {
-    var cls = accent ? "accent" : (value === "—" || !value ? "muted" : "");
-    return '<div class="iq-field"><div class="iq-label">' + label + '</div><div class="iq-value ' + cls + '">' + (value || "—") + '</div></div>';
-}
-function _iqWideField(label, value) {
-    return '<div class="iq-field" style="grid-column:1/-1"><div class="iq-label">' + label + '</div><div class="iq-value">' + (value || "—") + '</div></div>';
-}
-function _iqStat(label, value) {
-    return '<div class="iq-stat"><div class="iq-label">' + label + '</div><div class="iq-value">' + value + '</div></div>';
-}
-function _iqFmt(v) { return v == null || v === "" ? "—" : String(v); }
-function _iqMW(mw) { var n = Number(mw); return isNaN(n) ? "—" : n.toLocaleString() + " MW"; }
-function _iqDate(d) {
-    if (!d) return "—";
-    if (d instanceof Date) return isNaN(d) ? "—" : d.toISOString().split("T")[0];
-    return String(d).split("T")[0] || "—";
-}
+    function closeModal() {
+        modal.classList.remove("open");
+        document.body.style.overflow = "";
+    }
 
-// ── Project modal builders per ISO ──────────────────────────
+    closeBtn.addEventListener("click", closeModal);
+    modal.addEventListener("click", function (e) { if (e.target === modal) closeModal(); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeModal(); });
 
-function _iqShowErcotProject(cd) {
-    // cd: [ProjectID, Name, Developer, Zone, County, MW, Status, CompletionProbability]
-    var body = '<div class="iq-field-grid">' +
-        _iqField("Project ID", _iqFmt(cd[0])) +
-        _iqField("Status", _iqFmt(cd[6])) +
-        _iqField("Zone", _iqFmt(cd[3])) +
-        _iqField("County", _iqFmt(cd[4])) +
-        _iqField("MW Capacity", _iqMW(cd[5])) +
-        _iqField("Completion Prob.", cd[7] != null && cd[7] !== "—" ? cd[7] + "%" : "—") +
-        _iqField("Developer", _iqFmt(cd[2])) +
-        _iqField("Fuel", _iqFmt(window._iqLastFuel || "")) +
-        '</div>';
-    openIqModal("Project " + _iqFmt(cd[0]), body);
-}
+    // ── helpers ──────────────────────────────────────────────────────────────
+    function esc(v) {
+        return String(v == null ? "—" : v)
+            .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
 
-function _iqShowIsoneProjct(cd) {
-    // cd: [ProjectID, Name, Zone, County, State, MW, Status]
-    var body = '<div class="iq-field-grid">' +
-        _iqField("Project ID", _iqFmt(cd[0])) +
-        _iqField("Status", _iqFmt(cd[6])) +
-        _iqField("Zone", _iqFmt(cd[2])) +
-        _iqField("State", _iqFmt(cd[4])) +
-        _iqField("County", _iqFmt(cd[3])) +
-        _iqField("MW Capacity", _iqMW(cd[5])) +
-        _iqWideField("Name", _iqFmt(cd[1])) +
-        '</div>';
-    openIqModal("Project " + _iqFmt(cd[0]), body);
-}
+    function field(label, value, full) {
+        var cls = full ? "detail-field full" : "detail-field";
+        return '<div class="' + cls + '">' +
+               '<div class="detail-field-label">' + label + '</div>' +
+               '<div class="detail-field-value">' + esc(value) + '</div>' +
+               '</div>';
+    }
 
-function _iqShowMisoProject(cd) {
-    // cd: [ProjectID, State, County, POIName, MW, Fuel, Status, StudyCycle, StudyGroup, ServiceType]
-    var body = '<div class="iq-field-grid">' +
-        _iqField("Project ID", _iqFmt(cd[0])) +
-        _iqField("Status", _iqFmt(cd[6])) +
-        _iqField("State", _iqFmt(cd[1])) +
-        _iqField("County", _iqFmt(cd[2])) +
-        _iqField("MW Capacity", _iqMW(cd[4])) +
-        _iqField("Fuel", _iqFmt(cd[5])) +
-        _iqField("Study Cycle", _iqFmt(cd[7])) +
-        _iqField("Study Group", _iqFmt(cd[8])) +
-        _iqField("Service Type", _iqFmt(cd[9])) +
-        _iqWideField("POI Name", _iqFmt(cd[3])) +
-        '</div>';
-    openIqModal("Project " + _iqFmt(cd[0]), body);
-}
+    function accentField(label, value, full) {
+        var cls = full ? "detail-field full" : "detail-field";
+        return '<div class="' + cls + '">' +
+               '<div class="detail-field-label">' + label + '</div>' +
+               '<div class="detail-field-value accent">' + esc(value) + '</div>' +
+               '</div>';
+    }
 
-function _iqShowPjmProject(cd) {
-    // cd: [ProjectID, StudyCycle, StudyPhase, POIName, TransmissionOwner, MW, Fuel, Status]
-    var body = '<div class="iq-field-grid">' +
-        _iqField("Project ID", _iqFmt(cd[0])) +
-        _iqField("Status", _iqFmt(cd[7])) +
-        _iqField("Study Cycle", _iqFmt(cd[1])) +
-        _iqField("Study Phase", _iqFmt(cd[2])) +
-        _iqField("MW Capacity", _iqMW(cd[5])) +
-        _iqField("Fuel", _iqFmt(cd[6])) +
-        _iqField("Trans. Owner", _iqFmt(cd[4])) +
-        _iqField("State", _iqFmt(window._iqLastState || "")) +
-        _iqWideField("POI Name", _iqFmt(cd[3])) +
-        '</div>';
-    openIqModal("Project " + _iqFmt(cd[0]), body);
-}
+    function sectionLabel(text) {
+        return '<div class="detail-section-label">' + text + '</div>';
+    }
 
-function _iqShowSppProject(cd) {
-    // cd: [ProjectID, Status, TransmissionOwner, ServiceType, County, State, StudyCycle, StudyGroup, MW, Fuel]
-    var body = '<div class="iq-field-grid">' +
-        _iqField("Project ID", _iqFmt(cd[0])) +
-        _iqField("Status", _iqFmt(cd[1])) +
-        _iqField("State", _iqFmt(cd[5])) +
-        _iqField("County", _iqFmt(cd[4])) +
-        _iqField("MW Capacity", _iqMW(cd[8])) +
-        _iqField("Fuel", _iqFmt(cd[9])) +
-        _iqField("Study Cycle", _iqFmt(cd[6])) +
-        _iqField("Study Group", _iqFmt(cd[7])) +
-        _iqField("Service Type", _iqFmt(cd[3])) +
-        _iqField("Trans. Owner", _iqFmt(cd[2])) +
-        '</div>';
-    openIqModal("Project " + _iqFmt(cd[0]), body);
-}
+    function fmtDate(v) {
+        if (!v) return "—";
+        if (v instanceof Date) return v.toISOString().split("T")[0];
+        return String(v);
+    }
 
-// ── Bar-segment modal ────────────────────────────────────────
-// Called with the filtered data slice matching the clicked bar segment.
-function _iqShowBarSegment(xLabel, statusLabel, segData) {
-    var n    = segData.length;
-    var mwArr = segData.map(function(d){ return d.MW || 0; });
-    var totalMW = mwArr.reduce(function(s,v){ return s+v; }, 0);
-    var avgMW   = n ? totalMW / n : 0;
+    function fmtMW(v) {
+        var n = Number(v);
+        return Number.isFinite(n) ? n.toLocaleString(undefined, { maximumFractionDigits: 0 }) + " MW" : "—";
+    }
 
-    // Fuel breakdown
-    var fuelMap = {};
-    segData.forEach(function(d){ var f = d.Fuel || "Other"; fuelMap[f] = (fuelMap[f]||0) + (d.MW||0); });
-    var fuelRows = Object.entries(fuelMap).sort(function(a,b){ return b[1]-a[1]; }).slice(0, 5);
+    function barRow(label, pct) {
+        var p = Math.max(0, Math.min(100, pct || 0)).toFixed(1);
+        return '<div class="detail-bar-row">' +
+               '<span class="detail-bar-label">' + esc(label) + '</span>' +
+               '<div class="detail-bar-track"><div class="detail-bar-fill" style="width:' + p + '%"></div></div>' +
+               '<span class="detail-bar-pct">' + p + '%</span>' +
+               '</div>';
+    }
 
-    var statsHtml = '<div class="iq-stat-row">' +
-        _iqStat("Projects", n.toLocaleString()) +
-        _iqStat("Total Capacity", (totalMW/1000).toFixed(2) + " GW") +
-        _iqStat("Avg Size", Math.round(avgMW).toLocaleString() + " MW") +
-        '</div>';
+    // ── Stacked-bar segment aggregate ────────────────────────────────────────
+    // yearKey=null signals that xVal is a category label (study cycle/group),
+    // not a year. In that case segName is the Status (trace name), not the group.
+    function buildBarSegmentContent(isoLabel, point, dataset, groupKey, yearKey) {
+        var segName  = point.data.name;  // fuel OR status (for combined cycle/group charts)
+        var xVal     = point.x;          // year number OR category string
+        var isYearAxis = yearKey !== null;
 
-    var fuelHtml = '<div class="iq-modal-section-title">Fuel Mix (top 5 by MW)</div>';
-    fuelHtml += fuelRows.map(function(r){
-        var pct = totalMW ? (r[1]/totalMW*100).toFixed(1) : "0.0";
-        return '<div class="iq-field-grid" style="grid-template-columns:2fr 1fr 1fr;gap:6px;margin-bottom:6px;">' +
-            '<div class="iq-field"><div class="iq-label">Fuel</div><div class="iq-value">' + r[0] + '</div></div>' +
-            '<div class="iq-field"><div class="iq-label">GW</div><div class="iq-value">' + (r[1]/1000).toFixed(2) + '</div></div>' +
-            '<div class="iq-field"><div class="iq-label">Share</div><div class="iq-value">' + pct + '%</div></div>' +
-            '</div>';
-    }).join("");
-
-    openIqModal(xLabel + " — " + statusLabel, statsHtml + fuelHtml);
-}
-
-// ── Wire click handlers after each render ────────────────────
-
-function _bindErcotScatterClick() {
-    _iqBind("ercotQueueVsProposedChart", function(evt) {
-        var pt = evt.points[0];
-        if (!pt) return;
-        window._iqLastFuel = pt.data.name || "";
-        _iqShowErcotProject(pt.customdata);
-    });
-}
-
-function _bindIsoneScatterClick() {
-    _iqBind("isoneQueueVsProposedChart", function(evt) {
-        var pt = evt.points[0];
-        if (!pt) return;
-        _iqShowIsoneProjct(pt.customdata);
-    });
-}
-
-function _bindMisoScatterClick() {
-    _iqBind("misoQueueVsProposedChart", function(evt) {
-        var pt = evt.points[0];
-        if (!pt) return;
-        _iqShowMisoProject(pt.customdata);
-    });
-}
-
-function _bindPjmScatterClick() {
-    _iqBind("pjmQueueVsProposedChart", function(evt) {
-        var pt = evt.points[0];
-        if (!pt) return;
-        _iqShowPjmProject(pt.customdata);
-    });
-}
-
-function _bindSppScatterClick() {
-    _iqBind("sppQueueVsProposedChart", function(evt) {
-        var pt = evt.points[0];
-        if (!pt) return;
-        _iqShowSppProject(pt.customdata);
-    });
-}
-
-// Bar click: generic — xKey may be a string field name or a function()=>fieldName
-function _bindBarClick(divId, getDataFn, xKeyOrFn, statusKey) {
-    _iqBind(divId, function(evt) {
-        var pt = evt.points[0];
-        if (!pt) return;
-        var xVal  = String(pt.x);
-        var stVal = pt.data.name || "";
-        var all   = getDataFn();
-        var xKey  = typeof xKeyOrFn === "function" ? xKeyOrFn() : xKeyOrFn;
-        var seg   = all.filter(function(d) {
-            var matchX  = xKey  ? String(d[xKey]  || "Unknown") === xVal  : true;
-            var matchSt = statusKey ? String(d[statusKey] || "Unknown") === stVal : true;
-            return matchX && matchSt;
+        // bucket = all rows in this x-column
+        var bucket = dataset.filter(function (d) {
+            if (isYearAxis) {
+                var dKey = d[yearKey] != null ? d[yearKey] : d.year;
+                return String(dKey) === String(xVal);
+            }
+            // x-axis is the groupKey (StudyCycle / StudyGroup)
+            return String(d[groupKey] || "Unknown") === String(xVal);
         });
-        _iqShowBarSegment(xVal, stVal, seg);
-    });
+
+        // segRows = rows matching the clicked trace
+        var segRows = bucket.filter(function (d) {
+            if (isYearAxis) {
+                // trace name is Fuel
+                return String(d[groupKey] || d.Fuel || "Unknown") === String(segName);
+            }
+            // trace name is Status
+            return String(d.Status || "Unknown") === String(segName);
+        });
+
+        var totalMW        = bucket.reduce(function (s, d) { return s + (d.MW || 0); }, 0);
+        var segMW          = segRows.reduce(function (s, d) { return s + (d.MW || 0); }, 0);
+        var segProjects    = segRows.length;
+        var bucketProjects = bucket.length;
+        var share          = totalMW > 0 ? (segMW / totalMW * 100) : 0;
+
+        // status breakdown within segment
+        var statuses = {};
+        segRows.forEach(function (d) {
+            var s = d.Status || "Unknown";
+            statuses[s] = (statuses[s] || 0) + 1;
+        });
+        var statusRows = Object.entries(statuses)
+            .sort(function (a, b) { return b[1] - a[1]; })
+            .map(function (e) { return barRow(e[0], (e[1] / segProjects) * 100); })
+            .join("");
+
+        var contextLabel = isYearAxis ? "Year" : (groupKey || "Category");
+        var segLabel     = isYearAxis ? "Fuel / Group" : "Status";
+        var html =
+            sectionLabel("Segment") +
+            '<div class="detail-grid">' +
+            accentField(contextLabel, xVal) +
+            field(segLabel, segName) +
+            accentField("Segment Capacity", (segMW / 1000).toFixed(2) + " GW") +
+            field("Segment Projects", segProjects.toLocaleString()) +
+            field("Share of Bucket MW", share.toFixed(1) + "%") +
+            field("Bucket Total MW", (totalMW / 1000).toFixed(2) + " GW") +
+            '</div>';
+
+        if (statusRows) {
+            html += sectionLabel("Status Breakdown (within segment)") + statusRows;
+        }
+
+        return html;
+    }
+
+    // ── Per-ISO scatter project detail builders ───────────────────────────────
+
+    function buildErcotScatterDetail(cd) {
+        // cd: [ProjectID, Name, Developer, Zone, County, MW, Status, CompletionProbability]
+        return sectionLabel("Project") +
+            '<div class="detail-grid">' +
+            field("Project ID", cd[0]) +
+            field("Status", cd[6]) +
+            field("Name", cd[1], true) +
+            field("Developer", cd[2], true) +
+            '</div>' +
+            sectionLabel("Location & Capacity") +
+            '<div class="detail-grid">' +
+            accentField("MW Capacity", fmtMW(cd[5])) +
+            field("Zone", cd[3]) +
+            field("County", cd[4]) +
+            field("Completion %", cd[7] !== "—" ? cd[7] + "%" : "—") +
+            '</div>';
+    }
+
+    function buildDevInsightsScatterDetail(cd) {
+        // cd: [ProjectID, ISO, State, Fuel, MW, QueueDate]
+        return sectionLabel("Project") +
+            '<div class="detail-grid">' +
+            field("Project ID", cd[0]) +
+            field("ISO", cd[1]) +
+            field("State", cd[2]) +
+            field("Fuel Type", cd[3]) +
+            accentField("MW Capacity", fmtMW(cd[4])) +
+            field("Queue Date", cd[5]) +
+            '</div>';
+    }
+
+    function buildIsoneScatterDetail(cd) {
+        // cd: [ProjectID, Name, Zone, County, State, MW, Status]
+        return sectionLabel("Project") +
+            '<div class="detail-grid">' +
+            field("Project ID", cd[0]) +
+            field("Status", cd[6]) +
+            field("Name", cd[1], true) +
+            '</div>' +
+            sectionLabel("Location & Capacity") +
+            '<div class="detail-grid">' +
+            accentField("MW Capacity", fmtMW(cd[5])) +
+            field("Zone", cd[2]) +
+            field("County", cd[3]) +
+            field("State", cd[4]) +
+            '</div>';
+    }
+
+    function buildMisoScatterDetail(cd) {
+        // cd: [ProjectID, State, County, POIName, MW, Fuel, Status, StudyCycle, StudyGroup, ServiceType]
+        return sectionLabel("Project") +
+            '<div class="detail-grid">' +
+            field("Project ID", cd[0]) +
+            field("Status", cd[6]) +
+            field("Fuel Type", cd[5]) +
+            accentField("MW Capacity", fmtMW(cd[4])) +
+            field("State", cd[1]) +
+            field("County", cd[2]) +
+            field("POI Name", cd[3], true) +
+            '</div>' +
+            sectionLabel("Study Info") +
+            '<div class="detail-grid">' +
+            field("Study Cycle", cd[7]) +
+            field("Study Group", cd[8]) +
+            field("Service Type", cd[9]) +
+            '</div>';
+    }
+
+    function buildPjmScatterDetail(cd) {
+        // cd: [ProjectID, StudyCycle, StudyPhase, POIName, TransmissionOwner, MW, Fuel, Status]
+        return sectionLabel("Project") +
+            '<div class="detail-grid">' +
+            field("Project ID", cd[0]) +
+            field("Status", cd[7]) +
+            field("Fuel Type", cd[6]) +
+            accentField("MW Capacity", fmtMW(cd[5])) +
+            field("POI Name", cd[3], true) +
+            field("Transmission Owner", cd[4], true) +
+            '</div>' +
+            sectionLabel("Study Info") +
+            '<div class="detail-grid">' +
+            field("Study Cycle", cd[1]) +
+            field("Study Phase", cd[2]) +
+            '</div>';
+    }
+
+    function buildSppScatterDetail(cd) {
+        // cd: [ProjectID, Status, TransmissionOwner, ServiceType, County, State, StudyCycle, StudyGroup, MW, Fuel]
+        return sectionLabel("Project") +
+            '<div class="detail-grid">' +
+            field("Project ID", cd[0]) +
+            field("Status", cd[1]) +
+            field("Fuel Type", cd[9]) +
+            accentField("MW Capacity", fmtMW(cd[8])) +
+            field("State", cd[5]) +
+            field("County", cd[4]) +
+            field("Transmission Owner", cd[2]) +
+            field("Service Type", cd[3]) +
+            '</div>' +
+            sectionLabel("Study Info") +
+            '<div class="detail-grid">' +
+            field("Study Cycle", cd[6]) +
+            field("Study Group", cd[7]) +
+            '</div>';
+    }
+
+    // ── Wire up click events after Plotly renders ──────────────────────────
+    // Plotly fires plotly_click on the div element. We attach after first render
+    // by wrapping the underlying newPlot. Since it's already monkey-patched for
+    // theme, we layer on top here instead.
+
+    var _origNewPlotForModal = Plotly.newPlot.bind(Plotly);
+    Plotly.newPlot = function (div, data, layout, config) {
+        var result = _origNewPlotForModal(div, data, layout, config);
+        var el = typeof div === "string" ? document.getElementById(div) : div;
+        if (!el) return result;
+        var divId = el.id;
+
+        // Remove any old listener to avoid stacking on re-renders
+        if (el._modalClickHandler && el.removeAllListeners) {
+            el.removeAllListeners("plotly_click");
+        }
+
+        function handler(evt) {
+            var pt = evt.points && evt.points[0];
+            if (!pt) return;
+
+            var cd  = pt.customdata;   // array for scatter; undefined for bar
+            var iso = "";
+            var titleText = "";
+            var html = "";
+
+            // ── Scatter charts ──────────────────────────────────────────────
+            if (cd && Array.isArray(cd)) {
+                if (divId === "fuel") {
+                    iso = cd[1] || "Multi-ISO";
+                    titleText = cd[0] || "Project";
+                    html = buildDevInsightsScatterDetail(cd);
+                } else if (divId === "ercotQueueVsProposedChart") {
+                    iso = "ERCOT";
+                    titleText = (cd[1] && cd[1] !== "Unknown") ? cd[1] : cd[0];
+                    html = buildErcotScatterDetail(cd);
+                } else if (divId === "isoneQueueVsProposedChart") {
+                    iso = "ISO-NE";
+                    titleText = (cd[1] && cd[1] !== "Unknown") ? cd[1] : cd[0];
+                    html = buildIsoneScatterDetail(cd);
+                } else if (divId === "misoQueueVsProposedChart") {
+                    iso = "MISO";
+                    titleText = cd[0] || "Project";
+                    html = buildMisoScatterDetail(cd);
+                } else if (divId === "pjmQueueVsProposedChart") {
+                    iso = "PJM";
+                    titleText = cd[0] || "Project";
+                    html = buildPjmScatterDetail(cd);
+                } else if (divId === "sppQueueVsProposedChart") {
+                    iso = "SPP";
+                    titleText = cd[0] || "Project";
+                    html = buildSppScatterDetail(cd);
+                } else {
+                    return; // not a handled scatter
+                }
+                openModal(iso, titleText, html);
+                return;
+            }
+
+            // ── Stacked bar charts ──────────────────────────────────────────
+            var isBar = pt.data && (pt.data.type === "bar" || pt.data.type === "histogram");
+            if (!isBar) return;
+
+            var segName = pt.data.name || "";
+            var xVal    = pt.x;
+
+            // resolve dataset + groupKey from divId
+            var dataset  = null;
+            var groupKey = "Fuel";
+            var yearKey  = "year";
+
+            if (divId === "ercotYearFuelChart") {
+                dataset = typeof getFilteredErcotData === "function" ? getFilteredErcotData() : ercotData;
+                iso = "ERCOT";
+                var ercotDateView = document.getElementById("ercotFuelDateView");
+                yearKey = (ercotDateView && ercotDateView.value === "proposed") ? "proposedYear" : "year";
+            } else if (divId === "isoneYearFuelChart") {
+                dataset = typeof getFilteredIsoneData === "function" ? getFilteredIsoneData() : isoneData;
+                iso = "ISO-NE";
+                var isoneDateView = document.getElementById("isoneFuelDateView");
+                yearKey = (isoneDateView && isoneDateView.value === "proposed") ? "proposedYear" : "year";
+            } else if (divId === "misoYearFuelChart") {
+                dataset = typeof getFilteredMisoData === "function" ? getFilteredMisoData() : misoData;
+                iso = "MISO";
+                var misoDateView = document.getElementById("misoFuelDateView");
+                yearKey = (misoDateView && misoDateView.value === "proposed") ? "proposedYear" : "year";
+            } else if (divId === "misoCombinedCycleGroupChart") {
+                dataset = typeof getFilteredMisoData === "function" ? getFilteredMisoData() : misoData;
+                iso = "MISO";
+                var misoGroupBy = document.getElementById("misoCombinedGroupByView");
+                groupKey = (misoGroupBy && misoGroupBy.value === "group") ? "StudyGroup" : "StudyCycle";
+                yearKey  = null; // x-axis is the group, not a year
+            } else if (divId === "pjmYearFuelChart") {
+                dataset = typeof getFilteredPjmData === "function" ? getFilteredPjmData() : pjmData;
+                iso = "PJM";
+                var pjmDateView = document.getElementById("pjmFuelDateView");
+                yearKey = (pjmDateView && pjmDateView.value === "proposed") ? "proposedYear" : "year";
+            } else if (divId === "sppYearFuelChart") {
+                dataset = typeof getFilteredSppData === "function" ? getFilteredSppData() : sppData;
+                iso = "SPP";
+                var sppDateView = document.getElementById("sppFuelDateView");
+                yearKey = (sppDateView && sppDateView.value === "proposed") ? "proposedYear" : "year";
+            } else if (divId === "sppCombinedCycleGroupChart") {
+                dataset = typeof getFilteredSppData === "function" ? getFilteredSppData() : sppData;
+                iso = "SPP";
+                var sppGroupBy = document.getElementById("sppCombinedGroupByView");
+                groupKey = (sppGroupBy && sppGroupBy.value === "group") ? "StudyGroup" : "StudyCycle";
+                yearKey  = null;
+            } else if (divId === "isoChart") {
+                iso = "Multi-ISO";
+                yearKey = "year";
+                try {
+                    dataset = getFuelFilteredData(getMarketScopedData());
+                } catch (e) {
+                    dataset = masterData || [];
+                }
+            } else {
+                return;
+            }
+
+            if (!dataset) return;
+            titleText = segName + " — " + xVal;
+            html = buildBarSegmentContent(iso, pt, dataset, groupKey, yearKey);
+            openModal(iso, titleText, html);
+        }
+
+        el._modalClickHandler = handler;
+        el.on("plotly_click", handler);
+        return result;
+    };
+
+}());
+
+// =====================================================================
+// ISO SCORECARD
+// =====================================================================
+
+function hexToRgba(hex, alpha) {
+    var r = parseInt(hex.slice(1, 3), 16);
+    var g = parseInt(hex.slice(3, 5), 16);
+    var b = parseInt(hex.slice(5, 7), 16);
+    return "rgba(" + r + "," + g + "," + b + "," + alpha + ")";
 }
 
-// Attach after renders — appended to existing render functions via post-load patching
-(function _patchRenderFunctions() {
-    // ERCOT
-    var _origErcotScatter = window.renderErcotQueueVsProposedChart;
-    if (typeof _origErcotScatter === "function") {
-        window.renderErcotQueueVsProposedChart = function() {
-            _origErcotScatter.apply(this, arguments);
-            _bindErcotScatterClick();
-        };
+function updateScorecard() {
+    var blank   = document.getElementById("scorecardBlankState");
+    var content = document.getElementById("scorecardContent");
+    if (!Array.isArray(masterData) || !masterData.length) {
+        if (blank)   blank.classList.remove("hidden");
+        if (content) content.classList.add("hidden");
+        return;
     }
-    var _origErcotFuelChart = window.renderErcotFuelCharts;
-    if (typeof _origErcotFuelChart === "function") {
-        window.renderErcotFuelCharts = function() {
-            _origErcotFuelChart.apply(this, arguments);
-            _bindBarClick("ercotYearFuelChart", getFilteredErcotData,
-                function(){ return document.getElementById("ercotFuelDateView")?.value === "proposed" ? "proposedYear" : "year"; },
-                "Status");
+    if (blank)   blank.classList.add("hidden");
+    if (content) content.classList.remove("hidden");
+
+    var isoOrder = ["ERCOT", "MISO", "ISONE", "PJM", "SPP"];
+    var isoLabels = { ERCOT: "ERCOT", MISO: "MISO", ISONE: "ISO-NE", PJM: "PJM", SPP: "SPP" };
+    var isoEmoji  = { ERCOT: "⚡", MISO: "🌽", ISONE: "🌊", PJM: "🏙️", SPP: "🌾" };
+
+    // Build per-ISO stats from unfiltered masterData
+    var stats = {};
+    isoOrder.forEach(function(iso) {
+        var rows = masterData.filter(function(d) {
+            return String(d.ISO || "").toUpperCase().replace(/-/g, "") === iso.replace(/-/g, "");
+        });
+        var totalMW   = rows.reduce(function(s, d) { return s + (d.MW || 0); }, 0);
+        var withdrawn = rows.filter(function(d) { return String(d.Status || "").toLowerCase().includes("withdraw"); });
+        var withdrawnMW = withdrawn.reduce(function(s, d) { return s + (d.MW || 0); }, 0);
+        var withdrawRate = rows.length ? (withdrawn.length / rows.length * 100) : 0;
+
+        // Top fuel by MW
+        var fuelMW = {};
+        rows.forEach(function(d) { fuelMW[d.Fuel] = (fuelMW[d.Fuel] || 0) + (d.MW || 0); });
+        var topFuel = Object.entries(fuelMW).sort(function(a, b) { return b[1] - a[1]; })[0];
+
+        // Projects by year for sparkline (last 10 years)
+        var currentYear = new Date().getFullYear();
+        var yearCounts  = {};
+        rows.forEach(function(d) { if (d.year) yearCounts[d.year] = (yearCounts[d.year] || 0) + 1; });
+        var sparkYears = [];
+        for (var y = currentYear - 9; y <= currentYear; y++) sparkYears.push(y);
+        var sparkCounts = sparkYears.map(function(y) { return yearCounts[y] || 0; });
+
+        stats[iso] = {
+            label: isoLabels[iso],
+            emoji: isoEmoji[iso],
+            projects: rows.length,
+            totalGW: (totalMW / 1000).toFixed(1),
+            avgMW: rows.length ? Math.round(totalMW / rows.length) : 0,
+            withdrawRate: withdrawRate.toFixed(1),
+            topFuel: topFuel ? topFuel[0] : "—",
+            topFuelShare: topFuel && totalMW ? (topFuel[1] / totalMW * 100).toFixed(0) : 0,
+            sparkYears: sparkYears,
+            sparkCounts: sparkCounts,
+            fuelMW: fuelMW
         };
+    });
+
+    // Render scorecard tiles
+    var grid = document.getElementById("scorecardGrid");
+    if (grid) {
+        grid.innerHTML = isoOrder.map(function(iso) {
+            var s = stats[iso];
+            if (!s) return "";
+            var withdrawClass = +s.withdrawRate > 40 ? "danger" : +s.withdrawRate > 25 ? "warning" : "success";
+            var sparkId = "sparkline-" + iso;
+            return '<div class="scorecard-tile">' +
+                '<div class="scorecard-tile-header">' +
+                    '<span class="scorecard-iso-emoji">' + s.emoji + '</span>' +
+                    '<span class="scorecard-iso-name">' + s.label + '</span>' +
+                '</div>' +
+                '<div class="scorecard-kpis">' +
+                    '<div class="scorecard-kpi"><div class="scorecard-kpi-val">' + s.projects.toLocaleString() + '</div><div class="scorecard-kpi-lbl">Projects</div></div>' +
+                    '<div class="scorecard-kpi"><div class="scorecard-kpi-val">' + s.totalGW + ' GW</div><div class="scorecard-kpi-lbl">Total Capacity</div></div>' +
+                    '<div class="scorecard-kpi"><div class="scorecard-kpi-val">' + s.avgMW + ' MW</div><div class="scorecard-kpi-lbl">Avg Size</div></div>' +
+                    '<div class="scorecard-kpi"><div class="scorecard-kpi-val scorecard-kpi-' + withdrawClass + '">' + s.withdrawRate + '%</div><div class="scorecard-kpi-lbl">Withdrawal Rate</div></div>' +
+                '</div>' +
+                '<div class="scorecard-fuel-row">' +
+                    '<span class="scorecard-fuel-label">Top fuel:</span>' +
+                    '<span class="scorecard-fuel-val">' + s.topFuel + ' (' + s.topFuelShare + '%)</span>' +
+                '</div>' +
+                '<div class="scorecard-spark-label">Queue entries per year (last 10 yrs)</div>' +
+                '<div class="scorecard-sparkline" id="' + sparkId + '"></div>' +
+            '</div>';
+        }).join("");
+
+        // Draw sparklines with Plotly
+        isoOrder.forEach(function(iso) {
+            var s = stats[iso];
+            if (!s) return;
+            var el = document.getElementById("sparkline-" + iso);
+            if (!el || typeof Plotly === "undefined") return;
+            var dark = isDark();
+            var lineColor = isoColors[iso] || "#2e8b57";
+            Plotly.newPlot(el, [{
+                x: s.sparkYears,
+                y: s.sparkCounts,
+                type: "scatter",
+                mode: "lines+markers",
+                line: { color: lineColor, width: 2 },
+                marker: { color: lineColor, size: 4 },
+                fill: "tozeroy",
+                fillcolor: hexToRgba(lineColor, 0.12),
+                hovertemplate: "%{x}: %{y} projects<extra></extra>"
+            }], {
+                margin: { t: 0, b: 24, l: 28, r: 8 },
+                height: 90,
+                xaxis: { showgrid: false, tickfont: { size: 9 }, dtick: 2 },
+                yaxis: { showgrid: true, tickfont: { size: 9 }, rangemode: "tozero" },
+                showlegend: false
+            }, { displayModeBar: false, responsive: true });
+        });
     }
-    // ISO-NE
-    var _origIsoneScatter = window.renderIsoneQueueVsProposedChart;
-    if (typeof _origIsoneScatter === "function") {
-        window.renderIsoneQueueVsProposedChart = function() {
-            _origIsoneScatter.apply(this, arguments);
-            _bindIsoneScatterClick();
+
+    // Cross-ISO volume chart
+    var allYears = [];
+    var currentYr = new Date().getFullYear();
+    for (var y = currentYr - 14; y <= currentYr; y++) allYears.push(y);
+
+    var volumeTraces = isoOrder.map(function(iso) {
+        var s = stats[iso];
+        return {
+            name: s.label,
+            x: allYears,
+            y: allYears.map(function(yr) { return s.sparkYears.includes(yr) ? s.sparkCounts[s.sparkYears.indexOf(yr)] : 0; }),
+            type: "bar",
+            marker: { color: isoColors[iso] || "#2e8b57" }
         };
-    }
-    // MISO — patch scatter and the two bar charts separately
-    var _origMisoScatter = window.renderMisoQueueVsProposedChart;
-    if (typeof _origMisoScatter === "function") {
-        window.renderMisoQueueVsProposedChart = function() {
-            _origMisoScatter.apply(this, arguments);
-            _bindMisoScatterClick();
+    });
+
+    Plotly.newPlot("scorecardVolumeChart", volumeTraces, {
+        barmode: "stack",
+        height: 320,
+        margin: { t: 10, b: 40, l: 50, r: 20 },
+        xaxis: { title: "Queue Year" },
+        yaxis: { title: "Projects Entering Queue" },
+        legend: { orientation: "h", y: -0.2 }
+    }, { displayModeBar: false, responsive: true });
+
+    // Cross-ISO fuel mix chart
+    var allFuels = [...new Set(masterData.map(function(d) { return d.Fuel; }).filter(Boolean))];
+    var fuelTraces = allFuels.map(function(fuel) {
+        return {
+            name: fuel,
+            x: isoOrder.map(function(iso) { return isoLabels[iso]; }),
+            y: isoOrder.map(function(iso) { return (stats[iso] && stats[iso].fuelMW[fuel]) ? stats[iso].fuelMW[fuel] / 1000 : 0; }),
+            type: "bar",
+            marker: { color: fuelColors[fuel] || "#6e7681" }
         };
-    }
-    var _origMisoFuelChart = window.renderMisoYearFuelChart;
-    if (typeof _origMisoFuelChart === "function") {
-        window.renderMisoYearFuelChart = function() {
-            _origMisoFuelChart.apply(this, arguments);
-            _bindBarClick("misoYearFuelChart", getFilteredMisoData,
-                function(){ return document.getElementById("misoFuelDateView")?.value === "proposed" ? "proposedYear" : "year"; },
-                "Status");
-        };
-    }
-    var _origMisoCombinedChart = window.renderMisoCombinedCycleGroupChart;
-    if (typeof _origMisoCombinedChart === "function") {
-        window.renderMisoCombinedCycleGroupChart = function() {
-            _origMisoCombinedChart.apply(this, arguments);
-            _bindBarClick("misoCombinedCycleGroupChart", getFilteredMisoData,
-                function(){ return document.getElementById("misoCombinedGroupByView")?.value === "group" ? "StudyGroup" : "StudyCycle"; },
-                "Status");
-        };
-    }
-    // PJM
-    var _origPjmScatter = window.renderPjmQueueVsProposedChart;
-    if (typeof _origPjmScatter === "function") {
-        window.renderPjmQueueVsProposedChart = function() {
-            _origPjmScatter.apply(this, arguments);
-            _bindPjmScatterClick();
-        };
-    }
-    // SPP — patch scatter and bar charts separately
-    var _origSppScatter = window.renderSppQueueVsProposedChart;
-    if (typeof _origSppScatter === "function") {
-        window.renderSppQueueVsProposedChart = function() {
-            _origSppScatter.apply(this, arguments);
-            _bindSppScatterClick();
-        };
-    }
-    var _origSppFuelChart = window.renderSppFuelCharts;
-    if (typeof _origSppFuelChart === "function") {
-        window.renderSppFuelCharts = function() {
-            _origSppFuelChart.apply(this, arguments);
-            _bindBarClick("sppYearFuelChart", getFilteredSppData,
-                function(){ return document.getElementById("sppFuelDateView")?.value === "proposed" ? "proposedYear" : "year"; },
-                "Status");
-        };
-    }
-    var _origSppCombinedChart = window.renderSppCombinedCycleGroupChart;
-    if (typeof _origSppCombinedChart === "function") {
-        window.renderSppCombinedCycleGroupChart = function() {
-            _origSppCombinedChart.apply(this, arguments);
-            _bindBarClick("sppCombinedCycleGroupChart", getFilteredSppData,
-                function(){ return document.getElementById("sppCombinedGroupByView")?.value === "group" ? "StudyGroup" : "StudyCycle"; },
-                "Status");
-        };
-    }
-}());
+    });
+
+    Plotly.newPlot("scorecardFuelChart", fuelTraces, {
+        barmode: "stack",
+        height: 320,
+        margin: { t: 10, b: 40, l: 60, r: 20 },
+        xaxis: { title: "ISO/RTO" },
+        yaxis: { title: "Queued Capacity (GW)" },
+        legend: { orientation: "h", y: -0.22 }
+    }, { displayModeBar: false, responsive: true });
+}

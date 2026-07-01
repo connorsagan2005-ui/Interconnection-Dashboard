@@ -1,15 +1,7 @@
 {
-  "generated_at": "2026-07-01T19:14:48.101201+00:00",
+  "generated_at": "2026-07-01T17:34:53.624599+00:00",
   "archive_root": "snapshots",
   "snapshots": [
-    {
-      "date": "2026-07-01",
-      "label": "July 01, 2026",
-      "path": "snapshots/2026-07-01/clean_latest/master_cross_iso.json",
-      "manifest": "snapshots/2026-07-01/manifest.json",
-      "clean_schema_version": "schema-v1",
-      "pipeline_version": "archive-enabled-v1"
-    },
     {
       "date": "2026-06-30",
       "label": "June 30, 2026",

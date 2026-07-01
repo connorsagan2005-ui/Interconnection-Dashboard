@@ -47,7 +47,7 @@
   {
     "Project ID":"GI-TC-2024-30",
     "ISO":"SPP",
-    "Status":"Done",
+    "Status":"Active",
     "Queue Date":"2024-05-29T00:00:00.000",
     "Proposed Date":"2028-03-01T00:00:00.000",
     "Transmission Owner":"TSGT",
@@ -167,7 +167,7 @@
   {
     "Project ID":"GI-TC-2024-19",
     "ISO":"SPP",
-    "Status":"Done",
+    "Status":"Active",
     "Queue Date":"2024-05-07T00:00:00.000",
     "Proposed Date":"2027-05-03T00:00:00.000",
     "Transmission Owner":"TSGT",
@@ -212,7 +212,7 @@
   {
     "Project ID":"GI-TC-2024-16",
     "ISO":"SPP",
-    "Status":"Done",
+    "Status":"Active",
     "Queue Date":"2023-05-16T00:00:00.000",
     "Proposed Date":"2029-06-30T00:00:00.000",
     "Transmission Owner":"TSGT",
@@ -227,7 +227,7 @@
   {
     "Project ID":"GI-TC-2024-15",
     "ISO":"SPP",
-    "Status":"Done",
+    "Status":"Active",
     "Queue Date":"2024-05-23T00:00:00.000",
     "Proposed Date":"2029-09-30T00:00:00.000",
     "Transmission Owner":"TSGT",
@@ -272,7 +272,7 @@
   {
     "Project ID":"GI-TC-2024-11",
     "ISO":"SPP",
-    "Status":"Done",
+    "Status":"Active",
     "Queue Date":"2024-05-29T00:00:00.000",
     "Proposed Date":"2027-12-31T00:00:00.000",
     "Transmission Owner":"TSGT",
@@ -317,7 +317,7 @@
   {
     "Project ID":"GI-TC-2024-08",
     "ISO":"SPP",
-    "Status":"Done",
+    "Status":"Active",
     "Queue Date":"2023-05-26T00:00:00.000",
     "Proposed Date":"2027-12-31T00:00:00.000",
     "Transmission Owner":"TSGT",
@@ -602,7 +602,7 @@
   {
     "Project ID":"GI-DISIS-2022-44",
     "ISO":"SPP",
-    "Status":"Done",
+    "Status":"Active",
     "Queue Date":"2022-05-31T00:00:00.000",
     "Proposed Date":"2030-06-25T00:00:00.000",
     "Transmission Owner":"TSGT",
@@ -617,7 +617,7 @@
   {
     "Project ID":"GI-DISIS-2022-41",
     "ISO":"SPP",
-    "Status":"Done",
+    "Status":"Active",
     "Queue Date":"2022-05-31T00:00:00.000",
     "Proposed Date":"2028-12-30T00:00:00.000",
     "Transmission Owner":"TSGT",
@@ -647,7 +647,7 @@
   {
     "Project ID":"GI-DISIS-2022-28",
     "ISO":"SPP",
-    "Status":"Done",
+    "Status":"Active",
     "Queue Date":"2022-05-31T00:00:00.000",
     "Proposed Date":"2029-12-31T00:00:00.000",
     "Transmission Owner":"TSGT",
@@ -677,7 +677,7 @@
   {
     "Project ID":"GI-DISIS-2022-17",
     "ISO":"SPP",
-    "Status":"Done",
+    "Status":"Active",
     "Queue Date":"2022-05-27T00:00:00.000",
     "Proposed Date":"2030-05-01T00:00:00.000",
     "Transmission Owner":"TSGT",
@@ -737,7 +737,7 @@
   {
     "Project ID":"GI-DISIS-2021-10",
     "ISO":"SPP",
-    "Status":"Done",
+    "Status":"Active",
     "Queue Date":"2021-05-28T00:00:00.000",
     "Proposed Date":"2027-09-05T00:00:00.000",
     "Transmission Owner":"TSGT",
@@ -5507,7 +5507,7 @@
   {
     "Project ID":"GEN-2022-144",
     "ISO":"SPP",
-    "Status":"Done",
+    "Status":"Active",
     "Queue Date":"2023-02-21T00:00:00.000",
     "Proposed Date":"2027-09-15T00:00:00.000",
     "Transmission Owner":"KCPL",
@@ -5702,7 +5702,7 @@
   {
     "Project ID":"GEN-2022-073",
     "ISO":"SPP",
-    "Status":"Done",
+    "Status":"Active",
     "Queue Date":"2022-09-02T00:00:00.000",
     "Proposed Date":"2025-04-01T00:00:00.000",
     "Transmission Owner":"KCPL",
@@ -5987,7 +5987,7 @@
   {
     "Project ID":"GEN-2021-108",
     "ISO":"SPP",
-    "Status":"Done",
+    "Status":"Active",
     "Queue Date":"2021-05-20T00:00:00.000",
     "Proposed Date":"2025-05-27T00:00:00.000",
     "Transmission Owner":"OPPD",
@@ -6422,7 +6422,7 @@
   {
     "Project ID":"GEN-2021-030",
     "ISO":"SPP",
-    "Status":"Done",
+    "Status":"Active",
     "Queue Date":"2021-05-14T00:00:00.000",
     "Proposed Date":"2026-09-28T00:00:00.000",
     "Transmission Owner":"KCPL",
@@ -6437,7 +6437,7 @@
   {
     "Project ID":"GEN-2021-029",
     "ISO":"SPP",
-    "Status":"Done",
+    "Status":"Active",
     "Queue Date":"2021-05-14T00:00:00.000",
     "Proposed Date":"2026-07-01T00:00:00.000",
     "Transmission Owner":"KCPL",
@@ -6452,7 +6452,7 @@
   {
     "Project ID":"GEN-2021-027",
     "ISO":"SPP",
-    "Status":"Done",
+    "Status":"Active",
     "Queue Date":"2021-05-14T00:00:00.000",
     "Proposed Date":"2026-07-01T00:00:00.000",
     "Transmission Owner":"NPPD",
@@ -7067,7 +7067,7 @@
   {
     "Project ID":"GEN-2020-010",
     "ISO":"SPP",
-    "Status":"Done",
+    "Status":"Active",
     "Queue Date":"2020-04-08T00:00:00.000",
     "Proposed Date":"2026-10-15T00:00:00.000",
     "Transmission Owner":"WFEC",
@@ -7142,7 +7142,7 @@
   {
     "Project ID":"GEN-2019-068",
     "ISO":"SPP",
-    "Status":"Done",
+    "Status":"Active",
     "Queue Date":"2019-05-24T00:00:00.000",
     "Proposed Date":"2023-06-01T00:00:00.000",
     "Transmission Owner":"SUNC",
@@ -7157,7 +7157,7 @@
   {
     "Project ID":"GEN-2019-065",
     "ISO":"SPP",
-    "Status":"Done",
+    "Status":"Active",
     "Queue Date":"2019-05-23T00:00:00.000",
     "Proposed Date":"2024-06-01T00:00:00.000",
     "Transmission Owner":"AEP",
@@ -7217,7 +7217,7 @@
   {
     "Project ID":"GEN-2019-054",
     "ISO":"SPP",
-    "Status":"Done",
+    "Status":"Active",
     "Queue Date":"2019-05-24T00:00:00.000",
     "Proposed Date":"2023-06-01T00:00:00.000",
     "Transmission Owner":"SUNC",
@@ -7277,7 +7277,7 @@
   {
     "Project ID":"GEN-2019-041",
     "ISO":"SPP",
-    "Status":"Done",
+    "Status":"Active",
     "Queue Date":"2019-05-23T00:00:00.000",
     "Proposed Date":"2020-12-01T00:00:00.000",
     "Transmission Owner":"NPPD",
@@ -7802,7 +7802,7 @@
   {
     "Project ID":"GEN-2018-037",
     "ISO":"SPP",
-    "Status":"Done",
+    "Status":"Active",
     "Queue Date":"2018-05-29T00:00:00.000",
     "Proposed Date":"2024-12-31T00:00:00.000",
     "Transmission Owner":"OPPD",
@@ -7817,7 +7817,7 @@
   {
     "Project ID":"GEN-2018-033",
     "ISO":"SPP",
-    "Status":"Done",
+    "Status":"Active",
     "Queue Date":"2018-05-29T00:00:00.000",
     "Proposed Date":"2023-12-31T00:00:00.000",
     "Transmission Owner":"OPPD",
@@ -7907,7 +7907,7 @@
   {
     "Project ID":"GEN-2018-025",
     "ISO":"SPP",
-    "Status":"Done",
+    "Status":"Active",
     "Queue Date":"2018-05-29T00:00:00.000",
     "Proposed Date":"2023-10-15T00:00:00.000",
     "Transmission Owner":"OPPD",
@@ -8627,7 +8627,7 @@
   {
     "Project ID":"GEN-2017-117",
     "ISO":"SPP",
-    "Status":"Done",
+    "Status":"Active",
     "Queue Date":"2017-11-17T00:00:00.000",
     "Proposed Date":"2020-12-01T00:00:00.000",
     "Transmission Owner":"WFEC",

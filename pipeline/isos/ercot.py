@@ -21,6 +21,7 @@ _CLEAN_COLUMNS = [
     "Project ID", "Name", "Developer", "POI", "County", "Zone",
     "Queue Date", "Fuel Type", "MW Capacity", "Proposed Date", "Status",
     "Completion Probability", "State", "ISO",
+    "Latitude", "Longitude",
     "Screening Started Date", "Screening Complete Date",
     "FIS Requested Date", "FIS Approved Date", "IA Signed Date",
     "Construction Start Date", "Construction End Date",
@@ -87,6 +88,8 @@ def clean(df):
         "projected_cod": "Proposed Date",
         "completion_probability": "Completion Probability",
         "milestones": "Milestones",
+        "county_lat": "Latitude",
+        "county_lng": "Longitude",
     }
     df = df.rename(columns=rename_map)
 

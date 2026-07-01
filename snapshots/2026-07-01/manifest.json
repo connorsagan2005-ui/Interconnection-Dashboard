@@ -1,62 +1,52 @@
 {
   "snapshot_date": "2026-07-01",
-  "created_at": "2026-07-01T19:14:43.152256+00:00",
-  "mode": "download",
+  "created_at": "2026-07-01T14:45:24.965121+00:00",
+  "mode": "reprocess",
   "pipeline_version": "archive-enabled-v1",
   "clean_schema_version": "schema-v1",
   "raw_sources": {
     "SPP": {
-      "file": "raw/raw_spp.csv",
-      "source_type": "csv",
-      "download_status": "success"
+      "download_status": "failed"
     },
     "MISO": {
-      "file": "raw/raw_miso.csv",
-      "source_type": "csv",
-      "download_status": "success"
+      "download_status": "failed"
     },
     "ERCOT": {
-      "file": "raw/raw_ercot.csv",
-      "source_type": "csv",
-      "download_status": "success"
-    },
-    "ISONE": {
-      "file": "raw/raw_isone.csv",
-      "source_type": "csv",
-      "download_status": "success"
+      "download_status": "failed"
     },
     "PJM": {
-      "file": "raw/raw_pjm.csv",
-      "source_type": "csv",
-      "download_status": "success"
+      "download_status": "failed"
+    },
+    "ISONE": {
+      "download_status": "failed"
     }
   },
   "clean_outputs": {
     "SPP": {
-      "file": "clean_latest/clean_spp.json",
-      "status": "success"
+      "status": "failed"
     },
     "MISO": {
-      "file": "clean_latest/clean_miso.json",
-      "status": "success"
+      "status": "failed"
     },
     "ERCOT": {
-      "file": "clean_latest/clean_ercot.json",
-      "status": "success"
-    },
-    "ISONE": {
-      "file": "clean_latest/clean_isone.json",
-      "status": "success"
+      "status": "failed"
     },
     "PJM": {
-      "file": "clean_latest/clean_pjm.json",
-      "status": "success"
+      "status": "failed"
+    },
+    "ISONE": {
+      "status": "failed"
     }
   },
   "master_output": {
-    "file": "clean_latest/master_cross_iso.json",
-    "records": 7748,
-    "status": "success"
+    "status": "not_created",
+    "reason": "No ISO data collected"
   },
-  "errors": {}
+  "errors": {
+    "SPP": "Missing raw snapshot file: snapshots\\2026-07-01\\raw\\raw_spp.csv",
+    "MISO": "Missing raw snapshot file: snapshots\\2026-07-01\\raw\\raw_miso.csv",
+    "ERCOT": "Missing raw snapshot file: snapshots\\2026-07-01\\raw\\raw_ercot.csv",
+    "PJM": "Missing raw snapshot file: snapshots\\2026-07-01\\raw\\raw_pjm.csv",
+    "ISONE": "Missing raw snapshot file: snapshots\\2026-07-01\\raw\\raw_isone.csv"
+  }
 }
